@@ -1,0 +1,68 @@
+name: Feature Request
+description: Suggest a new feature or enhancement.
+title: "[FEATURE] - "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a feature! To help us better understand your request, please fill out the following details. Providing as much detail as possible will make it easier for us to evaluate your proposal.
+    validations:
+      required: true
+  - type: input
+    id: branch_name
+    attributes:
+      label: Branch Name
+      description: Suggested branch name for implementing this feature
+      placeholder: feat/[issue-id]
+      value: feat/
+    validations:
+      required: true
+      pattern: '^feat/[a-z0-9-]+$'
+  - type: textarea
+    id: feature_description
+    attributes:
+      label: Feature Description
+      description: What feature would you like to see implemented?
+      placeholder: Provide a clear and concise description of the feature.
+    validations:
+      required: true
+  - type: textarea
+    id: why_is_this_feature_needed
+    attributes:
+      label: Why Is This Feature Needed?
+      description: Explain why this feature is important and how it will benefit users.
+      placeholder: Describe the motivation or problem this feature would solve.
+    validations:
+      required: false
+  - type: textarea
+    id: current_behavior
+    attributes:
+      label: Current Behavior
+      description: Describe the current behavior or limitations that this feature aims to address.
+      placeholder: Describe the current behavior or limitations that this feature aims to address.
+    validations:
+      required: false
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed Solution
+      description: How do you envision this feature working? Include any specific implementation ideas, if applicable.
+      placeholder: Provide a detailed description of the proposed solution.
+    validations:
+      required: false
+  - type: textarea
+    id: example_scenario
+    attributes:
+      label: Example Scenario
+      description: Provide an example scenario or use case for this feature. How would it be used in practice?
+      placeholder: 'Describe a specific situation where this feature would be beneficial and how it would be used.'
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives_considered
+    attributes:
+      label: Alternatives Considered
+      description: Are there other ways to achieve the same result? If so, why do they not meet your needs?
+      placeholder: 'Describe any alternative approaches or solutions you’ve considered.'
+    validations:
+      required: false
