@@ -18,6 +18,20 @@ body:
     validations:
       required: true
       pattern: '^feat/[a-z0-9-]+$'
+  - type: dropdown
+    id: feature_type
+    attributes:
+      label: Feature Type
+      description: Select the type of frontend feature you're proposing
+      options:
+        - UI/UX
+        - Integration
+        - Validation
+        - Performance
+        - Accessibility
+        - Other
+    validations:
+      required: true
   - type: textarea
     id: feature_description
     attributes:
@@ -26,6 +40,14 @@ body:
       placeholder: Provide a clear and concise description of the feature.
     validations:
       required: true
+  - type: textarea
+    id: design_reference
+    attributes:
+      label: Design Reference
+      description: If applicable, provide any design mockups, wireframes, or references that illustrate your feature idea.
+      placeholder: 'Upload images or provide links to design references that support your feature request.'
+    validations:
+      required: false
   - type: textarea
     id: why_is_this_feature_needed
     attributes:

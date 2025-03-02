@@ -16,6 +16,20 @@ body:
     validations:
       required: true
       pattern: '^fix/[a-z0-9-]+$'
+  - type: dropdown
+    id: bug_type
+    attributes:
+      label: Bug Type
+      description: Select the type of frontend bug you're reporting
+      options:
+        - UI/UX
+        - Integration
+        - Validation
+        - Performance
+        - Accessibility
+        - Other
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
@@ -24,6 +38,14 @@ body:
       placeholder: 'Describe what the bug is.'
     validations:
       required: true
+  - type: textarea
+    id: design_reference
+    attributes:
+      label: Design Reference
+      description: If applicable, provide any design mockups, wireframes, or references that illustrate your bug idea.
+      placeholder: 'Upload images or provide links to design references that support your bug report.'
+    validations:
+      required: false
   - type: textarea
     id: steps_to_reproduce
     attributes:
