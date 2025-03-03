@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 
+
 export default {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,8 +10,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "var( --primary-color)",
+        secondary: "var(--secondary-color)",
+      },
+      borderColor: {
+        DEFAULT: "var(--border-color)",
+      },
+      fontFamily: {
+        sans: ["var(--font-family-ar)", "sans-serif"]
       },
     },
   },
