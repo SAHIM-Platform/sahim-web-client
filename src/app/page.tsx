@@ -96,6 +96,11 @@ export default function Home() {
           Go to nextjs.org →
         </a>
       </footer>
+      <div className="bg-BackgroundColor w-2/5 h-32 " >
+      <p className="bg-PrimaryColor text-TextColor my-2 border-4  border-BorderColor">Try the color primary color , text color , background color and border color  </p>
+      <p className="text-TextColor">الخط العادي </p>
+      <p className="text-TextColor font-fontIbmPlexSansArabic">الخط المستخدم </p>
+      </div>
     </div>
   );
 }
