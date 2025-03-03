@@ -10,13 +10,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        PrimaryColor: "#2688F9",
-        BackgroundColor: "#FFFFFF",
-        TextColor: "#111111",
-        BorderColor: "#D7D7D7",
+        Primary: "#2688F9",
+        Secondary: "#0C1823",
       },
-      fontFamily:{
-        fontIbmPlexSansArabic:['var(--font-ibm-plex-sans-arabic)' , 'sans-serif'],
+      borderColor: {
+        DEFAULT: "#D7D7D7",
+      },
+      fontFamily: {
+        DEFAULT: "var('--font-ibm-plex-sans-arabic')",
       },
     },
   },
