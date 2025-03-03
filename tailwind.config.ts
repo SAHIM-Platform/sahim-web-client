@@ -10,14 +10,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        Primary: "#2688F9",
-        Secondary: "#0C1823",
+        primary: "#2688F9",
+        secondary: "#0C1823",
       },
       borderColor: {
         DEFAULT: "#D7D7D7",
-      },
-      fontFamily: {
-        DEFAULT: "var('--font-ibm-plex-sans-arabic')",
       },
     },
   },

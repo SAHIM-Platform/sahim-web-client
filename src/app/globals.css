@@ -3,13 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --bg-default: #ffffff;
-  --Text-color: #111111;
+  --background-color: #ffffff;
+  --text-color: #111111;
+  --primary-color: #2688F9;
+  --secondary-color: #0C1823;
+  --border-color: #D7D7D7;
+  --font-family-primary: var(--font-ibm-plex-sans-arabic);
 }
 
 @layer base{
    body {
-  @apply bg-[var(--bg-default)] text-[var(--Text-color)];
+    @apply bg-[var(--background-color)] text-[var(--text-color)] font-[var(--font-family-primary)];
   }
 }
 

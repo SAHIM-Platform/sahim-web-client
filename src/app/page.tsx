@@ -96,7 +96,7 @@ export default function Home() {
           Go to nextjs.org →
         </a>
       </footer>
-      <p className=" border-4 border-Secondary font-sans">شرف احمد </p>
+      <p className=" border-4  font-sans">شرف احمد </p>
       
     </div>
   );
