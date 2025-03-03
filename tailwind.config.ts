@@ -10,11 +10,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#2688F9",
-        secondary: "#0C1823",
+        primary: "var( --primary-color)",
+        secondary: "var(--secondary-color)",
       },
       borderColor: {
-        DEFAULT: "#D7D7D7",
+        DEFAULT: "var(--border-color)",
+      },
+      fontFamily: {
+        sans: ["var(--font-family-ar)", "sans-serif"]
       },
     },
   },

@@ -4,7 +4,7 @@ import "./globals.css";
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
   weight: ["400", "600", "700"],
-  variable: "--font-ibm-plex-sans-arabic",
+  variable: "--font-family-ar",
 });
 
 export default function RootLayout({
