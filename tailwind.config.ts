@@ -10,7 +10,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "var( --primary-color)",
+        primary: "#2688F9",
         secondary: "var(--secondary-color)",
       },
       borderColor: {

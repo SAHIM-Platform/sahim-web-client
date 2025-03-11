@@ -11,9 +11,17 @@
 }
 
 @layer base{
-   body {
-    @apply bg-[var(--background-color)] text-[var(--text-color)];
-  }
-}
+   body { 
+    
+    
+     @apply bg-[var(--background-color)] text-[var(--text-color)];
+    } 
+    main {    
+    background: url('../../public/SAHIM_Bg_img.jpg') no-repeat   fixed   ;  
+    background-size: cover; 
+
+    
+  } 
+} 
 
 
