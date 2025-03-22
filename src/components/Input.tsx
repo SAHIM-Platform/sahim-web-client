@@ -13,22 +13,23 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        primary: "border border-gray-300 bg-transparent text-right",
+        primary: "border border-gray-300 bg-transparent text-right placeholder:text-xs",
         error: "border-red-500 bg-transparent text-right",
       },
       inputSize: {
-        default: "px-[30PX] py-[10px] text-lg",
+        default: "px-[30PX] py-[2px] text-base",
       },
       fullWidth: {
         true: "w-full",
         false: ""
-      }
+      }  
     },
     defaultVariants: {
       variant: "primary",
       inputSize: "default",
       fullWidth: true
     }
+
   }
 );
 

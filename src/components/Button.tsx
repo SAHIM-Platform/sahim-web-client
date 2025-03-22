@@ -18,9 +18,9 @@ const buttonVariants = cva(
         outline: "bg-transparent border hover:border-primary",
       },
       size: {
-        lg: "px-[45PX] py-[15px] text-xl",
-        default: "px-[30PX] py-[10px] text-lg",
-        sm: "px-[21PX] py-[7px] text-base",
+        lg: "px-[45PX] py-[6px] text-sm font-semibold",
+        default: "px-[30PX] py-[7px] text-xs font-semibold",
+        sm: "px-[21PX] py-[6px] text-sm font-semibold",
       },
       fullWidth: {
         true: "w-full",
