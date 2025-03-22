@@ -14,9 +14,4 @@
   body {
     @apply bg-[var(--background-color)] text-[var(--text-color)] font-sans;
   }
-
-  main {
-    background: url('../../public/SAHIM_Bg_img.jpg') no-repeat fixed;
-    background-size: cover;
-  }
 }
