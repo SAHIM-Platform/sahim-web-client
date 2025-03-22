@@ -5,23 +5,18 @@
 :root {
   --background-color: #ffffff;
   --text-color: #111111;
-  --primary-color: #2688F9;
-  --secondary-color: #0C1823;
-  --border-color: #D7D7D7;
+  --primary-color: #2688f9;
+  --secondary-color: #0c1823;
+  --border-color: #d7d7d7;
 }
 
-@layer base{
-   body { 
-    
-    
-     @apply bg-[var(--background-color)] text-[var(--text-color)];
-    } 
-    main {    
-    background: url('../../public/SAHIM_Bg_img.jpg') no-repeat   fixed   ;  
-    background-size: cover; 
+@layer base {
+  body {
+    @apply bg-[var(--background-color)] text-[var(--text-color)] font-sans;
+  }
 
-    
-  } 
-} 
-
-
+  main {
+    background: url('../../public/SAHIM_Bg_img.jpg') no-repeat fixed;
+    background-size: cover;
+  }
+}
