@@ -18,7 +18,7 @@ const inputVariants = cva(
         error: "border-red-500 bg-transparent text-right",
       },
       inputSize: {
-        default: "px-[30PX] py-[2px] text-base",
+        default: "px-[18PX] py-[6px] text-lg",
       },
       fullWidth: {
         true: "w-full",
