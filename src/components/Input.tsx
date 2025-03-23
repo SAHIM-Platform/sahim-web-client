@@ -9,11 +9,12 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
 }
 
 const inputVariants = cva(
-  "inline-flex items-center justify-center rounded-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none placeholder:text-base placeholder:font-light",
+  "inline-flex items-center justify-center rounded-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none placeholder:text-xs placeholder:font-light", 
+    //  decresing focus-visible:ring-2 and   focus-visible:ring-offset-2
   {
     variants: {
       variant: {
-        primary: "border border-gray-300 bg-transparent text-right placeholder:text-xs",
+        primary: "border   border-gray-300 bg-transparent text-right placeholder:text-xs",
         error: "border-red-500 bg-transparent text-right",
       },
       inputSize: {

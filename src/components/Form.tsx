@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const Form = () => {
   return (
-    <div className="w-[400px] max-w-full flex flex-col justify-center items-center text-center gap-10 p-[35px] rounded-lg shadow-md bg-white">
+    <div className="w-[400px] max-w-full flex flex-col justify-center items-center text-center gap-10  mt-12  p-[35px] rounded-lg shadow-md bg-white">
 
       <div className=" space-y-8  text-center"> 
         <Logo className="mx-auto" />
@@ -28,7 +28,7 @@ const Form = () => {
           </form>
  
           <p className="text-xs   text-gray-700">
-            ليس لديك حساب؟ <a href="#" className="text-primary font-medium">أنشئ حساب</a>
+            ليس لديك حساب؟ <a href="#" className="text-primary font-medium   hover:underline hover:underline-offset-1">أنشئ حساب</a>
           </p>
         </div>
 
