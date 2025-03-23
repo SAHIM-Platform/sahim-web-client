@@ -3,9 +3,9 @@ import Form from "@/components/Form";
 
 export default function Home() {
   return (
-    <main className="bg-[url('/login-bg.jpg')] bg-no-repeat bg-fixed bg-cover bg-center min-h-screen flex items-center">
-      <Container>
-        <div className='flex items-center justify-center'>
+    <main className="bg-[url('/login-bg.jpg')] bg-no-repeat bg-fixed bg-cover bg-center min-h-screen">
+      <Container >
+        <div className='flex items-center justify-center  p-3 pb-10'>
         <Form />
         </div>
       </Container>
