@@ -1,21 +1,18 @@
-type ContainerProps = {
-  children: React.ReactNode;
-  classNames?: string;
-  wide?: boolean;
-};
+"use client";
 
-function Container({ children, classNames, wide = false }: ContainerProps) {
-  const maxWidthClass = wide
-    ? 'max-w-[1440px] lg:max-w-[1600px]'
-    : 'max-w-[700px] lg:max-w-[800px]';
+import { cn } from "@/utils/utils";
+
+interface ContainerProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const Container = ({ children, className }: ContainerProps) => {
   return (
-    <div
-      className={`${maxWidthClass} mx-auto px-4 sm:px-6 lg:px-8 w-full ${classNames || ''
-        }`}
-    >
+    <div className={cn("w-full max-w-screen-2xl mx-auto", className)}>
       {children}
     </div>
   );
-}
+};
 
 export default Container;

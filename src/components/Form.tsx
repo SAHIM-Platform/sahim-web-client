@@ -1,51 +1,93 @@
+"use client";
+
+import { useState } from "react";
 import Button from "./Button";
 import Input from "./Input";
 import Logo from "./Logo";
 import Divider from "./Divider";
 import Image from "next/image";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 
 const Form = () => {
-  return (
-    <div className="w-[400px] max-w-full flex flex-col justify-center items-center text-center gap-10 mt-12 p-[20px] lg:p-[35px] rounded-lg shadow-md bg-white">
+  const [showPassword, setShowPassword] = useState(false);
 
-      <div className=" space-y-8  text-center"> 
-        <Logo className="mx-auto" />
-        {/* I made the logo smaller */}
-        <div className="space-y-4">  
-          <h1 className="mb-2 font-semibold text-2xl">مرحباً بك مجدد في ساهم</h1>
-          <p className="mb-4 text-sm">من فضلك، أدخل بيانات حسابك لتسجيل الدخول</p> 
-          {/* text got smaller  */}
+  return (
+    <div className="w-full max-w-[420px] flex flex-col justify-center items-center text-right gap-5 sm:gap-8 p-4 sm:p-6 lg:p-8 rounded-lg sm:rounded-xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/20 box-border" dir="rtl">
+      <div className="space-y-3 sm:space-y-5 text-right w-full"> 
+        <Logo className="mx-auto w-12 h-12 sm:w-14 sm:h-14" />
+        <div className="space-y-1.5 sm:space-y-2 text-center">  
+          <h1 className="font-semibold text-lg sm:text-xl lg:text-2xl text-gray-800 tracking-tight">مرحباً بك مجدداً في ساهم</h1>
+          <p className="text-[13px] sm:text-[14px] lg:text-[15px] text-gray-500 font-normal break-words">من فضلك، أدخل بيانات حسابك لتسجيل الدخول</p>
         </div>
       </div>
 
-      <div className="space-y-6 w-full">
+      <div className="space-y-5 sm:space-y-6 w-full">
         <div className="space-y-4 w-full">
-
-          <form className="flex flex-col space-y-4 w-full">
-            <Input type="text" placeholder="البريد الإلكتروني" />
-            <Input type="password" placeholder="كلمة المرور" />
-            <Button fullWidth variant='primary'>تسجيل الدخول</Button>
+          <form className="flex flex-col space-y-3 w-full">
+            <Input
+              type="email"
+              placeholder="البريد الإلكتروني"
+              label="البريد الإلكتروني"
+              required
+              startIcon={<Mail className="w-[18px] h-[18px]" />}
+            />
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="كلمة المرور"
+              label="كلمة المرور"
+              required
+              startIcon={<Lock className="w-[18px] h-[18px]" />}
+              endIcon={
+                showPassword ? (
+                  <Eye
+                    className="w-[18px] h-[18px]"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowPassword(false);
+                    }}
+                  />
+                ) : (
+                  <EyeOff
+                    className="w-[18px] h-[18px]"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowPassword(true);
+                    }}
+                  />
+                )
+              }
+            />
+            <div className="pt-1 sm:pt-2">
+              <Button fullWidth variant="primary">
+                تسجيل الدخول
+              </Button>
+            </div>
           </form>
  
-          <p className="text-sm  text-gray-700">
-            ليس لديك حساب؟ <a href="#" className="text-primary font-medium   hover:underline hover:underline-offset-1">أنشئ حساب</a>
+          <p className="text-[13px] sm:text-[14px] lg:text-[15px] text-gray-500 text-center">
+            ليس لديك حساب؟{" "}
+            <a href="#" className="text-primary font-medium hover:underline hover:underline-offset-4 transition-all">
+              أنشئ حساب
+            </a>
           </p>
         </div>
 
-        <Divider />
+        <div className="space-y-4 sm:space-y-5">
+          <Divider />
 
-        <Button variant="outline" fullWidth>
-          سجل الدخول بواسطة جوجل
-          <Image
-            src="/icons8-google.svg"
-            className="w-[18px] h-[18px] inline-block ml-2"
-            alt="Google Icon"
-            width={24}  // 
-            height={24} //  
-          />
-        </Button>
+          <Button variant="outline" fullWidth>
+            <Image
+              src="/icons8-google.svg"
+              className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 inline-block me-2 opacity-80"
+              alt="Google Icon"
+              width={20}
+              height={20}
+            />
+            سجل الدخول بواسطة جوجل
+          </Button>
+        </div>
       </div>
-    </div >
+    </div>
   );
 };
 
