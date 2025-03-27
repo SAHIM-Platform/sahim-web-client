@@ -7,8 +7,9 @@ import Logo from "./Logo";
 import Divider from "./Divider";
 import Image from "next/image";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import Link from 'next/link';
 
-const Form = () => {
+const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -66,9 +67,9 @@ const Form = () => {
  
           <p className="text-[13px] sm:text-[14px] lg:text-[15px] text-gray-500 text-center">
             ليس لديك حساب؟{" "}
-            <a href="#" className="text-primary font-medium hover:underline hover:underline-offset-4 transition-all">
+            <Link href="/signup" className="text-primary font-medium hover:underline hover:underline-offset-4 transition-all">
               أنشئ حساب
-            </a>
+            </Link>
           </p>
         </div>
 
@@ -91,4 +92,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default LoginForm;
