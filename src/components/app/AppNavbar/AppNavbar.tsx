@@ -1,10 +1,11 @@
-import React, { useState } from "react";
 import { MessageSquare } from "lucide-react";
 import Logo from "../../Logo";
 import Button from "../../Button";
 import UserDropdownMenu from "./UserDropdownMenu";
-import NotificationsBadge from "./NotificationsBadge";
+import NotificationsBadge from "../Badge/NotificationsBadge";
 import SearchButton from "../SearchButton";
+import { routesData } from "@/data/routes";
+import Link from "next/link";
 
 interface AppNavbarProps {
   isSearchFocused: boolean;
@@ -18,7 +19,7 @@ function AppNavbar({ isSearchFocused, setIsSearchFocused }: AppNavbarProps) {
         <div className="flex gap-10">
           <div className="flex items-center gap-2">
             <Logo widthSize="sm" />
-            <span className="text-xl font-bold text-secondary">ساهم</span>
+            <Link href="/" className="text-xl font-bold text-secondary">ساهم</Link>
           </div>
 
           <SearchButton
@@ -33,7 +34,7 @@ function AppNavbar({ isSearchFocused, setIsSearchFocused }: AppNavbarProps) {
           <UserDropdownMenu />
 
           <Button
-            href="/chat/new"
+            href={routesData[1].path}
             variant='primary'
             size='sm'
             icon={<MessageSquare className="w-4 h-4" />}

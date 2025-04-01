@@ -14,6 +14,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, Var
   icon?: React.ReactNode;
   iconPosition?: 'start' | 'end';
   href?: string;
+  target?: "_blank" | "_self" | "_parent" | "_top";
 }
 
 const buttonVariants = cva(
@@ -87,23 +88,53 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
   icon,
   iconPosition = "start",
   href,
+  target = "_self",
   ...props
 }, ref) => {
-  const isLink = typeof href === 'string';
-  const Tag: any = isLink ? 'a' : 'button';
+  if (href) {
+    return (
+      <a
+        ref={ref as React.ForwardedRef<HTMLAnchorElement>}
+        href={href}
+        target={target}
+        rel={target === "_blank" ? "noopener noreferrer" : undefined}
+        className={cn(
+          buttonVariants({ variant, size, fullWidth }),
+          isLoading && "cursor-wait",
+          className
+        )}
+        {...props as React.AnchorHTMLAttributes<HTMLAnchorElement>}
+      >
+        {isLoading ? (
+          <>
+            <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
+            {loadingText && <span className="truncate">{loadingText}</span>}
+          </>
+        ) : (
+          <>
+            {icon && iconPosition === "start" && (
+              <span className="inline-flex shrink-0 text-[1.15em]">{icon}</span>
+            )}
+            <span className="truncate">{children}</span>
+            {icon && iconPosition === "end" && (
+              <span className="inline-flex shrink-0 text-[1.15em]">{icon}</span>
+            )}
+          </>
+        )}
+      </a>
+    );
+  }
 
   return (
-    <Tag
-      ref={ref}
+    <button
+      ref={ref as React.ForwardedRef<HTMLButtonElement>}
       className={cn(
         buttonVariants({ variant, size, fullWidth }),
         isLoading && "cursor-wait",
         className
       )}
-      {...(isLink
-        ? { href, target: "_blank", rel: "noopener noreferrer" }
-        : { disabled: isLoading || props.disabled })}
-      {...props}
+      disabled={isLoading || props.disabled}
+      {...props as React.ButtonHTMLAttributes<HTMLButtonElement>}
     >
       {isLoading ? (
         <>
@@ -121,7 +152,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           )}
         </>
       )}
-    </Tag>
+    </button>
   );
 });
 
