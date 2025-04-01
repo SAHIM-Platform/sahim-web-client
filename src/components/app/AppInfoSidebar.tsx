@@ -5,11 +5,11 @@ import Link from "next/link";
 
 function AppInfoSidebar() {
   return (
-    <div className="fixed top-14 left-0 w-[320px] h-[calc(100vh-3.5rem)] hidden xl:block border-r-2 border-gray-200">
-      <div className="h-full overflow-y-auto py-12 px-4 flex flex-col gap-10">
+    <div className="fixed top-14 left-0 w-[320px] h-[calc(100vh-3.5rem)] hidden xl:block border-r-2 overflow-y-auto">
+      <div className="h-full py-12 px-4 flex flex-col gap-10">
         {/* Categories */}
         <div>
-          <span className="pr-4 text-sm font-semibold text-gray-900 mb-3">التصنيفات</span>
+          <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">التصنيفات</span>
           <div className="space-y-1">
             {categories.map((category) => (
               <Link
@@ -28,7 +28,7 @@ function AppInfoSidebar() {
 
         {/* Active Topics */}
         <div>
-          <span className="pr-4 text-sm font-semibold text-gray-900 mb-3">آخر النقاشات</span>
+          <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">آخر النقاشات</span>
           <div className="space-y-1">
             {[1, 2, 3].map((i) => (
               <a
