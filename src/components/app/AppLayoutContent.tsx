@@ -3,6 +3,7 @@
 import { useState } from "react";
 import AppNavbar from "./AppNavbar/AppNavbar";
 import { useSearchShortcuts } from "@/hooks/useSearchShortcuts";
+import AppMenuSidebar from "./AppMenuSidebar";
 
 export default function AppLayoutContent({
   children,
@@ -19,6 +20,8 @@ export default function AppLayoutContent({
         isSearchFocused={isSearchFocused}
         setIsSearchFocused={setIsSearchFocused}
       />
+
+      <AppMenuSidebar />
     </div>
   );
 } 
