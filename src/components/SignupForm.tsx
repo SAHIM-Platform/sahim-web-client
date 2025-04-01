@@ -17,9 +17,9 @@ const SignupForm = () => {
 
   return (
     <div className="w-full max-w-[520px] flex flex-col justify-center items-center text-right gap-5 sm:gap-8 p-6 sm:p-8 lg:p-10 rounded-lg sm:rounded-xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/20 box-border" dir="rtl">
-      <div className="space-y-3 sm:space-y-5 text-right w-full"> 
-        <Logo className="mx-auto w-12 h-12 sm:w-14 sm:h-14" />
-        <div className="space-y-1.5 sm:space-y-2 text-center">  
+      <div className="space-y-3 sm:space-y-5 text-right w-full">
+        <Logo className="mx-auto" />
+        <div className="space-y-1.5 sm:space-y-2 text-center">
           <h1 className="font-semibold text-lg sm:text-xl lg:text-2xl text-gray-800 tracking-tight">إنشاء حساب جديد</h1>
           <p className="text-[13px] sm:text-[14px] lg:text-[15px] text-gray-500 font-normal break-words">من فضلك، أدخل بياناتك لإنشاء حساب جديد</p>
         </div>
@@ -133,7 +133,7 @@ const SignupForm = () => {
               </Button>
             </div>
           </form>
- 
+
           <p className="text-[13px] sm:text-[14px] lg:text-[15px] text-gray-500 text-center">
             لديك حساب بالفعل؟{" "}
             <Link href="/" className="text-primary font-medium hover:underline hover:underline-offset-4 transition-all">
