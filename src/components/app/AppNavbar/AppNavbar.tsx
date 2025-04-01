@@ -1,10 +1,10 @@
-import React, { useState } from "react";
 import { MessageSquare } from "lucide-react";
 import Logo from "../../Logo";
 import Button from "../../Button";
 import UserDropdownMenu from "./UserDropdownMenu";
 import NotificationsBadge from "./NotificationsBadge";
 import SearchButton from "../SearchButton";
+import { routesData } from "@/data/routes";
 
 interface AppNavbarProps {
   isSearchFocused: boolean;
@@ -33,7 +33,7 @@ function AppNavbar({ isSearchFocused, setIsSearchFocused }: AppNavbarProps) {
           <UserDropdownMenu />
 
           <Button
-            href="/chat/new"
+            href={routesData[1].path}
             variant='primary'
             size='sm'
             icon={<MessageSquare className="w-4 h-4" />}
