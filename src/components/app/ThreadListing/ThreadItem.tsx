@@ -15,7 +15,7 @@ export interface ThreadItemProps {
     avatar: string;
   };
   content: string;
-  thumbnail?: string;  // Add this line
+  thumbnail?: string;
   timestamp: string;
   likesCount: number;
   repliesCount: number;
@@ -32,7 +32,7 @@ const ThreadItem = ({
   title,
   author,
   content,
-  thumbnail, // Add this line
+  thumbnail,
   timestamp,
   likesCount,
   repliesCount,
@@ -51,7 +51,7 @@ const ThreadItem = ({
         className
       )}
     >
-      <div className="p-6 space-y-6">
+      <div className="px-6 pt-6 pb-3 space-y-6">
         <div className="flex items-center justify-between gap-4">
           <UserInfo
             photo={author.avatar}

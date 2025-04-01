@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { cn } from "@/utils/utils";
 import { Search } from "lucide-react";
+import SearchModal from "../Modal/SearchModal";
+import { discussionThreads } from "@/data/mock-api";
 
 interface SearchButtonProps {
   isSearchFocused: boolean;
   setIsSearchFocused: (value: boolean) => void;
   placeholder?: string;
   useKeyboardShortcuts?: boolean;
-  fullWidth?: boolean
+  fullWidth?: boolean;
 }
 
 function SearchButton({
@@ -15,6 +18,31 @@ function SearchButton({
   placeholder = "ابحث في المناقشات ...",
   fullWidth
 }: SearchButtonProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState<typeof discussionThreads>([]);
+
+  const handleSearch = async (query: string) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const results = discussionThreads.filter(thread => 
+        thread.title.toLowerCase().includes(query.toLowerCase()) ||
+        thread.content.toLowerCase().includes(query.toLowerCase()) ||
+        thread.category.toLowerCase().includes(query.toLowerCase())
+      );
+      
+      setSearchResults(results);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={cn(
       'flex-1',
@@ -36,8 +64,20 @@ function SearchButton({
           للبحث السريع
         </div>
       </button>
+
+      {isSearchFocused && (
+        <SearchModal
+          onClose={() => {
+            setIsSearchFocused(false);
+            setSearchResults([]);
+          }}
+          onSearch={handleSearch}
+          searchResults={searchResults}
+          isLoading={isLoading}
+        />
+      )}
     </div>
-  )
+  );
 }
 
 export default SearchButton;

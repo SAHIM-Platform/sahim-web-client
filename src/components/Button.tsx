@@ -6,7 +6,7 @@ import { cn } from "@/utils/utils";
 import { Loader2 } from "lucide-react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   fullWidth?: boolean;
   isLoading?: boolean;
