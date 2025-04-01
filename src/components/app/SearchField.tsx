@@ -10,7 +10,7 @@ interface SearchFieldProps {
 function SearchField({
   searchQuery,
   setSearchQuery,
-  placeholder,
+  placeholder = "ابحث في المناقشات ...",
 }: SearchFieldProps) {
   return (
     <Input

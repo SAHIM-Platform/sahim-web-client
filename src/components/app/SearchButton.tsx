@@ -12,7 +12,7 @@ interface SearchButtonProps {
 function SearchButton({
   isSearchFocused,
   setIsSearchFocused,
-  placeholder,
+  placeholder = "ابحث في المناقشات ...",
   fullWidth
 }: SearchButtonProps) {
   return (
