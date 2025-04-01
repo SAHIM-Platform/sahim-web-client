@@ -72,7 +72,7 @@ const ThreadItem = ({
         </div>
 
         {thumbnail && (
-          <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-50">
+          <div className="relative w-full aspect-[6/4] rounded-lg overflow-hidden bg-gray-50">
             <Image
               src={thumbnail}
               alt={title || 'Discussion thumbnail'}

@@ -2,8 +2,6 @@ import Divider from "@/components/Divider"
 import DiscussionsBadge from "../Badge/DiscussionsBadge"
 import Button from "@/components/Button"
 import { ArrowUpDown, MessageSquare } from "lucide-react"
-import SearchField from "../SearchField"
-import Select from "@/components/Select"
 import { ThreadItemProps } from "./ThreadItem"
 import { CategoryBadgeProps } from "../Badge/CategoryBadge"
 
@@ -19,12 +17,7 @@ interface ThreadListingHeaderProps {
 }
 
 function ThreadListingHeader({
-  searchQuery,
-  setSearchQuery,
   processedThreads,
-  categories,
-  selectedCategory,
-  setSelectedCategory,
   sortOrder,
   setSortOrder
 }: ThreadListingHeaderProps) {
