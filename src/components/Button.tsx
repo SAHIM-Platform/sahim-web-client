@@ -13,6 +13,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, Var
   loadingText?: string;
   icon?: React.ReactNode;
   iconPosition?: 'start' | 'end';
+  href?: string;
 }
 
 const buttonVariants = cva(
@@ -75,7 +76,7 @@ const buttonVariants = cva(
   }
 );
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
+const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(({
   children,
   className,
   variant,
@@ -85,17 +86,23 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
   loadingText,
   icon,
   iconPosition = "start",
+  href,
   ...props
 }, ref) => {
+  const isLink = typeof href === 'string';
+  const Tag: any = isLink ? 'a' : 'button';
+
   return (
-    <button
+    <Tag
       ref={ref}
       className={cn(
         buttonVariants({ variant, size, fullWidth }),
         isLoading && "cursor-wait",
         className
       )}
-      disabled={isLoading || props.disabled}
+      {...(isLink
+        ? { href, target: "_blank", rel: "noopener noreferrer" }
+        : { disabled: isLoading || props.disabled })}
       {...props}
     >
       {isLoading ? (
@@ -114,7 +121,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
           )}
         </>
       )}
-    </button>
+    </Tag>
   );
 });
 

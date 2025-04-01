@@ -1,22 +1,32 @@
 import { cn } from '@/utils/utils';
 import Image from "next/image";
+import Link from 'next/link';
 
 interface LogoProps {
 	className?: string;
+	widthSize?: 'sm' | 'default';
 }
 
-const Logo = ({ className }: LogoProps) => (
-	<div className={cn("w-[50px] h-auto", className)}>
+const Logo = ({ className, widthSize = 'default' }: LogoProps) => (
+	<Link
+		href="/"
+		className={cn(
+			'relative',
+			widthSize == 'default' && `w-12 h-12`,
+			widthSize == 'sm' && `w-7 h-7`,
+			className
+		)}
+	>
 		<Image
 			alt="SAHIM Login"
 			className="h-full w-full object-cover"
-			width={1920}
-			height={1080}
+			fill
+			objectFit='contain'
 			priority
 			quality={100}
 			src="/sahim-logo.png"
 		/>
-	</div>
+	</Link>
 );
 
 export default Logo;

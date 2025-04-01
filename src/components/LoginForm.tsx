@@ -15,7 +15,7 @@ const LoginForm = () => {
   return (
     <div className="w-full max-w-[420px] flex flex-col justify-center items-center text-right gap-5 sm:gap-8 p-4 sm:p-6 lg:p-8 rounded-lg sm:rounded-xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/20 box-border" dir="rtl">
       <div className="space-y-3 sm:space-y-5 text-right w-full"> 
-        <Logo className="mx-auto w-12 h-12 sm:w-14 sm:h-14" />
+        <Logo className="mx-auto" />
         <div className="space-y-1.5 sm:space-y-2 text-center">  
           <h1 className="font-semibold text-lg sm:text-xl lg:text-2xl text-gray-800 tracking-tight">مرحباً بك مجدداً في ساهم</h1>
           <p className="text-[13px] sm:text-[14px] lg:text-[15px] text-gray-500 font-normal break-words">من فضلك، أدخل بيانات حسابك لتسجيل الدخول</p>
