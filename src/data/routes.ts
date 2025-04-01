@@ -1,7 +1,7 @@
 export const routesData = [
   {
     name: "الرئيسية",
-    path: "/",
+    path: "/explore",
   },
   {
     name: "ابدأ نقاش",
