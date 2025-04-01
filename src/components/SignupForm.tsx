@@ -136,7 +136,7 @@ const SignupForm = () => {
 
           <p className="text-[13px] sm:text-[14px] lg:text-[15px] text-gray-500 text-center">
             لديك حساب بالفعل؟{" "}
-            <Link href="/" className="text-primary font-medium hover:underline hover:underline-offset-4 transition-all">
+            <Link href="/login" className="text-primary font-medium hover:underline hover:underline-offset-4 transition-all">
               سجل الدخول
             </Link>
           </p>

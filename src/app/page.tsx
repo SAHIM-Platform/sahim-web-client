@@ -1,15 +1,17 @@
-import Container from '@/components/Container';
-import LoginForm from '@/components/LoginForm';
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <main className="bg-[url('/login-bg.jpg')] bg-no-repeat bg-fixed bg-cover bg-center min-h-screen overflow-x-hidden">
-      <Container>
-        <div className='flex items-center justify-center min-h-screen py-6 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8'>
-          <LoginForm />
-        </div>
-      </Container>
-    </main>
-  );
+/**
+ * HomePage Component
+ * 
+ * This component automatically redirects users to the login page ("/login").
+ * 
+ * @returns {void} No UI is rendered as the page immediately redirects.
+ * 
+ * Alternative Approach:
+ * Instead of using `redirect("/login")`, you can use `useRouter().push("/login")`
+ * 
+ */
+
+export default function HomePage() {
+  redirect("/login"); // Redirects the user to the login page
 }
-
