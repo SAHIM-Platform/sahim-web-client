@@ -14,6 +14,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, Var
   icon?: React.ReactNode;
   iconPosition?: 'start' | 'end';
   href?: string;
+  target?: "_blank" | "_self" | "_parent" | "_top";
 }
 
 const buttonVariants = cva(
@@ -87,6 +88,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
   icon,
   iconPosition = "start",
   href,
+  target = "_self",
   ...props
 }, ref) => {
   const isLink = typeof href === 'string';
@@ -101,7 +103,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         className
       )}
       {...(isLink
-        ? { href, target: "_blank", rel: "noopener noreferrer" }
+        ? { href, target, rel: "noopener noreferrer" }
         : { disabled: isLoading || props.disabled })}
       {...props}
     >

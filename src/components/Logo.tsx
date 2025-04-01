@@ -11,7 +11,7 @@ const Logo = ({ className, widthSize = 'default' }: LogoProps) => (
 	<Link
 		href="/"
 		className={cn(
-			'relative',
+			'relative block',
 			widthSize == 'default' && `w-12 h-12`,
 			widthSize == 'sm' && `w-7 h-7`,
 			className
