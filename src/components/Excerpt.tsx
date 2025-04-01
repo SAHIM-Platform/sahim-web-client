@@ -14,7 +14,7 @@ function Excerpt({ content, wordLimit = 100, className }: ExcerptProps) {
   return (
     <p className={cn(
       className,
-      'text-xs sm:text-sm text-gray-600 leading-relaxed line-clamp-3'
+      'text-xs sm:text-sm text-gray-600 leading-[2] sm:leading-[2] line-clamp-3'
     )}>
       {excerpt}
       {isTruncated && '…'}

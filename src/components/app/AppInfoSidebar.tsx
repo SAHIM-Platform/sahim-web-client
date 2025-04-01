@@ -5,8 +5,8 @@ import Link from "next/link";
 
 function AppInfoSidebar() {
   return (
-    <div className="fixed top-14 left-0 w-[320px] h-[calc(100vh-3.5rem)] hidden xl:block border-r-2 overflow-y-auto">
-      <div className="h-full py-12 px-4 flex flex-col gap-10">
+    <div className="fixed top-14 left-0 w-[320px] h-[calc(100vh-3.5rem)] hidden xl:block overflow-y-auto border-r">
+      <div className="h-full pt-24 pb-12 px-4 flex flex-col gap-10">
         {/* Categories */}
         <div>
           <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">التصنيفات</span>
@@ -24,11 +24,11 @@ function AppInfoSidebar() {
           </div>
         </div>
 
-        <Divider label="" heavy />
+        <Divider label="" />
 
         {/* Active Topics */}
         <div>
-          <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">آخر النقاشات</span>
+          <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">آخر المناقشات</span>
           <div className="space-y-1">
             {[1, 2, 3].map((i) => (
               <a

@@ -17,7 +17,7 @@ export default function AppLayoutContent({
   useSearchShortcuts(isSearchFocused, setIsSearchFocused);
 
   return (
-    <div className="flex-1 min-h-screen bg-[#fbfcfd]">
+    <div className="flex-1 min-h-screen bg-[#fafafa]">
       <AppNavbar
         isSearchFocused={isSearchFocused}
         setIsSearchFocused={setIsSearchFocused}
@@ -29,7 +29,7 @@ export default function AppLayoutContent({
 
       <div className="lg:pr-[280px] xl:pl-[320px]">
         <main className="pb-24 pt-36 min-h-screen h-full">
-          <div className="max-w-[1920px] mx-auto">
+          <div className="px-4">
             <Container narrow className="min-h-full">
               {children}
             </Container>

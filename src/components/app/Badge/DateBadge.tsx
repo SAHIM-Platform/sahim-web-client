@@ -1,13 +1,18 @@
+import { cn } from "@/utils/utils";
 import { Clock } from "lucide-react";
 
 interface DateBadgeProps {
   label: string;
+  size?: 'default' | 'sm';
 }
 
-function DateBadge({ label }: DateBadgeProps) {
+function DateBadge({ label, size = 'default' }: DateBadgeProps) {
   return (
-    <span className="flex items-center gap-1 text-gray-700">
-      <Clock className="w-3.5 h-3.5" />
+    <span className={cn(
+      'flex items-center gap-1 text-gray-500',
+      size === 'sm' && 'text-xs',
+    )}>
+      <Clock className={size === 'sm' ? 'w-3 h-3' : 'w-3 h-3'} />
       {label}
     </span>
   )

@@ -15,6 +15,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, Var
   iconPosition?: 'start' | 'end';
   href?: string;
   target?: "_blank" | "_self" | "_parent" | "_top";
+  color?: string;
 }
 
 const buttonVariants = cva(
@@ -48,7 +49,8 @@ const buttonVariants = cva(
           "shadow-sm hover:shadow"
         ].join(" "),
         ghost: [
-          "text-primary bg-transparent",
+          "text-primary",
+          "bg-transparent",
           "hover:bg-primary/5",
           "focus-visible:ring-primary/30",
         ].join(" "),
@@ -89,6 +91,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
   iconPosition = "start",
   href,
   target = "_self",
+  color,
   ...props
 }, ref) => {
   if (href) {
@@ -131,6 +134,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       className={cn(
         buttonVariants({ variant, size, fullWidth }),
         isLoading && "cursor-wait",
+        variant === 'ghost' && color && `text-${color}`, // Apply color class here
         className
       )}
       disabled={isLoading || props.disabled}

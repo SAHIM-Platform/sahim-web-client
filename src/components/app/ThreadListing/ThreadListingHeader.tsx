@@ -32,24 +32,25 @@ function ThreadListingHeader({
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold">
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold">
             جميع المناقشات
           </h1>
-          <p className="mt-1 text-xs sm:text-sm lg:text-base text-gray-500">
+          <p className="mt-2 text-xs sm:text-sm lg:text-base text-gray-500">
             تصفح جميع المناقشات المطروحة
           </p>
         </div>
         <Button
           href="/discussions/new"
           variant="primary"
+          size="sm"
           icon={<MessageSquare className="w-5 h-5" />}
           className="shadow-sm"
         >
-          ابدأ نقاش
+          ابدأ مناقشة
         </Button>
       </div>
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col sm:flex-row gap-3">
+        {/* <div className="flex flex-col sm:flex-row gap-3">
           <SearchField
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
@@ -68,16 +69,16 @@ function ThreadListingHeader({
               ]}
             />
           </div>
-        </div>
+        </div> */}
 
-        <Divider className="mt-7" label="" />
+        <Divider className="mt-6 border-gray-100" label="" borderColor="gray-200" />
 
         {/* Sort Order */}
         <div className="flex items-center justify-between pt-3 mt-3">
           <DiscussionsBadge>
             <span>
               {processedThreads.length}
-              {processedThreads.length === 1 ? " نقاشات" : " نقاشات"}
+              {processedThreads.length === 1 ? " مناقشة" : " مناقشات"}
             </span>
           </DiscussionsBadge>
           <Button

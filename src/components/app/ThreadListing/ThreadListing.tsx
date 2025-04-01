@@ -28,18 +28,8 @@ const ThreadListing = ({
       (!searchQuery || thread.title.includes(searchQuery))
   );
 
-  if (processedThreads.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-gray-500 text-[14px] sm:text-[15px]">
-          {emptyMessage}
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       <ThreadListingHeader
         categories={categories}
         selectedCategory={selectedCategory}
@@ -50,15 +40,26 @@ const ThreadListing = ({
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
       />
-      {processedThreads.map((thread, index) => (
-        <ThreadItem
-          key={index}
-          {...thread}
-          onLike={() => onLike?.(thread.id)}
-          onReply={() => onReply?.(thread.id)}
-          onShare={() => onShare?.(thread.id)}
-        />
-      ))}
+
+      {processedThreads.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-[14px] sm:text-[15px]">
+            {emptyMessage}
+          </p>
+        </div>
+      ) : (
+        <>
+          {processedThreads.map((thread, index) => (
+            <ThreadItem
+              key={index}
+              {...thread}
+              onLike={() => onLike?.(thread.id)}
+              onReply={() => onReply?.(thread.id)}
+              onShare={() => onShare?.(thread.id)}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 };
