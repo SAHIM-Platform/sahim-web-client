@@ -36,8 +36,8 @@ function AppMenuSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed top-14 right-0 w-[280px] h-[calc(100vh-3.5rem)] hidden lg:block border-l-2 overflow-y-auto">
-      <div className="h-full overflow-y-auto py-12 px-4 space-y-3">
+    <aside className="fixed top-14 right-0 w-[280px] h-[calc(100vh-3.5rem)] hidden lg:block border-l overflow-y-auto">
+      <div className="h-full overflow-y-auto pt-24 pb-12 px-4 space-y-3">
         {appMenuSidebarData.map((item) => (
           <Link
             key={item.name}

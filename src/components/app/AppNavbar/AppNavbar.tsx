@@ -14,7 +14,7 @@ interface AppNavbarProps {
 
 function AppNavbar({ isSearchFocused, setIsSearchFocused }: AppNavbarProps) {
   return (
-    <div className="fixed top-0 left-0 right-0 h-14 border-b-2 border z-50 bg-[#fbfcfd]">
+    <div className="fixed top-0 left-0 right-0 h-14 border-b-2 border z-50 bg-[#fafafa]">
       <div className="h-full mx-auto px-4 flex items-center justify-between">
         <div className="flex gap-10">
           <div className="flex items-center gap-2">
@@ -39,7 +39,7 @@ function AppNavbar({ isSearchFocused, setIsSearchFocused }: AppNavbarProps) {
             size='sm'
             icon={<MessageSquare className="w-4 h-4" />}
           >
-            ابدأ نقاش
+            ابدأ مناقشة
           </Button>
         </div>
       </div>

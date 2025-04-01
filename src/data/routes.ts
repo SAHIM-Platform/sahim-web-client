@@ -4,7 +4,7 @@ export const routesData = [
     path: "/explore",
   },
   {
-    name: "ابدأ نقاش",
+    name: "ابدأ مناقشة",
     path: "/discussions/new",
   },
   {

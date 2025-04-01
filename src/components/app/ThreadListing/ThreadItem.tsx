@@ -5,6 +5,7 @@ import Excerpt from "@/components/Excerpt";
 import Button from "@/components/Button";
 import { Heart, MessageSquare, Share2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
+import Image from "next/image";
 
 export interface ThreadItemProps {
   id: string;
@@ -14,6 +15,7 @@ export interface ThreadItemProps {
     avatar: string;
   };
   content: string;
+  thumbnail?: string;  // Add this line
   timestamp: string;
   likesCount: number;
   repliesCount: number;
@@ -30,6 +32,7 @@ const ThreadItem = ({
   title,
   author,
   content,
+  thumbnail, // Add this line
   timestamp,
   likesCount,
   repliesCount,
@@ -44,11 +47,11 @@ const ThreadItem = ({
     <Link
       href={`/discussions/${id}`}
       className={cn(
-        "block bg-white rounded-xl border hover:shadow-md transition-all duration-200",
+        "block bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200",
         className
       )}
     >
-      <div className="p-4 sm:p-5 space-y-4">
+      <div className="p-6 space-y-6">
         <div className="flex items-center justify-between gap-4">
           <UserInfo
             photo={author.avatar}
@@ -59,22 +62,36 @@ const ThreadItem = ({
           <CategoryBadge name={category} />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           {title && (
-            <h4 className="text-sm sm:text-base font-medium text-gray-800">
+            <h3 className="font-semibold text-gray-900 line-clamp-2">
               {title}
-            </h4>
+            </h3>
           )}
-          <Excerpt content={content} />
+          <Excerpt content={content} className="text-gray-600" />
         </div>
 
-        <div className="flex items-center gap-4 pt-2">
+        {thumbnail && (
+          <div className="relative w-full aspect-[6/4] rounded-lg overflow-hidden bg-gray-50">
+            <Image
+              src={thumbnail}
+              alt={title || 'Discussion thumbnail'}
+              fill
+              className="object-cover"
+              loading="lazy"
+            />
+          </div>
+        )}
+
+        <div className="flex items-center pt-4 border-t border-gray-200">
           <Button
             onClick={(e) => {
               e.preventDefault();
               onLike?.();
             }}
             variant='ghost'
+            size="sm"
+            color="secondary"
             icon={<Heart className={cn("w-[18px] h-[18px]", isLiked && "fill-primary text-primary")} />}
           >
             {likesCount}
@@ -85,6 +102,8 @@ const ThreadItem = ({
               onReply?.();
             }}
             variant='ghost'
+            size="sm"
+            color="secondary"
             icon={<MessageSquare className="w-[18px] h-[18px]" />}
           >
             {repliesCount}
@@ -95,6 +114,9 @@ const ThreadItem = ({
               onShare?.();
             }}
             variant='ghost'
+            size="sm"
+            color="secondary"
+            className="mr-auto"
             icon={<Share2 className="w-[18px] h-[18px]" />}
           >
             مشاركة
@@ -105,4 +127,4 @@ const ThreadItem = ({
   );
 };
 
-export default ThreadItem; 
+export default ThreadItem;
