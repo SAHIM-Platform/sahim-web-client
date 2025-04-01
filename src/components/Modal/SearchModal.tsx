@@ -32,12 +32,6 @@ function SearchModal({
 }: SearchModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    onSearch(query);
-  };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape") {
       e.preventDefault();
