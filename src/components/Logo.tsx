@@ -19,9 +19,8 @@ const Logo = ({ className, widthSize = 'default' }: LogoProps) => (
 	>
 		<Image
 			alt="SAHIM Login"
-			className="h-full w-full object-cover"
+			className="h-full w-full object-contain"
 			fill
-			objectFit='contain'
 			priority
 			quality={100}
 			src="/sahim-logo.png"

@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import Modal from "./Modal";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import SearchField from "../app/SearchField";
 import Loader from "../Loader";
 import ThreadItemMinimal from "../app/ThreadListing/ThreadItemMinimal";
@@ -10,7 +10,7 @@ import Divider from "../Divider";
 
 interface SearchResult {
   id: string;
-  title: string;
+  title?: string;
   content: string;
   category: string;
   repliesCount: number;
@@ -73,19 +73,17 @@ function SearchModal({
           ) : (
             <div className="flex flex-col gap-1">
               {searchResults.map((result, index) => (
-                <>
-                  <div key={result.id}>
-                    <ThreadItemMinimal
-                      id={result.id}
-                      title={result.title}
-                      repliesCount={result.repliesCount}
-                      timestamp={result.timestamp}
-                    />
-                  </div>
+                <Fragment key={result.id}>
+                  <ThreadItemMinimal
+                    id={result.id}
+                    title={result.title as string}
+                    repliesCount={result.repliesCount}
+                    timestamp={result.timestamp}
+                  />
                   {index < searchResults.length - 1 && (
                     <Divider label="" className="my-1" borderColor="gray-100" />
                   )}
-                </>
+                </Fragment>
               ))}
             </div>
           )}

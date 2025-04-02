@@ -3,6 +3,7 @@ import Divider from "../Divider";
 import { categories, discussionThreads } from "@/data/mock-api";
 import Link from "next/link";
 import ThreadItemMinimal from "./ThreadListing/ThreadItemMinimal";
+import { Fragment } from "react";
 
 function AppInfoSidebar() {
   // Get the latest 3 discussions
@@ -35,18 +36,17 @@ function AppInfoSidebar() {
           <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">آخر المناقشات</span>
           <div className="flex flex-col gap-1">
             {latestDiscussions.map((thread, index) => (
-              <>
+              <Fragment key={thread.id}>
                 <ThreadItemMinimal
-                  key={thread.id}
                   id={thread.id}
-                  title={thread.title}
+                  title={thread.title as string}
                   repliesCount={thread.repliesCount}
                   timestamp={thread.timestamp}
                 />
                 {index < latestDiscussions.length - 1 && (
                   <Divider label="" className="my-1" borderColor="gray-100" />
                 )}
-              </>
+              </Fragment>
             ))}
           </div>
         </div>

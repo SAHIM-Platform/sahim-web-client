@@ -25,7 +25,7 @@ const ThreadListing = ({
   const processedThreads = discussionThreads.filter(
     (thread) =>
       (!selectedCategory || thread.category === selectedCategory) &&
-      (!searchQuery || thread.title.includes(searchQuery))
+      (!searchQuery || (thread?.title && thread?.title.includes(searchQuery)))
   );
 
   return (
