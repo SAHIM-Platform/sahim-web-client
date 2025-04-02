@@ -5,9 +5,7 @@ import { cn } from "@/utils/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { AlertCircle, Check } from "lucide-react";
 
-interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>, VariantProps<typeof inputVariants> {
-  type?: string;
-  placeholder?: string;
+interface TextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'>, VariantProps<typeof textareaVariants> {
   className?: string;
   label?: string;
   error?: string;
@@ -19,7 +17,7 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
   optional?: boolean;
 }
 
-const inputVariants = cva(
+const textareaVariants = cva(
   [
     "inline-flex w-full font-medium select-none",
     "transition-all duration-200 ease-in-out",
@@ -49,10 +47,10 @@ const inputVariants = cva(
           "shadow-sm shadow-green-500/5",
         ].join(" "),
       },
-      inputSize: {
-        lg: "h-[46px] sm:h-12 px-4 sm:px-5 py-2 sm:py-3 text-xs sm:text-sm rounded-xl",
-        default: "h-[42px] sm:h-11 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg",
-        sm: "h-9 px-3 py-1.5 text-sm rounded-md",
+      textareaSize: {
+        lg: "h-[120px] sm:h-[150px] px-4 sm:px-5 py-2 sm:py-3 text-xs sm:text-sm rounded-xl",
+        default: "h-[100px] sm:h-[120px] px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg",
+        sm: "h-[80px] px-3 py-1.5 text-sm rounded-md",
       },
       fullWidth: {
         true: "w-full",
@@ -61,18 +59,16 @@ const inputVariants = cva(
     },
     defaultVariants: {
       variant: "primary",
-      inputSize: "default",
+      textareaSize: "default",
       fullWidth: true
     }
   }
 );
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ 
-  type = "text", 
-  placeholder, 
+const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({ 
   className,
   variant,
-  inputSize,
+  textareaSize,
   fullWidth,
   label,
   error,
@@ -113,20 +109,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({
             })}
           </div>
         )}
-        <input
+        <textarea
           ref={ref}
-          type={type}
           className={cn(
-            inputVariants({ 
+            textareaVariants({ 
               variant: error ? "error" : success ? "success" : variant, 
-              inputSize, 
+              textareaSize, 
               fullWidth 
             }),
             startIcon && "pr-10 sm:pr-11",
             (endIcon || showSuccessIcon || showErrorIcon) && "pl-10 sm:pl-11",
             className
           )}
-          placeholder={placeholder}
           aria-invalid={error ? "true" : undefined}
           aria-describedby={error ? `${props.id}-error` : helperText ? `${props.id}-helper` : undefined}
           required={required}
@@ -164,7 +158,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   );
 });
 
-Input.displayName = "Input";
+Textarea.displayName = "Textarea";
 
-export { Input, inputVariants };
-export default Input;
+export { Textarea, textareaVariants };
+export default Textarea; 
