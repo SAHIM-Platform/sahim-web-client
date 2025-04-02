@@ -15,3 +15,8 @@ export const departmentLabels: Record<Department, string> = {
   [Department.CND]: "هندسة شبكات",
   [Department.MRE]: "هندسة ميكاترونكس"
 };
+
+export interface Category {
+  id: string;
+  name: string;
+}
