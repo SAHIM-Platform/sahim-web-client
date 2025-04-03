@@ -6,6 +6,7 @@ import Button from "@/components/Button";
 import { Heart, MessageSquare, Share2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
 import Image from "next/image";
+import { CommentItemProps } from "../Comment/CommentItem";
 
 export interface ThreadItemProps {
   id: string;
@@ -25,6 +26,8 @@ export interface ThreadItemProps {
   onReply?: () => void;
   onShare?: () => void;
   className?: string;
+  showFullContent?: boolean;
+  comments?: CommentItemProps[];
 }
 
 const ThreadItem = ({
@@ -42,6 +45,7 @@ const ThreadItem = ({
   onReply,
   onShare,
   className,
+  showFullContent = false,
 }: ThreadItemProps) => {
   return (
     <Link
@@ -68,7 +72,11 @@ const ThreadItem = ({
               {title}
             </h3>
           )}
-          <Excerpt content={content} className="text-gray-600" />
+          {showFullContent ? (
+            <p className="text-xs sm:text-sm text-gray-600 leading-[2] sm:leading-[2] line-clamp-3">{content}</p>
+          ) : (
+            <Excerpt content={content} className="text-gray-600" />
+          )}
         </div>
 
         {thumbnail && (

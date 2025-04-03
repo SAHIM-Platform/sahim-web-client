@@ -47,7 +47,7 @@ export default function NewDiscussionPage() {
   const areAllRequiredFieldsFilled = formData.title && formData.category && formData.content;
 
   return (
-    <div className="max-w-3xl mx-auto p-4 sm:p-6">
+    <>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">إنشاء مناقشة جديدة</h1>
         <p className="mt-2 text-sm text-gray-600">
@@ -120,6 +120,6 @@ export default function NewDiscussionPage() {
           </Button>
         </div>
       </form>
-    </div>
+    </>
   );
 } 

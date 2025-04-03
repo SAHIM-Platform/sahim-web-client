@@ -49,8 +49,8 @@ const textareaVariants = cva(
       },
       textareaSize: {
         lg: "h-[120px] sm:h-[150px] px-4 sm:px-5 py-2 sm:py-3 text-xs sm:text-sm rounded-xl",
-        default: "h-[100px] sm:h-[120px] px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg",
-        sm: "h-[80px] px-3 py-1.5 text-sm rounded-md",
+        default: "h-[100px] sm:h-[120px] px-4 sm:px-5 py-2 sm:py-3 text-xs sm:text-sm rounded-xl",
+        sm: "px-4 sm:px-5 py-2 sm:py-3 text-xs sm:text-sm rounded-xl",
       },
       fullWidth: {
         true: "w-full",

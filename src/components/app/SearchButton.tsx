@@ -32,7 +32,7 @@ function SearchButton({
       await new Promise(resolve => setTimeout(resolve, 500));
       
       const results = discussionThreads.filter(thread => 
-        thread.title.toLowerCase().includes(query.toLowerCase()) ||
+        (thread.title && thread.title.toLowerCase().includes(query.toLowerCase())) ||
         thread.content.toLowerCase().includes(query.toLowerCase()) ||
         thread.category.toLowerCase().includes(query.toLowerCase())
       );
