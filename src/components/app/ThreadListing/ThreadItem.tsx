@@ -23,7 +23,6 @@ export interface ThreadItemProps {
   repliesCount: number;
   category: string;
   userVote?: "upvote" | "downvote" | null;
-  // onLike?: () => void;
   onUpvote?: () => void;
   onDownvote?: () => void;
   onReply?: () => void;
@@ -51,7 +50,7 @@ const ThreadItem = ({
   className,
   showFullContent = false,
 }: ThreadItemProps) => {
-  const [localVoteCount, setlocalVoteCount]= useState(votesCount);
+  const [localVoteCount, setlocalVoteCount]= useState(votesCount ?? 0);
   const [localUserVote, setlocalUserVote]= useState<"upvote" | "downvote" | null>(userVote ?? null);
   
   const handleUpvote = (e: React.MouseEvent) => {
@@ -128,7 +127,7 @@ const ThreadItem = ({
           variant='ghost'
           size="sm"
           color="secondary"
-          icon={<ArrowUp className={cn("w-[18px] h-[18px]", localUserVote === "upvote" && "fill-primary text-primary")}/>}
+          icon={<ArrowUp className={cn("w-[18px] h-[18px]", localUserVote === "upvote" && "text-primary")}/>}
           ></Button>
 
           <span className="text-sm m-1">{localVoteCount}</span>
@@ -138,7 +137,7 @@ const ThreadItem = ({
           variant='ghost'
           size="sm"
           color="secondary"
-          icon={<ArrowDown className={cn("w-[18px] h-[18px]", localUserVote === "downvote" && "fill-primary text-primary")}/>}
+          icon={<ArrowDown className={cn("w-[18px] h-[18px]", localUserVote === "downvote" && "text-primary")}/>}
           ></Button>
           <Button
             onClick={(e) => {
