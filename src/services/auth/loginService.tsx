@@ -1,10 +1,11 @@
-import { axiosPrivate } from "@/api/axios";
+import axios from '@/api/axios';
 import { AuthError, AuthResult, LoginCredentials } from "@/types/auth";
 import { AxiosError, isAxiosError } from "axios";
+import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 
 async function loginService(credentials: LoginCredentials): Promise<AuthResult> {
 	try {
-		const response = await axiosPrivate.post('/auth/signin', credentials);
+		const response = await axios.post('/auth/signin', credentials);
 		console.log('response ', response)
 		// there is accessToken? consider it success
 		if (response.data && response.data.accessToken) {
@@ -37,7 +38,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 				return {
 					success: false,
 					error: {
-						message: errorData.message || 'Invalid email or password',
+						message: errorData.message || ERROR_MESSAGES.login.INVALID_CREDENTIALS,
 						fields: Array.isArray(errorData.fields) ? errorData.fields : ['email', 'password'],
 						code: errorData.code || 'INVALID_CREDENTIALS'
 					}
@@ -49,7 +50,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 				return {
 					success: false,
 					error: {
-						message: '',
+						message: ERROR_MESSAGES.login.USER_NOT_FOUND,
 						fields: ['email'],
 						code: 'USER_NOT_FOUND'
 					}
@@ -63,7 +64,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 				return {
 					success: false,
 					error: {
-						message: errorData.message || 'Invalid input data',
+						message: errorData.message || ERROR_MESSAGES.login.VALIDATION_ERROR,
 						fields: errorData.fields || [errorData.field].filter(Boolean),
 						code: errorData.code || 'VALIDATION_ERROR'
 					}
@@ -74,7 +75,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 			return {
 				success: false,
 				error: {
-					message: 'Server error. Please try again later.',
+					message: ERROR_MESSAGES.login.SERVER_ERROR,
 					code: 'SERVER_ERROR'
 				}
 			};
@@ -84,7 +85,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 		return {
 			success: false,
 			error: {
-				message: 'An unexpected error occurred. Please try again.',
+				message: ERROR_MESSAGES.login.DEFAULT,
 				code: 'UNKNOWN_ERROR'
 			}
 		};

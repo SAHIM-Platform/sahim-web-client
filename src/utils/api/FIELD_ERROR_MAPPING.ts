@@ -1,8 +1,8 @@
 const FIELD_ERROR_MAPPING = {
     login: {
-      INVALID_CREDENTIALS: { email: " ", password: " " },
-      USER_NOT_FOUND: { email: " " },
-      DEFAULT: { email: " ", password: " " }
+      INVALID_CREDENTIALS: { email: "", password: "" },
+      USER_NOT_FOUND: { email: "" },
+      DEFAULT: { email: "", password: "" }
     },
 };
 
