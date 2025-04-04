@@ -38,6 +38,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
         <ThreadItem
           {...restThread}
           showFullContent={true}
+          votesCount={0}
         />
 
         <div className="bg-white rounded-xl border border-gray-200 p-4">

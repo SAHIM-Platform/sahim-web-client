@@ -1,9 +1,10 @@
 import { cn } from "@/utils/utils";
 import Link from "next/link";
+import { useState } from "react";
 import UserInfo from "../UserInfo";
 import Excerpt from "@/components/Excerpt";
 import Button from "@/components/Button";
-import { Heart, MessageSquare, Share2 } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageSquare, Share2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
 import Image from "next/image";
 import { CommentItemProps } from "../Comment/CommentItem";
@@ -18,11 +19,13 @@ export interface ThreadItemProps {
   content: string;
   thumbnail?: string;
   timestamp: string;
-  likesCount: number;
+  votesCount: number;
   repliesCount: number;
   category: string;
-  isLiked?: boolean;
-  onLike?: () => void;
+  userVote?: "upvote" | "downvote" | null;
+  // onLike?: () => void;
+  onUpvote?: () => void;
+  onDownvote?: () => void;
   onReply?: () => void;
   onShare?: () => void;
   className?: string;
@@ -37,16 +40,44 @@ const ThreadItem = ({
   content,
   thumbnail,
   timestamp,
-  likesCount,
+  votesCount,
   repliesCount,
   category,
-  isLiked,
-  onLike,
+  userVote,
+  onUpvote,
+  onDownvote,
   onReply,
   onShare,
   className,
   showFullContent = false,
 }: ThreadItemProps) => {
+  const [localVoteCount, setlocalVoteCount]= useState(votesCount);
+  const [localUserVote, setlocalUserVote]= useState<"upvote" | "downvote" | null>(userVote ?? null);
+  
+  const handleUpvote = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if(localUserVote === "upvote") {
+      setlocalUserVote(null);
+      setlocalVoteCount(prev => prev - 1);
+    } else {
+      setlocalUserVote("upvote");
+      setlocalVoteCount(prev => prev + (localUserVote === "downvote" ? 2 : 1) );
+    }
+    onUpvote?.();
+  };
+
+  const handleDownvote = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if(localUserVote === "downvote") {
+      setlocalUserVote(null);
+      setlocalVoteCount(prev => prev + 1);
+    } else {
+      setlocalUserVote("downvote");
+      setlocalVoteCount(prev => prev - (localUserVote === "upvote" ? 2 : 1) );
+    }
+    onDownvote?.();
+  };
+
   return (
     <Link
       href={`/discussions/${id}`}
@@ -93,17 +124,22 @@ const ThreadItem = ({
 
         <div className="flex items-center pt-4 border-t border-gray-200">
           <Button
-            onClick={(e) => {
-              e.preventDefault();
-              onLike?.();
-            }}
-            variant='ghost'
-            size="sm"
-            color="secondary"
-            icon={<Heart className={cn("w-[18px] h-[18px]", isLiked && "fill-primary text-primary")} />}
-          >
-            {likesCount}
-          </Button>
+          onClick={handleUpvote}
+          variant='ghost'
+          size="sm"
+          color="secondary"
+          icon={<ArrowUp className={cn("w-[18px] h-[18px]", localUserVote === "upvote" && "fill-primary text-primary")}/>}
+          ></Button>
+
+          <span className="text-sm m-1">{localVoteCount}</span>
+
+          <Button
+          onClick={handleDownvote}
+          variant='ghost'
+          size="sm"
+          color="secondary"
+          icon={<ArrowDown className={cn("w-[18px] h-[18px]", localUserVote === "downvote" && "fill-primary text-primary")}/>}
+          ></Button>
           <Button
             onClick={(e) => {
               e.preventDefault();
