@@ -1,3 +1,6 @@
+export * from './auth';
+export * from './form';
+
 export enum Department {
   IT = "IT",        // تقنية معلومات
   SE = "SE",       // هندسة برمجيات
@@ -19,4 +22,12 @@ export const departmentLabels: Record<Department, string> = {
 export interface Category {
   id: string;
   name: string;
+}
+
+export enum Level {
+  LEVEL_1 = 1,
+  LEVEL_2 = 2,
+  LEVEL_3 = 3,
+  LEVEL_4 = 4,
+  LEVEL_5 = 5,
 }
