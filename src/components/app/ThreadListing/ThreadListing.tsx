@@ -53,7 +53,6 @@ const ThreadListing = ({
             <ThreadItem
               key={index}
               {...thread}
-              onLike={() => onLike?.(thread.id)}
               onReply={() => onReply?.(thread.id)}
               onShare={() => onShare?.(thread.id)}
             />
