@@ -73,7 +73,7 @@ const ThreadItem = ({
             </h3>
           )}
           {showFullContent ? (
-            <p className="text-xs sm:text-sm text-gray-600 leading-[2] sm:leading-[2] line-clamp-3">{content}</p>
+            <p className="text-xs sm:text-sm text-gray-600 leading-[2] sm:leading-[2] ">{content}</p>
           ) : (
             <Excerpt content={content} className="text-gray-600" />
           )}
