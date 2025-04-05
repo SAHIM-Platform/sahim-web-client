@@ -7,6 +7,7 @@ interface UserInfoProps {
   photoAlt?: string;
   date?: string;
   children?: React.ReactNode;
+  hideDetailsOnSmallScreens?: boolean;
 }
 
 function UserInfo({
@@ -14,7 +15,8 @@ function UserInfo({
   photo,
   photoAlt,
   date,
-  children
+  children,
+  hideDetailsOnSmallScreens = false,
 }: UserInfoProps) {
   return (
     <div
@@ -27,11 +29,16 @@ function UserInfo({
         height={32}
         className="rounded-full ring-2 ring-white object-cover"
       />}
-      {(name || photoAlt) && <div className="flex flex-col items-start gap-1">
+      {(name || photoAlt) && 
+      <div className={`flex flex-col items-start gap-1 ${hideDetailsOnSmallScreens ? "hidden sm:block" : ""}`}>
         {name && <span className="text-[14px] font-semibold text-gray-700 leading-none">{name}</span>}
         {date && <DateBadge label={date} size="sm" />}
       </div>}
-      {children}
+      {children && (
+        <div className={hideDetailsOnSmallScreens? "hidden sm:block" : ""}>
+          {children}
+        </div>)
+      }
     </div>
   );
 }

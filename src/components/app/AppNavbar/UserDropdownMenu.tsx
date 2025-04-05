@@ -36,6 +36,7 @@ function UserDropdownMenu() {
         <UserInfo
           name={currentUser.name}
           photo={currentUser.avatar}
+          hideDetailsOnSmallScreens={true}
         >
           <ChevronDown className={cn(
             "w-4 h-4 text-gray-500 transition-transform duration-200",
