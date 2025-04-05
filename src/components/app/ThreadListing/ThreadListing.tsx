@@ -6,14 +6,12 @@ import ThreadListingHeader from "./ThreadListingHeader";
 import { useState } from "react";
 
 interface ThreadListingProps {
-  onLike?: (threadId: string) => void;
   onReply?: (threadId: string) => void;
   onShare?: (threadId: string) => void;
   emptyMessage?: string;
 }
 
 const ThreadListing = ({
-  onLike,
   onReply,
   onShare,
   emptyMessage = "لا توجد مناقشات حالياً"
