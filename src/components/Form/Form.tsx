@@ -20,6 +20,7 @@ interface FormProps {
   setErrors?: (errors: Record<string, string> | ((prev: Record<string, string>) => Record<string, string>)) => void;
   formType?: 'login' | 'signup';
   formAlertMessage?: string | null;
+  validateForm?: (values: Record<string, string>) => Record<string, string>;
 }
 
 function Form({
@@ -29,7 +30,8 @@ function Form({
   errors: externalErrors,
   setErrors: setExternalErrors,
   formType = 'login',
-  formAlertMessage
+  formAlertMessage,
+  validateForm = validateLoginForm
 }: FormProps) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [internalErrors, setInternalErrors] = useState<Record<string, string>>({});
@@ -69,14 +71,14 @@ function Form({
       return newValues;
     });
     if (touched[id] && errors[id]) {
-      const validationErrors = validateLoginForm({ ...values, [id]: value });
+      const validationErrors = validateForm({ ...values, [id]: value });
       setErrors(validationErrors);
     }
   };
 
   const handleBlur = (id: string) => {
     setTouched(prev => ({ ...prev, [id]: true }));
-    const validationErrors = validateLoginForm(values);
+    const validationErrors = validateForm(values);
     if (validationErrors[id]) {
       setErrors(prev => ({ ...prev, [id]: validationErrors[id] }));
     }
@@ -91,7 +93,7 @@ function Form({
     }), {});
     setTouched(allTouched);
 
-    const validationErrors = validateLoginForm(values);
+    const validationErrors = validateForm(values);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {

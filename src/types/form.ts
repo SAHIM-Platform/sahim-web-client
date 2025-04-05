@@ -1,28 +1,31 @@
 export interface FormField {
   id: string;
+  type: 'text' | 'email' | 'password' | 'select';
   label: string;
-  type: string;
-  required: boolean;
-  placeholder?: string;
+  required?: boolean;
   helperText?: string;
   autoComplete?: string;
+  placeholder: string;
   error?: string;
+  options?: Array<{
+    value: string;
+    label: string;
+  }>;
 }
 
 export interface FormTitle {
   text: string;
 }
 
+export interface FormButton {
+  text: string;
+}
+
 export interface FormData {
   title: FormTitle;
-  description?: string;
+  description: string;
+  submitButton: FormButton;
   fields: FormField[];
-  submitButton: {
-    text: string;
-    className?: string;
-  };
-  submitText?: string;
-  error?: string;
 }
 
 export interface ValidationErrorResponse {
