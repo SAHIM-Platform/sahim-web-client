@@ -14,7 +14,11 @@ const ERROR_MESSAGES = {
     },
     logout: {
         DEFAULT: 'حدث خطأ أثناء تسجيل الخروج',
-    }
+    },
+    thread: {
+        SERVER_ERROR: "نواجه صعوبات تقنية. يرجى المحاولة مرة أخرى لاحقاً",
+        DEFAULT: "حدث خطأ أثناء إنشاء المناقشة. يرجى المحاولة مرة أخرى",
+    },
 };
 
 export default ERROR_MESSAGES;
