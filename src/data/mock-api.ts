@@ -25,9 +25,9 @@ export const discussionThreads: ThreadItemProps[] = [
     },
     title: "مرحباً بالجميع! هل يمكننا مناقشة المشروع الجديد؟",
     timestamp: "منذ 5 دقائق",
-    likesCount: 12,
+    votesCount: 12,
     repliesCount: 3,
-    isLiked: false,
+    userVote: null,
     category: categories[3].name,
     content: `دعونا نبدأ مناقشة حول المشروع الجديد ونتبادل الأفكار والآراء لتحقيق أفضل النتائج. في هذه المناقشة، نود أن نناقش ما يلي:
     1. ما هو سبب بدء هذا المشروع؟
@@ -83,9 +83,9 @@ export const discussionThreads: ThreadItemProps[] = [
     title: "كيفية تحسين واجهة المستخدم في التطبيقات",
     thumbnail: "https://picsum.photos/id/48/600/400",
     timestamp: "منذ يومين",
-    likesCount: 8,
+    votesCount: 8,
     repliesCount: 5,
-    isLiked: false,
+    userVote: null,
     category: categories[1].name,
     content: "أريد معرفة الآراء والتجارب حول تحسين واجهة المستخدم لضمان تجربة أفضل للمستخدمين.",
     comments: [
@@ -122,9 +122,9 @@ export const discussionThreads: ThreadItemProps[] = [
     title: "أفضل الممارسات لتجربة المستخدم",
     thumbnail: "https://picsum.photos/id/7/600/400",
     timestamp: "منذ 3 أيام",
-    likesCount: 15,
+    votesCount: 15,
     repliesCount: 12,
-    isLiked: false,
+    userVote: null,
     category: categories[1].name,
     content: "شاركوني بالممارسات الجيدة التي تساهم في تحسين تجربة المستخدم وجعلها أكثر تفاعلية.",
     comments: [
@@ -160,9 +160,9 @@ export const discussionThreads: ThreadItemProps[] = [
     },
     title: "مناقشة حول تحسين أداء التطبيق",
     timestamp: "منذ 4 أيام",
-    likesCount: 10,
+    votesCount: 10,
     repliesCount: 7,
-    isLiked: false,
+    userVote: null,
     category: categories[2].name,
     content: "لنناقش الأساليب الفعالة في تحسين أداء التطبيق وتسريع استجابته للمستخدمين.",
     comments: [

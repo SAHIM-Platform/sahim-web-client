@@ -3,7 +3,7 @@
 import { useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/context/AuthProvider';
-import { AuthResult, LoginCredentials, User } from '@/types/auth';
+import { AuthResult, LoginCredentials } from '@/types/auth';
 import loginService from '@/services/auth/loginService';
 
 const useAuth = () => {

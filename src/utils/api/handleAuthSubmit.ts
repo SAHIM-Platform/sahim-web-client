@@ -1,9 +1,9 @@
-import { AuthResult } from "@/types/auth";
+import { AuthResult, LoginCredentials } from "@/types/auth";
 import { handleAuthError } from "./handleAuthError";
 
 export interface AuthSubmitConfig {
   values: Record<string, string>;
-  authFunction: (data: any) => Promise<AuthResult>;
+  authFunction: (data: LoginCredentials) => Promise<AuthResult>;
   setFieldErrors: (errors: Record<string, string>) => void;
   setGeneralError: (error: string | null) => void;
   setIsLoading: (isLoading: boolean) => void;

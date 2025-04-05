@@ -24,3 +24,10 @@ export interface FormData {
   submitText?: string;
   error?: string;
 }
+
+export interface ValidationErrorResponse {
+	message?: string;
+	fields?: string[];
+	field?: string;
+	code?: string;
+}

@@ -2,6 +2,7 @@ import axios from '@/api/axios';
 import { AuthError, AuthResult, LoginCredentials } from "@/types/auth";
 import { AxiosError, isAxiosError } from "axios";
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import { ValidationErrorResponse } from '@/types';
 
 async function loginService(credentials: LoginCredentials): Promise<AuthResult> {
 	try {
@@ -59,13 +60,13 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 
 			// Handle validation errors
 			if (axiosError.response?.status === 400) {
-				const errorData = axiosError.response.data as any;
+				const errorData = axiosError.response.data as ValidationErrorResponse;
 
 				return {
 					success: false,
 					error: {
 						message: errorData.message || ERROR_MESSAGES.login.VALIDATION_ERROR,
-						fields: errorData.fields || [errorData.field].filter(Boolean),
+						fields: errorData.fields || (errorData.field ? [errorData.field] : []),
 						code: errorData.code || 'VALIDATION_ERROR'
 					}
 				};
