@@ -10,8 +10,9 @@ export const handleSignupSubmit = async (
   setFormError: (error: string | null) => void,
   setIsLoading: (isLoading: boolean) => void,
 ): Promise<AuthResult | undefined> => {
-  // Log the raw values received
-  console.log('Raw signup values:', values);
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Raw signup values:', values);
+  }
 
   const signupData = {
     email: values.email.trim(),
@@ -20,13 +21,17 @@ export const handleSignupSubmit = async (
     name: values.name.trim(),
     academicNumber: parseInt(values.academicNumber, 10),
     department: values.department,
-    studyLevel: Number(values.studyLevel) // Ensure it's converted to a number
+    studyLevel: Number(values.studyLevel)
   };
 
   try {
-    console.log('Sending signup request to:', '/auth/signup');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Sending signup request to:', '/auth/signup');
+    }
     const response = await axiosInstance.post<AuthResult>('/auth/signup', signupData);
-    console.log('Signup response:', response.data);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Signup response:', response.data);
+    }
     
     if (response.data.success && response.data.data) {
       return response.data;
@@ -42,11 +47,13 @@ export const handleSignupSubmit = async (
       return response.data;
     }
   } catch (error) {
-    console.error('Signup error details:', {
-      status: (error as AxiosError<APIError>)?.response?.status,
-      data: (error as AxiosError<APIError>)?.response?.data,
-      error: (error as Error).message
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Signup error details:', {
+        status: (error as AxiosError<APIError>)?.response?.status,
+        data: (error as AxiosError<APIError>)?.response?.data,
+        error: (error as Error).message
+      });
+    }
 
     const errorMessage = (error as AxiosError<APIError>)?.response?.data?.message || ERROR_MESSAGES.signup.SERVER_ERROR;
     setFormError(errorMessage);
