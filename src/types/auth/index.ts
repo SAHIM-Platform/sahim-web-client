@@ -32,14 +32,24 @@ export interface AuthResponse {
   accessToken: string;
 }
 
+export interface LogoutResponse {
+  message: string;
+}
+
+export interface APIError {
+  message: string;
+  error: string;
+  statusCode: number;
+}
+
 export interface AuthError {
   message: string;
   fields?: string[];
   code?: string;
 }
 
-export interface AuthResult {
+export interface AuthResult<T = AuthResponse> {
   success: boolean;
-  data?: AuthResponse;
+  data?: T;
   error?: AuthError;
 }

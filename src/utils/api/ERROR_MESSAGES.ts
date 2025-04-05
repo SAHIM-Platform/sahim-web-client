@@ -6,6 +6,9 @@ const ERROR_MESSAGES = {
         SERVER_ERROR: "نواجه صعوبات تقنية. يرجى المحاولة مرة أخرى لاحقاً",
         DEFAULT: "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى"
     },
+    logout: {
+        DEFAULT: 'حدث خطأ أثناء تسجيل الخروج',
+    }
 };
 
 export default ERROR_MESSAGES;
