@@ -3,8 +3,10 @@
 import { useEffect } from 'react';
 import useAuth from './useAuth';
 import axiosInstance from '@/api/axios';
+import useRefreshToken from './useRefreshToken';
 
 const useAxios = () => {
+  const refresh = useRefreshToken();
   const { auth } = useAuth();
 
   useEffect(() => {
@@ -20,14 +22,23 @@ const useAxios = () => {
 
     const responseIntercept = axiosInstance.interceptors.response.use(
       response => response,
-      error => Promise.reject(error)
+      async error => {
+        const prevRequest = error?.config;
+        if (error?.response?.status === 401 && !prevRequest?.sent) {
+          prevRequest.sent = true;
+          const newAccessToken = await refresh();
+          prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+          return axiosInstance(prevRequest);
+        }
+        return Promise.reject(error);
+      }
     );
 
     return () => {
       axiosInstance.interceptors.request.eject(requestIntercept);
       axiosInstance.interceptors.response.eject(responseIntercept);
     };
-  }, [auth]);
+  }, [auth, refresh]);
 
   return axiosInstance;
 };
