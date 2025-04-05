@@ -1,33 +1,93 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, User, Settings, LogOut } from "lucide-react";
 import UserInfo from "../UserInfo";
 import { currentUser } from "@/data/mock-api";
 import useLogout from "@/hooks/useLogout";
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { cn } from "@/utils/utils";
+import Divider from "@/components/Divider";
 
 function UserDropdownMenu() {
   const { logout, error, isLoading } = useLogout();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleItemClick = () => {
+    setIsOpen(false);
+  };
 
   return (
-    <div className="relative space-x-6">
-      <UserInfo
-        name={currentUser.name}
-        photo={currentUser.avatar}
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 focus:outline-none"
       >
-        <ChevronDown className="w-4 h-4 text-gray-500" />
-        <div className="absolute top-full mt-2 w-48 bg-white shadow-lg rounded-md py-2">
-          <button
-            onClick={logout}
-            disabled={isLoading}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        <UserInfo
+          name={currentUser.name}
+          photo={currentUser.avatar}
+        >
+          <ChevronDown className={cn(
+            "w-4 h-4 text-gray-500 transition-transform duration-200",
+            isOpen && "rotate-180"
+          )} />
+        </UserInfo>
+      </button>
+
+      <div
+        className={cn(
+          "absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md transition-all duration-200 transform origin-top",
+          isOpen
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-95 pointer-events-none"
+        )}
+      >
+        <div>
+          <Link
+            href="/profile"
+            onClick={handleItemClick}
+            className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
           >
-            {isLoading ? "جاري تسجيل الخروج..." : "تسجيل الخروج"}
-          </button>
-          {error && (
-            <p className="px-4 py-2 text-sm text-red-600">{error}</p>
-          )}
+            <User className="w-4 h-4" />
+            الملف الشخصي
+          </Link>
+          <Link
+            href="/settings"
+            onClick={handleItemClick}
+            className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <Settings className="w-4 h-4" />
+            الإعدادات
+          </Link>
         </div>
-      </UserInfo>
+        <Divider label="" />
+        <button
+          onClick={() => {
+            handleItemClick();
+            logout();
+          }}
+          disabled={isLoading}
+          className="flex items-center gap-2 w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <LogOut className="w-4 h-4" />
+          {isLoading ? "جاري تسجيل الخروج..." : "تسجيل الخروج"}
+        </button>
+        {error && (
+          <p className="px-4 pb-2 text-xs text-red-600">{error}</p>
+        )}
+      </div>
     </div>
-  )
+  );
 }
 
 export default UserDropdownMenu;
