@@ -8,6 +8,7 @@ import { ArrowUp, ArrowDown, MessageSquare, Share2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
 import Image from "next/image";
 import { CommentItemProps } from "../Comment/CommentItem";
+import BookmarkToggle from "@/components/BookmarkToggle";
 
 export interface ThreadItemProps {
   id: string;
@@ -164,6 +165,7 @@ const ThreadItem = ({
           >
             مشاركة
           </Button>
+          <BookmarkToggle/>
         </div>
       </div>
     </Link>
