@@ -17,56 +17,56 @@ export const validateSignupForm = (values: Partial<SignupFormData>) => {
   // Name validation
   if (!values.name?.trim()) {
     errors.name = "الاسم مطلوب";
-  } else if (values.name.length < 3){
-    errors.name = "الاسم يجب ان 3 أحرف على الأقل";
-  } else if (values.name.length > 100){
-    errors.name = "الاسم يجب ان لا يتجاوز 100 حرف";
+  } else if (values.name.length < 3) {
+    errors.name = "يجب أن يحتوي الاسم على 3 أحرف على الأقل";
+  } else if (values.name.length > 100) {
+    errors.name = "يجب أن لا يتجاوز الاسم 100 حرف";
   }
 
   // Academic number validation
   if (!values.academicNumber?.trim()) {
     errors.academicNumber = "الرقم الأكاديمي مطلوب";
   } else if (values.academicNumber.length !== 13) {
-    errors.academicNumber = "الرقم الأكاديمي يجب أن يتكون من 13 رقم"
+    errors.academicNumber = "يجب أن يتكون الرقم الأكاديمي من 13 رقم";
   } else if (!/^\d+$/.test(values.academicNumber)) {
-    errors.academicNumber = "الرقم الأكاديمي يجب أن يتكون من أرقام صحيحة فقط";
+    errors.academicNumber = "يجب أن يحتوي الرقم الأكاديمي على أرقام فقط";
   }
 
   // Email validation
   if (!values.email?.trim()) {
     errors.email = "البريد الإلكتروني مطلوب";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-    errors.email = "البريد الإلكتروني غير صالح";
-  } else if (values.email.length > 255){
-    errors.email = "البريد الإلكتروني يجب ان لا يتجاوز 255 حرف";
+    errors.email = "يرجى إدخال بريد إلكتروني صالح";
+  } else if (values.email.length > 255) {
+    errors.email = "يجب أن لا يتجاوز البريد الإلكتروني 255 حرف";
   }
 
   // Username validation
   if (!values.username?.trim()) {
     errors.username = "اسم المستخدم مطلوب";
   } else if (values.username.length < 3) {
-    errors.username = "اسم المستخدم يجب أن يكون 3 أحرف على الأقل";
-  } else if (values.username.length > 50){
-    errors.username = "اسم المستخدم يجب ان لا يتجاوز 50 حرف";
-  } else if(!/^[a-zA-Z0-9_-]+$/.test(values.username)){
-    errors.username = "اسم المستخدم يمكن أن يحتوي على حروف إنجليزية، أرقام، شرطات سفلية _ ، وشرطات فقط";
+    errors.username = "يجب أن يحتوي اسم المستخدم على 3 أحرف على الأقل";
+  } else if (values.username.length > 50) {
+    errors.username = "يجب أن لا يتجاوز اسم المستخدم 50 حرف";
+  } else if (!/^[a-zA-Z0-9_-]+$/.test(values.username)) {
+    errors.username = "يمكن أن يحتوي اسم المستخدم على حروف إنجليزية وأرقام وشرطات (_-) فقط";
   }
 
   // Password validation
   if (!values.password?.trim()) {
     errors.password = "كلمة المرور مطلوبة";
   } else if (values.password.length < 8) {
-    errors.password = "كلمة المرور يجب أن تكون 8 أحرف على الأقل";
-  } else if (values.password.length > 72){
-    errors.password = "كلمة المرور يجب ان لا يتجاوز 72 حرف";
-  } else if (!/[A-Z]/.test(values.password)){
-    errors.password = "كلمة المرور يجب ان تحتوى حرف واحد كبير على الأقل";
-  } else if (!/[a-z]/.test(values.password)){
-    errors.password = "كلمة المرور يجب ان تحتوى حرف واحد صغير على الأقل";
-  } else if (!/[0-9]/.test(values.password)){
-    errors.password = "كلمة المرور يجب ان تحتوى على رقم رقم واحد على الأقل";
-  } else if(!/[@$!%*?&]/.test(values.password)){
-    errors.password = "(@$!%*?&)كلمة المرور يجب ان تحتوى على رموز خاصة";
+    errors.password = "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل";
+  } else if (values.password.length > 72) {
+    errors.password = "يجب أن لا تتجاوز كلمة المرور 72 حرف";
+  } else if (!/[A-Z]/.test(values.password)) {
+    errors.password = "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل";
+  } else if (!/[a-z]/.test(values.password)) {
+    errors.password = "يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل";
+  } else if (!/[0-9]/.test(values.password)) {
+    errors.password = "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل";
+  } else if (!/[@$!%*?&]/.test(values.password)) {
+    errors.password = "يجب أن تحتوي كلمة المرور على رمز خاص واحد على الأقل (@$!%*?&)";
   }
 
   // Confirm password validation
@@ -79,8 +79,8 @@ export const validateSignupForm = (values: Partial<SignupFormData>) => {
   // Department validation
   if (!values.department) {
     errors.department = "القسم مطلوب";
-  } else if(!(values.department in Department)){
-    errors.department = "يرجى إدخال القسم بشكل صحيح ويتطابق مع القيم المتاحة";
+  } else if (!(values.department in Department)) {
+    errors.department = "يرجى اختيار قسم صالح من القائمة";
   }
 
   // Study level validation
@@ -89,7 +89,7 @@ export const validateSignupForm = (values: Partial<SignupFormData>) => {
   } else {
     const level = Number(values.studyLevel);
     if (isNaN(level) || level < 1 || level > 5) {
-      errors.studyLevel = "المستوى الدراسي يجب أن يكون رقماً بين 1 و 5";
+      errors.studyLevel = "يرجى اختيار مستوى دراسي صالح (1-5)";
     }
   }
 
