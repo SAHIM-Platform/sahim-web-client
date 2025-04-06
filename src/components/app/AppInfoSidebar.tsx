@@ -56,12 +56,10 @@ function SidebarContent() {
         const result = await fetchThreads();
         if (result.success && result.data) {
           const threads = result.data.data;
-          if (Array.isArray(threads)) {
-            const sortedThreads = threads
-              .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-              .slice(0, 3);
-            setLatestDiscussions(sortedThreads);
-          }
+          const sortedThreads = threads
+            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+            .slice(0, 3);
+          setLatestDiscussions(sortedThreads);
         }
       } catch (error) {
         console.error('Error loading latest discussions:', error);

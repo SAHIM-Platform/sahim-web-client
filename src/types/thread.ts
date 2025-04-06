@@ -50,12 +50,11 @@ export type ThreadMinimal = {
 };
 
 export interface ThreadResponse {
-  data: Thread | Thread[];
-  meta?: {
+  data: Thread[];
+  meta: {
     total: number;
     page: number;
     limit: number;
-    totalPages: number;
   };
 }
 
