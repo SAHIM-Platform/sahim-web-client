@@ -9,6 +9,7 @@ import Button from "@/components/Button";
 import { ArrowUp, ArrowDown, MessageSquare, Share2, Loader2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
 import { CommentItemProps } from "../Comment/CommentItem";
+import BookmarkToggle from "@/components/BookmarkToggle";
 import { voteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
 import { Thread } from "@/types/thread";
@@ -256,6 +257,7 @@ const ThreadItem = ({
           >
             مشاركة
           </Button>
+          <BookmarkToggle/>
         </div>
       </div>
     </Link>
