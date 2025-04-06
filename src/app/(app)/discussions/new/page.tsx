@@ -11,10 +11,15 @@ import { categories } from "@/data/mock-api";
 import { Category } from "@/types";
 import ThumbnailPreview from "@/app/ThumbnailPreview";
 import { useImageValidation } from "@/hooks/useImageValidation";
+import useAxios from "@/hooks/useAxios";
+import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ErrorAlert from "@/components/Form/ErrorAlert";
 
 export default function NewDiscussionPage() {
   const router = useRouter();
+  const axios = useAxios();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string>("");
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -25,12 +30,31 @@ export default function NewDiscussionPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     setIsSubmitting(true);
 
-    // simulate API call and redirect
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const newDiscussionId = 1;
-    router.push(`/discussions/${newDiscussionId}`);
+    const payload = {
+      title: formData.title,
+      content: formData.content,
+      category_id: parseInt(formData.category), // Convert to number
+    };
+
+    try {
+
+      console.log(payload);
+      const response = await axios.post("/threads", payload);
+
+      router.push(`/discussions/${response.data.thread_id}`);
+    } catch (error: any) {
+      if (error.response?.status === 500) {
+        setError(ERROR_MESSAGES.thread.SERVER_ERROR);
+      } else {
+        setError(ERROR_MESSAGES.thread.DEFAULT);
+      }
+      console.error("Error creating thread:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
@@ -108,6 +132,8 @@ export default function NewDiscussionPage() {
             />
           )}
         </div>
+
+        {error && <ErrorAlert message={error} />}
 
         <div className="flex justify-end">
           <Button
