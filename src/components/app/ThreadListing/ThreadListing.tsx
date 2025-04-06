@@ -37,7 +37,7 @@ const ThreadListing = ({
       const result = await fetchThreads();
       
       if (result.success && result.data) {
-        setThreads(result.data.data);
+        setThreads(Array.isArray(result.data.data) ? result.data.data : [result.data.data]);
       } else {
         const errorMessage = result.error?.message || 'حدث خطأ أثناء تحميل المناقشات';
         setError(errorMessage);
