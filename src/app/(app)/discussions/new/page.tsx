@@ -40,9 +40,9 @@ export default function NewDiscussionPage() {
     };
 
     try {
-      
+
       console.log(payload);
-      const response = await axios.post("/threads",  payload);
+      const response = await axios.post("/threads", payload);
 
       router.push(`/discussions/${response.data.thread_id}`);
     } catch (error: any) {
@@ -133,6 +133,8 @@ export default function NewDiscussionPage() {
           )}
         </div>
 
+        {error && <ErrorAlert message={error} />}
+
         <div className="flex justify-end">
           <Button
             type="submit"
@@ -143,7 +145,6 @@ export default function NewDiscussionPage() {
             إنشاء المناقشة
           </Button>
         </div>
-          {error && <ErrorAlert message={error}/>}
       </form>
     </>
   );
