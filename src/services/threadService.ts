@@ -57,15 +57,15 @@ export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Pro
       }
       
       if (axiosError.response?.status === 404) {
-        throw new Error('لم يتم العثور على المنشور');
+        throw new Error(ERROR_MESSAGES.thread.NOT_FOUND);
       }
       
       if (axiosError.response?.status === 400) {
-        throw new Error('طلب غير صالح');
+        throw new Error(ERROR_MESSAGES.thread.VALIDATION_ERROR);
       }
     }
     
-    throw new Error('حدث خطأ أثناء التصويت');
+    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
   }
 }
 
