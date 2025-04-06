@@ -9,11 +9,11 @@ export const currentUser = {
 export const unreadNotifications = 8;
 
 export const categories = [
-  { id: "tech", name: "التقنية" },
-  { id: "design", name: "التصميم" },
-  { id: "development", name: "البرمجة" },
-  { id: "ai", name: "الذكاء الاصطناعي" },
-  { id: "business", name: "الأعمال" },
+  { id: "1", name: "التقنية" },
+  { id: "2", name: "التصميم" },
+  { id: "3", name: "البرمجة" },
+  { id: "4", name: "الذكاء الاصطناعي" },
+  { id: "5", name: "الأعمال" },
 ];
 
 export const discussionThreads: ThreadItemProps[] = [
