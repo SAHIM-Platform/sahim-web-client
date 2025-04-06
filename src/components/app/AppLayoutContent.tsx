@@ -13,6 +13,8 @@ export default function AppLayoutContent({
   children: React.ReactNode;
 }>) {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isMenuSidebarOpen, setIsMenuSidebarOpen] = useState(false);
+  const [isInfoSidebarOpen, setIsInfoSidebarOpen] = useState(false);
 
   useSearchShortcuts(isSearchFocused, setIsSearchFocused);
 
@@ -21,11 +23,19 @@ export default function AppLayoutContent({
       <AppNavbar
         isSearchFocused={isSearchFocused}
         setIsSearchFocused={setIsSearchFocused}
+        onToggleMenuSidebar={() => setIsMenuSidebarOpen(prev => !prev)}
+        onToggleInfoSidebar={() => setIsInfoSidebarOpen(prev => !prev)}
       />
 
-      <AppMenuSidebar />
+      <AppMenuSidebar
+        isOpen={isMenuSidebarOpen}
+        onClose={() => setIsMenuSidebarOpen(false)}
+      />
 
-      <AppInfoSidebar />
+      <AppInfoSidebar
+        isOpen={isInfoSidebarOpen}
+        onClose={() => setIsInfoSidebarOpen(false)}
+      />
 
       <div className="lg:pr-[280px] xl:pl-[320px]">
         <main className="pb-24 pt-36 min-h-screen h-full">
