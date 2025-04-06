@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm';
 import UserInfo from "../UserInfo";
 import Excerpt from "@/components/Excerpt";
 import Button from "@/components/Button";
-import { ArrowUp, ArrowDown, MessageSquare, Share2, Loader2 } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageSquare, Share2, Loader2, Ellipsis } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
 import { CommentItemProps } from "../Comment/CommentItem";
 import BookmarkToggle from "@/components/BookmarkToggle";
@@ -44,7 +44,7 @@ const ThreadItem = ({
   // Use refs to store the initial values
   const initialVoteCount = useRef(votes.score ?? 0);
   const initialUserVote = useRef(votes.user_vote);
-  
+
   // State for current values
   const [localVoteCount, setLocalVoteCount] = useState(initialVoteCount.current);
   const [localUserVote, setLocalUserVote] = useState<"UP" | "DOWN" | null>(initialUserVote.current ?? null);
@@ -61,12 +61,12 @@ const ThreadItem = ({
 
   const handleVote = useCallback(async (voteType: "UP" | "DOWN", e: React.MouseEvent) => {
     e.preventDefault();
-    
+
     // Prevent rapid voting (debounce)
     const now = Date.now();
     if (now - lastVoteTime.current < 500) return;
     lastVoteTime.current = now;
-    
+
     if (isVoting) return;
 
     const previousVote = localUserVote;
@@ -109,7 +109,7 @@ const ThreadItem = ({
       // Revert to previous state
       setLocalUserVote(previousVote);
       setLocalVoteCount(previousCount);
-      
+
       // Show error message
       if (error instanceof Error) {
         toast.error(error.message);
@@ -135,8 +135,10 @@ const ThreadItem = ({
             name={author.name}
             date={created_at}
           />
-
-          <CategoryBadge name={category.name} />
+          <div className="flex items-start gap-2">
+            <CategoryBadge name={category.name} />
+            <Ellipsis className="w-7 h-7" />
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -205,7 +207,7 @@ const ThreadItem = ({
             size="sm"
             color="secondary"
             disabled={isVoting}
-            icon={isVoting ? <Loader2 className="w-[18px] h-[18px] animate-spin" /> : 
+            icon={isVoting ? <Loader2 className="w-[18px] h-[18px] animate-spin" /> :
               <ArrowUp className={cn(
                 "w-[18px] h-[18px] transition-colors duration-200",
                 localUserVote === "UP" && "text-primary",
@@ -257,7 +259,7 @@ const ThreadItem = ({
           >
             مشاركة
           </Button>
-          <BookmarkToggle/>
+          <BookmarkToggle />
         </div>
       </div>
     </Link>
