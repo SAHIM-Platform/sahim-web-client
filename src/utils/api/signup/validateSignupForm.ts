@@ -26,9 +26,9 @@ export const validateSignupForm = (values: Partial<SignupFormData>) => {
   // Academic number validation
   if (!values.academicNumber?.trim()) {
     errors.academicNumber = "الرقم الأكاديمي مطلوب";
-  } else if (values.academicNumber.length != 13){
+  } else if (values.academicNumber.length !== 13) {
     errors.academicNumber = "الرقم الأكاديمي يجب أن يتكون من 13 رقم"
-  } else if (!/^\d[0-9]$/.test(values.academicNumber)) {
+  } else if (!/^\d+$/.test(values.academicNumber)) {
     errors.academicNumber = "الرقم الأكاديمي يجب أن يتكون من أرقام صحيحة فقط";
   }
 
@@ -38,7 +38,7 @@ export const validateSignupForm = (values: Partial<SignupFormData>) => {
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
     errors.email = "البريد الإلكتروني غير صالح";
   } else if (values.email.length > 255){
-    errors.name = "البريد الإلكتروني يجب ان لا يتجاوز 255 حرف";
+    errors.email = "البريد الإلكتروني يجب ان لا يتجاوز 255 حرف";
   }
 
   // Username validation
@@ -86,8 +86,11 @@ export const validateSignupForm = (values: Partial<SignupFormData>) => {
   // Study level validation
   if (!values.studyLevel) {
     errors.studyLevel = "المستوى الدراسي مطلوب";
-  } else if (!(values.studyLevel in Level)){
-    errors.studyLevel = "يجب ان يكون المستوى بين 1-5";
+  } else {
+    const level = Number(values.studyLevel);
+    if (isNaN(level) || level < 1 || level > 5) {
+      errors.studyLevel = "المستوى الدراسي يجب أن يكون رقماً بين 1 و 5";
+    }
   }
 
   return errors;
