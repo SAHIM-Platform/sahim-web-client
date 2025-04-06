@@ -46,15 +46,17 @@ function SearchButton({
   return (
     <div className={cn(
       'flex-1',
-      fullWidth ? 'w-full' : 'max-w-xl min-w-[80px] sm:min-w-[240px] md:min-w-[400px]'
+      fullWidth ? 'w-full' : 'max-w-xl min-w-[24px] sm:min-w-[240px] md:min-w-[300px] lg:min-w-[400px]'
     )}>
       <button
         onClick={() => setIsSearchFocused(true)}
         className={cn(
-          "bg-white w-14 sm:w-56 md:w-full h-10 flex items-center gap-3 px-4 rounded-lg border justify-center",
-          "hover:bg-gray-100/80 transition-colors",
+          "flex items-center gap-3 justify-center",
+          "hover:text-primary transition-colors",
           "text-gray-500",
-          isSearchFocused ? "border-primary" : "border-gray-200"
+          "sm:bg-white sm:px-4 sm:h-10 sm:rounded-lg sm:border",
+          isSearchFocused ? "sm:border-primary" : "sm:border-gray-200",
+          "w-6 sm:w-56 md:w-full"
         )}
       >
         <Search className="w-5 h-5" />
