@@ -75,10 +75,10 @@ function SearchModal({
               {searchResults.map((result, index) => (
                 <Fragment key={result.id}>
                   <ThreadItemMinimal
-                    id={result.id}
+                    thread_id={parseInt(result.id)}
                     title={result.title as string}
-                    repliesCount={result.repliesCount}
-                    timestamp={result.timestamp}
+                    commentsCount={result.repliesCount}
+                    created_at={result.timestamp}
                   />
                   {index < searchResults.length - 1 && (
                     <Divider label="" className="my-1" borderColor="gray-100" />

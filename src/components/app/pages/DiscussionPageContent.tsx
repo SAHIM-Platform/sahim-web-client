@@ -8,6 +8,7 @@ import Textarea from "@/components/Textarea";
 import Button from "@/components/Button";
 import { useState, ChangeEvent } from "react";
 import CommentListing from "@/components/app/Comment/CommentListing";
+import { Thread } from "@/types/thread";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const [comment, setComment] = useState("");
@@ -22,7 +23,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     setComment(e.target.value);
   };
 
-  const thread = discussionThreads.find(t => t.id === discussionId);
+  const thread = discussionThreads.find(t => t.thread_id === parseInt(discussionId));
 
   if (!thread) {
     notFound();
@@ -63,8 +64,8 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
       </div>
 
       <SimilarThreads
-        threadPageId={discussionId}
-        threads={discussionThreads}
+        threadPageId={parseInt(discussionId)}
+        threads={discussionThreads as unknown as Thread[]}
       />
     </>
   );

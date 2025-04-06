@@ -12,6 +12,15 @@ interface SearchButtonProps {
   fullWidth?: boolean;
 }
 
+interface SearchResult {
+  id: string;
+  title?: string;
+  content: string;
+  category: string;
+  repliesCount: number;
+  timestamp: string;
+}
+
 function SearchButton({
   isSearchFocused,
   setIsSearchFocused,
@@ -19,7 +28,7 @@ function SearchButton({
   fullWidth
 }: SearchButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [searchResults, setSearchResults] = useState<typeof discussionThreads>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) {
@@ -34,10 +43,19 @@ function SearchButton({
       const results = discussionThreads.filter(thread => 
         (thread.title && thread.title.toLowerCase().includes(query.toLowerCase())) ||
         thread.content.toLowerCase().includes(query.toLowerCase()) ||
-        thread.category.toLowerCase().includes(query.toLowerCase())
+        thread.category.name.toLowerCase().includes(query.toLowerCase())
       );
       
-      setSearchResults(results);
+      const mappedResults = results.map(thread => ({
+        id: thread.thread_id.toString(),
+        title: thread.title,
+        content: thread.content,
+        category: thread.category.name,
+        repliesCount: thread._count.comments,
+        timestamp: thread.created_at
+      }));
+      
+      setSearchResults(mappedResults);
     } finally {
       setIsLoading(false);
     }

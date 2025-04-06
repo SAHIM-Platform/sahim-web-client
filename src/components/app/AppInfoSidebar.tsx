@@ -2,11 +2,13 @@
 
 import { Hash, X } from "lucide-react";
 import Divider from "../Divider";
-import { categories, discussionThreads } from "@/data/mock-api";
+import { categories } from "@/data/mock-api";
 import Link from "next/link";
 import ThreadItemMinimal from "./ThreadListing/ThreadItemMinimal";
-import { Fragment } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { cn } from "@/utils/utils";
+import { fetchThreads } from "@/services/threadService";
+import { Thread } from "@/types/thread";
 
 interface AppInfoSidebarProps {
   isOpen: boolean;
@@ -46,9 +48,26 @@ function AppInfoSidebar({ isOpen, onClose }: AppInfoSidebarProps) {
 }
 
 function SidebarContent() {
-  const latestDiscussions = discussionThreads
-    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-    .slice(0, 3);
+  const [latestDiscussions, setLatestDiscussions] = useState<Thread[]>([]);
+
+  useEffect(() => {
+    const loadThreads = async () => {
+      try {
+        const result = await fetchThreads();
+        if (result.success && result.data) {
+          const threads = result.data.data;
+          const sortedThreads = threads
+            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+            .slice(0, 3);
+          setLatestDiscussions(sortedThreads);
+        }
+      } catch (error) {
+        console.error('Error loading latest discussions:', error);
+      }
+    };
+
+    loadThreads();
+  }, []);
 
   return (
     <div className="pt-24 pb-12 px-4 flex flex-col gap-10">
@@ -74,12 +93,12 @@ function SidebarContent() {
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">آخر المناقشات</span>
         <div className="flex flex-col gap-1">
           {latestDiscussions.map((thread, index) => (
-            <Fragment key={thread.id}>
+            <Fragment key={thread.thread_id}>
               <ThreadItemMinimal
-                id={thread.id}
-                title={thread.title as string}
-                repliesCount={thread.repliesCount}
-                timestamp={thread.timestamp}
+                thread_id={thread.thread_id}
+                title={thread.title}
+                commentsCount={thread._count.comments}
+                created_at={thread.created_at}
               />
               {index < latestDiscussions.length - 1 && (
                 <Divider label="" className="my-1" borderColor="gray-100" />
