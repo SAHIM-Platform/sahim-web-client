@@ -51,7 +51,7 @@ function AppNavbar({
             href={routesData[1].path}
             variant='primary'
             size='sm'
-            icon={<MessageSquare className="w-4 h-4" />}
+            icon={<MessageSquare className="w-4 h-4 hidden md:block" />}
           >
             ابدأ مناقشة
           </Button>
