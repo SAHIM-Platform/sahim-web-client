@@ -1,32 +1,22 @@
 import { cn } from "@/utils/utils";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import UserInfo from "../UserInfo";
 import Excerpt from "@/components/Excerpt";
 import Button from "@/components/Button";
-import { ArrowUp, ArrowDown, MessageSquare, Share2 } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageSquare, Share2, Loader2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
-import Image from "next/image";
 import { CommentItemProps } from "../Comment/CommentItem";
 import { voteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
+import { Thread } from "@/types/thread";
 
-export interface ThreadItemProps {
-  id: string;
+export interface ThreadItemProps extends Omit<Thread, 'title'> {
   title?: string;
-  author: {
-    name: string;
-    avatar: string;
-  };
-  content: string;
-  thumbnail?: string;
-  timestamp: string;
-  votesCount: number;
-  repliesCount: number;
-  category: string;
-  userVote?: "UP" | "DOWN" | null;
+  onUpvote?: () => void;
+  onDownvote?: () => void;
   onReply?: () => void;
   onShare?: () => void;
   className?: string;
@@ -35,63 +25,104 @@ export interface ThreadItemProps {
 }
 
 const ThreadItem = ({
-  id,
+  thread_id,
   title,
   author,
   content,
-  thumbnail,
-  timestamp,
-  votesCount,
-  repliesCount,
+  created_at,
   category,
-  userVote: initialUserVote,
+  votes,
+  _count,
+  onUpvote,
+  onDownvote,
   onReply,
   onShare,
   className,
   showFullContent = false,
 }: ThreadItemProps) => {
-  const [localVoteCount, setLocalVoteCount] = useState(votesCount);
-  const [localUserVote, setLocalUserVote] = useState<"UP" | "DOWN" | null>(initialUserVote ?? null);
-  const [isVoting, setIsVoting] = useState(false);
+  // Use refs to store the initial values
+  const initialVoteCount = useRef(votes.score ?? 0);
+  const initialUserVote = useRef(votes.user_vote);
   
-  const handleVote = async (voteType: "UP" | "DOWN", e: React.MouseEvent) => {
+  // State for current values
+  const [localVoteCount, setLocalVoteCount] = useState(initialVoteCount.current);
+  const [localUserVote, setLocalUserVote] = useState<"UP" | "DOWN" | null>(initialUserVote.current ?? null);
+  const [isVoting, setIsVoting] = useState(false);
+  const lastVoteTime = useRef<number>(0);
+
+  // Update initial values when props change
+  useEffect(() => {
+    initialVoteCount.current = votes.score ?? 0;
+    initialUserVote.current = votes.user_vote;
+    setLocalVoteCount(votes.score ?? 0);
+    setLocalUserVote(votes.user_vote ?? null);
+  }, [votes.score, votes.user_vote]);
+
+  const handleVote = useCallback(async (voteType: "UP" | "DOWN", e: React.MouseEvent) => {
     e.preventDefault();
+    
+    // Prevent rapid voting (debounce)
+    const now = Date.now();
+    if (now - lastVoteTime.current < 500) return;
+    lastVoteTime.current = now;
+    
     if (isVoting) return;
 
     const previousVote = localUserVote;
     const previousCount = localVoteCount;
 
-    // Optimistic update
-    if (localUserVote === voteType) {
-      setLocalUserVote(null);
-      setLocalVoteCount(prev => prev + (voteType === "UP" ? -1 : 1));
-    } else {
-      setLocalUserVote(voteType);
-      setLocalVoteCount(prev => 
-        prev + (voteType === "UP" ? 1 : -1) + (previousVote ? (previousVote === "UP" ? -1 : 1) : 0)
-      );
-    }
-
     try {
       setIsVoting(true);
-      const response = await voteThread(id, voteType);
-      
-      // Update with actual server response
+
+      // Optimistic update
+      if (localUserVote === voteType) {
+        setLocalUserVote(null);
+        setLocalVoteCount(prev => prev + (voteType === "UP" ? -1 : 1));
+      } else {
+        setLocalUserVote(voteType);
+        setLocalVoteCount(prev =>
+          prev + (voteType === "UP" ? 1 : -1) + (previousVote ? (previousVote === "UP" ? -1 : 1) : 0)
+        );
+      }
+
+      // Make API call
+      const response = await voteThread(thread_id, voteType);
+
+      // Verify the response is valid
+      if (!response.success) {
+        throw new Error('Vote update failed');
+      }
+
+      // Update with server response
       setLocalVoteCount(response.votesCount);
       setLocalUserVote(response.userVote);
+
+      // Update initial values to match server state
+      initialVoteCount.current = response.votesCount;
+      initialUserVote.current = response.userVote;
+
+      // Call parent handlers
+      if (voteType === "UP" && onUpvote) onUpvote();
+      if (voteType === "DOWN" && onDownvote) onDownvote();
     } catch (error) {
-      // Revert on error
+      // Revert to previous state
       setLocalUserVote(previousVote);
       setLocalVoteCount(previousCount);
-      toast.error('حدث خطأ أثناء التصويت. حاول مرة أخرى.');
+      
+      // Show error message
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('حدث خطأ أثناء التصويت. حاول مرة أخرى.');
+      }
     } finally {
       setIsVoting(false);
     }
-  };
+  }, [thread_id, localUserVote, localVoteCount, isVoting, onUpvote, onDownvote]);
 
   return (
     <Link
-      href={`/discussions/${id}`}
+      href={`/discussions/${thread_id}`}
       className={cn(
         "block bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200",
         className
@@ -100,12 +131,11 @@ const ThreadItem = ({
       <div className="px-6 pt-6 pb-3 space-y-6">
         <div className="flex items-center justify-between gap-4">
           <UserInfo
-            photo={author.avatar}
             name={author.name}
-            date={timestamp}
+            date={created_at}
           />
 
-          <CategoryBadge name={category} />
+          <CategoryBadge name={category.name} />
         </div>
 
         <div className="space-y-3">
@@ -116,7 +146,7 @@ const ThreadItem = ({
           )}
           {showFullContent ? (
             <div className="text-xs sm:text-sm text-gray-600 leading-[2] sm:leading-[2] ">
-              <ReactMarkdown 
+              <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 children={content}
                 components={{
@@ -162,23 +192,10 @@ const ThreadItem = ({
                 }}
               />
             </div>
-            
           ) : (
             <Excerpt content={content} className="text-gray-600" />
           )}
         </div>
-
-        {thumbnail && (
-          <div className="relative w-full aspect-[6/4] rounded-lg overflow-hidden bg-gray-50">
-            <Image
-              src={thumbnail}
-              alt={title || 'Discussion thumbnail'}
-              fill
-              className="object-cover"
-              loading="lazy"
-            />
-          </div>
-        )}
 
         <div className="flex items-center pt-4 border-t border-gray-200">
           <Button
@@ -187,14 +204,18 @@ const ThreadItem = ({
             size="sm"
             color="secondary"
             disabled={isVoting}
-            icon={<ArrowUp className={cn(
-              "w-[18px] h-[18px]",
-              localUserVote === "UP" && "text-primary",
-              isVoting && "opacity-50"
-            )}/>}
+            icon={isVoting ? <Loader2 className="w-[18px] h-[18px] animate-spin" /> : 
+              <ArrowUp className={cn(
+                "w-[18px] h-[18px] transition-colors duration-200",
+                localUserVote === "UP" && "text-primary",
+                isVoting && "opacity-50"
+              )} />}
           />
 
-          <span className="text-sm m-1">{localVoteCount}</span>
+          <span className={cn(
+            "text-sm m-1 transition-all duration-200",
+            isVoting && "opacity-50"
+          )}>{localVoteCount}</span>
 
           <Button
             onClick={(e) => handleVote("DOWN", e)}
@@ -202,11 +223,12 @@ const ThreadItem = ({
             size="sm"
             color="secondary"
             disabled={isVoting}
-            icon={<ArrowDown className={cn(
-              "w-[18px] h-[18px]",
-              localUserVote === "DOWN" && "text-primary",
-              isVoting && "opacity-50"
-            )}/>}
+            icon={isVoting ? <Loader2 className="w-[18px] h-[18px] animate-spin" /> :
+              <ArrowDown className={cn(
+                "w-[18px] h-[18px] transition-colors duration-200",
+                localUserVote === "DOWN" && "text-primary",
+                isVoting && "opacity-50"
+              )} />}
           />
 
           <Button
@@ -219,7 +241,7 @@ const ThreadItem = ({
             color="secondary"
             icon={<MessageSquare className="w-[18px] h-[18px]" />}
           >
-            {repliesCount}
+            {_count.comments}
           </Button>
           <Button
             onClick={(e) => {
