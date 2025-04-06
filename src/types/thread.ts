@@ -26,6 +26,20 @@ export interface Thread {
       down: number;
     };
   };
+  comments?: {
+    comment_id: number;
+    content: string;
+    created_at: string;
+    author: {
+      id: number;
+      username: string;
+      name: string;
+    };
+    votes: {
+      score: number;
+      user_vote: "UP" | "DOWN" | null;
+    };
+  }[];
 }
 
 export type ThreadMinimal = {
@@ -41,7 +55,6 @@ export interface ThreadResponse {
     total: number;
     page: number;
     limit: number;
-    totalPages: number;
   };
 }
 
@@ -53,5 +66,11 @@ export interface ThreadError {
 export interface ThreadResult {
   success: boolean;
   data?: ThreadResponse;
+  error?: ThreadError;
+}
+
+export interface SingleThreadResult {
+  success: boolean;
+  data?: Thread;
   error?: ThreadError;
 }
