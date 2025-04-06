@@ -1,45 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import { Hash, Menu, X } from "lucide-react";
+import { Hash, X } from "lucide-react";
 import Divider from "../Divider";
 import { categories, discussionThreads } from "@/data/mock-api";
 import Link from "next/link";
 import ThreadItemMinimal from "./ThreadListing/ThreadItemMinimal";
 import { Fragment } from "react";
-import clsx from "clsx";
+import { cn } from "@/utils/utils";
 
-function AppInfoSidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+interface AppInfoSidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-  const latestDiscussions = discussionThreads
-    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-    .slice(0, 3);
-
+function AppInfoSidebar({ isOpen, onClose }: AppInfoSidebarProps) {
   return (
     <>
-      <button
-        onClick={() => setIsOpen(true)}
-        className="xl:hidden fixed top-4  left-4 z-50 bg-white p-2 rounded-md shadow-md"
-      >
-        <Menu className="w-6 h-6" />
-      </button>
-
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/30 z-40 xl:hidden"
-          onClick={() => setIsOpen(false)}
+          onClick={onClose}
         />
       )}
 
       <div
-        className={clsx(
+        className={cn(
           "fixed top-0 left-0 w-[320px] h-full bg-white border-r shadow-md z-50 transform transition-transform duration-300 xl:hidden",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex justify-end p-4">
-          <button onClick={() => setIsOpen(false)}>
+          <button onClick={onClose}>
             <X className="w-5 h-5 text-gray-700" />
           </button>
         </div>
