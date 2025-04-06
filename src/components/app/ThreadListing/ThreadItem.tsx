@@ -13,7 +13,7 @@ import { voteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
 import { Thread } from "@/types/thread";
 
-export interface ThreadItemProps extends Omit<Thread, 'title'> {
+export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
   title?: string;
   onUpvote?: () => void;
   onDownvote?: () => void;
@@ -21,7 +21,7 @@ export interface ThreadItemProps extends Omit<Thread, 'title'> {
   onShare?: () => void;
   className?: string;
   showFullContent?: boolean;
-  comments?: CommentItemProps[];
+  comments?: Thread['comments'];
 }
 
 const ThreadItem = ({
