@@ -20,7 +20,7 @@ export interface Thread {
   };
   votes: {
     score: number;
-    user_vote: "up" | "down" | null;
+    user_vote: "UP" | "DOWN" | null;
     counts: {
       up: number;
       down: number;

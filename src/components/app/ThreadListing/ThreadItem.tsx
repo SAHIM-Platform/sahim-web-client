@@ -1,14 +1,16 @@
 import { cn } from "@/utils/utils";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import UserInfo from "../UserInfo";
 import Excerpt from "@/components/Excerpt";
 import Button from "@/components/Button";
-import { ArrowUp, ArrowDown, MessageSquare, Share2 } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageSquare, Share2, Loader2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
 import { CommentItemProps } from "../Comment/CommentItem";
+import { voteThread } from "@/services/threadService";
+import toast from "react-hot-toast";
 import { Thread } from "@/types/thread";
 
 export interface ThreadItemProps extends Omit<Thread, 'title'> {
@@ -38,32 +40,85 @@ const ThreadItem = ({
   className,
   showFullContent = false,
 }: ThreadItemProps) => {
-  const [localVoteCount, setlocalVoteCount] = useState(votes.score ?? 0);
-  const [localUserVote, setlocalUserVote] = useState<"up" | "down" | null>(votes.user_vote ?? null);
+  // Use refs to store the initial values
+  const initialVoteCount = useRef(votes.score ?? 0);
+  const initialUserVote = useRef(votes.user_vote);
+  
+  // State for current values
+  const [localVoteCount, setLocalVoteCount] = useState(initialVoteCount.current);
+  const [localUserVote, setLocalUserVote] = useState<"UP" | "DOWN" | null>(initialUserVote.current ?? null);
+  const [isVoting, setIsVoting] = useState(false);
+  const lastVoteTime = useRef<number>(0);
 
-  const handleUpvote = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (localUserVote === "up") {
-      setlocalUserVote(null);
-      setlocalVoteCount(prev => prev - 1);
-    } else {
-      setlocalUserVote("up");
-      setlocalVoteCount(prev => prev + (localUserVote === "down" ? 2 : 1));
-    }
-    onUpvote?.();
-  };
+  // Update initial values when props change
+  useEffect(() => {
+    initialVoteCount.current = votes.score ?? 0;
+    initialUserVote.current = votes.user_vote;
+    setLocalVoteCount(votes.score ?? 0);
+    setLocalUserVote(votes.user_vote ?? null);
+  }, [votes.score, votes.user_vote]);
 
-  const handleDownvote = (e: React.MouseEvent) => {
+  const handleVote = useCallback(async (voteType: "UP" | "DOWN", e: React.MouseEvent) => {
     e.preventDefault();
-    if (localUserVote === "down") {
-      setlocalUserVote(null);
-      setlocalVoteCount(prev => prev + 1);
-    } else {
-      setlocalUserVote("down");
-      setlocalVoteCount(prev => prev - (localUserVote === "up" ? 2 : 1));
+    
+    // Prevent rapid voting (debounce)
+    const now = Date.now();
+    if (now - lastVoteTime.current < 500) return;
+    lastVoteTime.current = now;
+    
+    if (isVoting) return;
+
+    const previousVote = localUserVote;
+    const previousCount = localVoteCount;
+
+    try {
+      setIsVoting(true);
+
+      // Optimistic update
+      if (localUserVote === voteType) {
+        setLocalUserVote(null);
+        setLocalVoteCount(prev => prev + (voteType === "UP" ? -1 : 1));
+      } else {
+        setLocalUserVote(voteType);
+        setLocalVoteCount(prev =>
+          prev + (voteType === "UP" ? 1 : -1) + (previousVote ? (previousVote === "UP" ? -1 : 1) : 0)
+        );
+      }
+
+      // Make API call
+      const response = await voteThread(thread_id, voteType);
+
+      // Verify the response is valid
+      if (!response.success) {
+        throw new Error('Vote update failed');
+      }
+
+      // Update with server response
+      setLocalVoteCount(response.votesCount);
+      setLocalUserVote(response.userVote);
+
+      // Update initial values to match server state
+      initialVoteCount.current = response.votesCount;
+      initialUserVote.current = response.userVote;
+
+      // Call parent handlers
+      if (voteType === "UP" && onUpvote) onUpvote();
+      if (voteType === "DOWN" && onDownvote) onDownvote();
+    } catch (error) {
+      // Revert to previous state
+      setLocalUserVote(previousVote);
+      setLocalVoteCount(previousCount);
+      
+      // Show error message
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('حدث خطأ أثناء التصويت. حاول مرة أخرى.');
+      }
+    } finally {
+      setIsVoting(false);
     }
-    onDownvote?.();
-  };
+  }, [thread_id, localUserVote, localVoteCount, isVoting, onUpvote, onDownvote]);
 
   return (
     <Link
@@ -144,22 +199,38 @@ const ThreadItem = ({
 
         <div className="flex items-center pt-4 border-t border-gray-200">
           <Button
-            onClick={handleUpvote}
+            onClick={(e) => handleVote("UP", e)}
             variant='ghost'
             size="sm"
             color="secondary"
-            icon={<ArrowUp className={cn("w-[18px] h-[18px]", localUserVote === "up" && "text-primary")} />}
-          ></Button>
+            disabled={isVoting}
+            icon={isVoting ? <Loader2 className="w-[18px] h-[18px] animate-spin" /> : 
+              <ArrowUp className={cn(
+                "w-[18px] h-[18px] transition-colors duration-200",
+                localUserVote === "UP" && "text-primary",
+                isVoting && "opacity-50"
+              )} />}
+          />
 
-          <span className="text-sm m-1">{localVoteCount}</span>
+          <span className={cn(
+            "text-sm m-1 transition-all duration-200",
+            isVoting && "opacity-50"
+          )}>{localVoteCount}</span>
 
           <Button
-            onClick={handleDownvote}
+            onClick={(e) => handleVote("DOWN", e)}
             variant='ghost'
             size="sm"
             color="secondary"
-            icon={<ArrowDown className={cn("w-[18px] h-[18px]", localUserVote === "down" && "text-primary")} />}
-          ></Button>
+            disabled={isVoting}
+            icon={isVoting ? <Loader2 className="w-[18px] h-[18px] animate-spin" /> :
+              <ArrowDown className={cn(
+                "w-[18px] h-[18px] transition-colors duration-200",
+                localUserVote === "DOWN" && "text-primary",
+                isVoting && "opacity-50"
+              )} />}
+          />
+
           <Button
             onClick={(e) => {
               e.preventDefault();
