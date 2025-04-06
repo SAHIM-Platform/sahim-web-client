@@ -10,6 +10,8 @@ import { ArrowUp, ArrowDown, MessageSquare, Share2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
 import Image from "next/image";
 import { CommentItemProps } from "../Comment/CommentItem";
+import { voteThread } from "@/services/threadService";
+import toast from "react-hot-toast";
 
 export interface ThreadItemProps {
   id: string;
@@ -24,9 +26,7 @@ export interface ThreadItemProps {
   votesCount: number;
   repliesCount: number;
   category: string;
-  userVote?: "upvote" | "downvote" | null;
-  onUpvote?: () => void;
-  onDownvote?: () => void;
+  userVote?: "UP" | "DOWN" | null;
   onReply?: () => void;
   onShare?: () => void;
   className?: string;
@@ -44,39 +44,49 @@ const ThreadItem = ({
   votesCount,
   repliesCount,
   category,
-  userVote,
-  onUpvote,
-  onDownvote,
+  userVote: initialUserVote,
   onReply,
   onShare,
   className,
   showFullContent = false,
 }: ThreadItemProps) => {
-  const [localVoteCount, setlocalVoteCount]= useState(votesCount ?? 0);
-  const [localUserVote, setlocalUserVote]= useState<"upvote" | "downvote" | null>(userVote ?? null);
+  const [localVoteCount, setLocalVoteCount] = useState(votesCount);
+  const [localUserVote, setLocalUserVote] = useState<"UP" | "DOWN" | null>(initialUserVote ?? null);
+  const [isVoting, setIsVoting] = useState(false);
   
-  const handleUpvote = (e: React.MouseEvent) => {
+  const handleVote = async (voteType: "UP" | "DOWN", e: React.MouseEvent) => {
     e.preventDefault();
-    if(localUserVote === "upvote") {
-      setlocalUserVote(null);
-      setlocalVoteCount(prev => prev - 1);
-    } else {
-      setlocalUserVote("upvote");
-      setlocalVoteCount(prev => prev + (localUserVote === "downvote" ? 2 : 1) );
-    }
-    onUpvote?.();
-  };
+    if (isVoting) return;
 
-  const handleDownvote = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if(localUserVote === "downvote") {
-      setlocalUserVote(null);
-      setlocalVoteCount(prev => prev + 1);
+    const previousVote = localUserVote;
+    const previousCount = localVoteCount;
+
+    // Optimistic update
+    if (localUserVote === voteType) {
+      setLocalUserVote(null);
+      setLocalVoteCount(prev => prev + (voteType === "UP" ? -1 : 1));
     } else {
-      setlocalUserVote("downvote");
-      setlocalVoteCount(prev => prev - (localUserVote === "upvote" ? 2 : 1) );
+      setLocalUserVote(voteType);
+      setLocalVoteCount(prev => 
+        prev + (voteType === "UP" ? 1 : -1) + (previousVote ? (previousVote === "UP" ? -1 : 1) : 0)
+      );
     }
-    onDownvote?.();
+
+    try {
+      setIsVoting(true);
+      const response = await voteThread(id, voteType);
+      
+      // Update with actual server response
+      setLocalVoteCount(response.votesCount);
+      setLocalUserVote(response.userVote);
+    } catch (error) {
+      // Revert on error
+      setLocalUserVote(previousVote);
+      setLocalVoteCount(previousCount);
+      toast.error('حدث خطأ أثناء التصويت. حاول مرة أخرى.');
+    } finally {
+      setIsVoting(false);
+    }
   };
 
   return (
@@ -107,49 +117,49 @@ const ThreadItem = ({
           {showFullContent ? (
             <div className="text-xs sm:text-sm text-gray-600 leading-[2] sm:leading-[2] ">
               <ReactMarkdown 
-              remarkPlugins={[remarkGfm]}
-              children={content}
-              components={{
-                a: ({ href, children }) => (
-                  <a
-                    href={href}
-                    className='text-blue-400 hover:text-blue-300 underline'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    {children}
-                  </a>
-                ),
-                h1: ({ children }) => (
-                  <p className='text-2xl font-bold mb-4'>{children}</p>
-                ),
-                h2: ({ children }) => (
-                  <p className='text-xl font-bold mb-4 mt-4'>{children}</p>
-                ),
-                h3: ({ children }) => (
-                  <p className='text-lg font-semibold mb-2 mt-2'>{children}</p>
-                ),
-                ul: ({ children }) => (
-                  <ul className='list-disc pl-2 mb-4 space-y-1'>{children}</ul>
-                ),
-                ol: ({ children }) => (
-                  <ol className='list-decimal pl-6 mb-4 space-y-1'>{children}</ol>
-                ),
-                p: ({ children }) => (
-                  <p className='leading-8 mb-2 font-light'>{children}</p>
-                ),
-                li: ({ children }) => (
-                  <li className='leading-7 pl-2 marker:text-gray-400 [&>strong]:mt-0 [&>strong]:inline'>{children}</li>
-                ),
-                strong: ({ children }) => (
-                  <strong className='font-semibold '>{children}</strong>
-                ),
-                code: ({ children }) => (
-                  <div className="bg-gray-100 text-xs p-2 rounded-lg font-semibold" dir="ltr">
-                  <code>{children}</code>
-                  </div>
-                ),
-              }}
+                remarkPlugins={[remarkGfm]}
+                children={content}
+                components={{
+                  a: ({ href, children }) => (
+                    <a
+                      href={href}
+                      className='text-blue-400 hover:text-blue-300 underline'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      {children}
+                    </a>
+                  ),
+                  h1: ({ children }) => (
+                    <p className='text-2xl font-bold mb-4'>{children}</p>
+                  ),
+                  h2: ({ children }) => (
+                    <p className='text-xl font-bold mb-4 mt-4'>{children}</p>
+                  ),
+                  h3: ({ children }) => (
+                    <p className='text-lg font-semibold mb-2 mt-2'>{children}</p>
+                  ),
+                  ul: ({ children }) => (
+                    <ul className='list-disc pl-2 mb-4 space-y-1'>{children}</ul>
+                  ),
+                  ol: ({ children }) => (
+                    <ol className='list-decimal pl-6 mb-4 space-y-1'>{children}</ol>
+                  ),
+                  p: ({ children }) => (
+                    <p className='leading-8 mb-2 font-light'>{children}</p>
+                  ),
+                  li: ({ children }) => (
+                    <li className='leading-7 pl-2 marker:text-gray-400 [&>strong]:mt-0 [&>strong]:inline'>{children}</li>
+                  ),
+                  strong: ({ children }) => (
+                    <strong className='font-semibold '>{children}</strong>
+                  ),
+                  code: ({ children }) => (
+                    <div className="bg-gray-100 text-xs p-2 rounded-lg font-semibold" dir="ltr">
+                      <code>{children}</code>
+                    </div>
+                  ),
+                }}
               />
             </div>
             
@@ -172,22 +182,33 @@ const ThreadItem = ({
 
         <div className="flex items-center pt-4 border-t border-gray-200">
           <Button
-          onClick={handleUpvote}
-          variant='ghost'
-          size="sm"
-          color="secondary"
-          icon={<ArrowUp className={cn("w-[18px] h-[18px]", localUserVote === "upvote" && "text-primary")}/>}
-          ></Button>
+            onClick={(e) => handleVote("UP", e)}
+            variant='ghost'
+            size="sm"
+            color="secondary"
+            disabled={isVoting}
+            icon={<ArrowUp className={cn(
+              "w-[18px] h-[18px]",
+              localUserVote === "UP" && "text-primary",
+              isVoting && "opacity-50"
+            )}/>}
+          />
 
           <span className="text-sm m-1">{localVoteCount}</span>
 
           <Button
-          onClick={handleDownvote}
-          variant='ghost'
-          size="sm"
-          color="secondary"
-          icon={<ArrowDown className={cn("w-[18px] h-[18px]", localUserVote === "downvote" && "text-primary")}/>}
-          ></Button>
+            onClick={(e) => handleVote("DOWN", e)}
+            variant='ghost'
+            size="sm"
+            color="secondary"
+            disabled={isVoting}
+            icon={<ArrowDown className={cn(
+              "w-[18px] h-[18px]",
+              localUserVote === "DOWN" && "text-primary",
+              isVoting && "opacity-50"
+            )}/>}
+          />
+
           <Button
             onClick={(e) => {
               e.preventDefault();
