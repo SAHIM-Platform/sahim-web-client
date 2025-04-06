@@ -31,7 +31,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
         if (threadResult.success && threadResult.data) {
           setThread(threadResult.data);
           
-          // Fot similar threads (have same category)
+          // Fitch similar threads (have same category)
           const threadsResult = await fetchThreads();
           if (threadsResult.success && threadsResult.data) {
             const threadsData = threadsResult.data.data;

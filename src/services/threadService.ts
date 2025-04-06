@@ -30,14 +30,14 @@ export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Pro
 
     // Validate response data structure
     if (!response.data || typeof response.data !== 'object') {
-      throw new Error('Invalid response format');
+      throw new Error(ERROR_MESSAGES.thread.VALIDATION_ERROR);
     }
 
     const { success, updatedVotes } = response.data;
 
     // Validate required fields
     if (typeof success !== 'boolean' || !updatedVotes) {
-      throw new Error('Invalid response data structure');
+      throw new Error(ERROR_MESSAGES.thread.VALIDATION_ERROR);
     }
 
     // Return transformed data
@@ -53,7 +53,7 @@ export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Pro
       const axiosError = error as AxiosError;
       
       if (axiosError.response?.status === 401) {
-        throw new Error('يرجى تسجيل الدخول للتصويت');
+        throw new Error(ERROR_MESSAGES.auth.UNAUTHORIZED);
       }
       
       if (axiosError.response?.status === 404) {
