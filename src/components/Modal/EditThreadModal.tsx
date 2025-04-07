@@ -130,6 +130,12 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
             placeholder="اكتب عنواناً يوضّح موضوع مناقشتك"
             value={formData.title}
             onChange={(e) => handleChange("title", e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && areAllRequiredFieldsFilled && !isSubmitting) {
+                e.preventDefault();
+                handleSubmit(e as any);
+              }
+            }}
             required
             fullWidth
           />
@@ -151,10 +157,19 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
             placeholder="اكتب المحتوى هنا (يدعم تنسيق Markdown)"
             value={formData.content}
             onChange={(e) => handleChange("content", e.target.value)}
+            onKeyDown={(e) => {
+              // Allow Ctrl+Enter or Command+Enter to submit
+              if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                if (areAllRequiredFieldsFilled && !isSubmitting) {
+                  handleSubmit(e as any);
+                }
+              }
+            }}
             required
             fullWidth
             textareaSize="lg"
-            helperText="يدعم تنسيق Markdown"
+            helperText="يدعم تنسيق Markdown. اضغط Ctrl+Enter أو Command+Enter للحفظ"
           />
 
           <div className="space-y-2">
