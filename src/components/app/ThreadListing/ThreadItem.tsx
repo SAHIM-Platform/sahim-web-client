@@ -6,13 +6,14 @@ import remarkGfm from 'remark-gfm';
 import UserInfo from "../UserInfo";
 import Excerpt from "@/components/Excerpt";
 import Button from "@/components/Button";
-import { ArrowUp, ArrowDown, MessageSquare, Share2, Loader2, Ellipsis } from "lucide-react";
+import { ArrowUp, ArrowDown, MessageSquare, Share2, Loader2, Ellipsis, Edit, Trash2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
 import { CommentItemProps } from "../Comment/CommentItem";
 import BookmarkToggle from "@/components/BookmarkToggle";
 import { voteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
 import { Thread } from "@/types/thread";
+import Divider from "@/components/Divider";
 
 export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
   title?: string;
@@ -20,6 +21,8 @@ export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
   onDownvote?: () => void;
   onReply?: () => void;
   onShare?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
   className?: string;
   showFullContent?: boolean;
   comments?: Thread['comments'];
@@ -38,6 +41,8 @@ const ThreadItem = ({
   onDownvote,
   onReply,
   onShare,
+  onEdit,
+  onDelete,
   className,
   showFullContent = false,
 }: ThreadItemProps) => {
@@ -49,7 +54,9 @@ const ThreadItem = ({
   const [localVoteCount, setLocalVoteCount] = useState(initialVoteCount.current);
   const [localUserVote, setLocalUserVote] = useState<"UP" | "DOWN" | null>(initialUserVote.current ?? null);
   const [isVoting, setIsVoting] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const lastVoteTime = useRef<number>(0);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Update initial values when props change
   useEffect(() => {
@@ -58,6 +65,18 @@ const ThreadItem = ({
     setLocalVoteCount(votes.score ?? 0);
     setLocalUserVote(votes.user_vote ?? null);
   }, [votes.score, votes.user_vote]);
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleVote = useCallback(async (voteType: "UP" | "DOWN", e: React.MouseEvent) => {
     e.preventDefault();
@@ -121,6 +140,23 @@ const ThreadItem = ({
     }
   }, [thread_id, localUserVote, localVoteCount, isVoting, onUpvote, onDownvote]);
 
+  const handleDropdownToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDropdownOpen(false);
+    onEdit?.();
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDropdownOpen(false);
+    onDelete?.();
+  };
+
   return (
     <Link
       href={`/discussions/${thread_id}`}
@@ -135,9 +171,40 @@ const ThreadItem = ({
             name={author.name}
             date={created_at}
           />
-          <div className="flex items-start gap-2">
+          <div className="flex items-center gap-2">
             <CategoryBadge name={category.name} />
-            <Ellipsis className="w-7 h-7" />
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={handleDropdownToggle}
+                className="p-0.5 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <Ellipsis className="w-6 h-6 text-gray-500" />
+              </button>
+              
+              {isDropdownOpen && (
+                <div className="absolute top-full left-0 w-40 bg-white border border-gray-200 shadow-lg rounded-md z-10 transition-all duration-200 transform origin-top">
+                  <Button
+                    onClick={handleEdit}
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 justify-start"
+                    icon={<Edit className="w-4 h-4" />}
+                  >
+                    تعديل المناقشة
+                  </Button>
+                  <Divider label="" />
+                  <Button
+                    onClick={handleDelete}
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-gray-100 justify-start"
+                    icon={<Trash2 className="w-4 h-4" />}
+                  >
+                    حذف المناقشة
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
