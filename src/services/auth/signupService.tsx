@@ -1,4 +1,4 @@
-import axios from '@/api/axios';
+import axiosInstance from '@/api/axios';
 import { AuthError, AuthResult } from "@/types/auth";
 import { AxiosError, isAxiosError } from "axios";
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
@@ -18,7 +18,7 @@ async function signupService(data: SignupFormData): Promise<AuthResult> {
     };
 
     console.log('Sending signup request with:', signupData);
-    const response = await axios.post('/auth/signup', signupData);
+    const response = await axiosInstance.post('/auth/signup', signupData);
     console.log('Signup response:', response.data);
 
     // there is accessToken? consider it success

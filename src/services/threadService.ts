@@ -1,4 +1,4 @@
-import axios from '@/api/axios';
+import axiosInstance from '@/api/axios';
 import { ThreadResult, ThreadResponse, SingleThreadResult, Thread } from '@/types/thread';
 import { AxiosError, isAxiosError } from 'axios';
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
@@ -29,7 +29,7 @@ export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Pro
   try {
     console.log("threadId ", threadId)
     console.log("voteType ", voteType)
-    const response = await axios.post<APIVoteResponse>(`/threads/${threadId}/vote`, {
+    const response = await axiosInstance.post<APIVoteResponse>(`/threads/${threadId}/vote`, {
       vote_type: voteType
     });
     
@@ -78,7 +78,7 @@ export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Pro
 
 export const fetchThreads = async (): Promise<ThreadResult> => {
   try {
-    const response = await axios.get<ThreadResponse>('/threads');
+    const response = await axiosInstance.get<ThreadResponse>('/threads');
 
     if (response.data) {
       return {
@@ -146,7 +146,7 @@ export const fetchThreads = async (): Promise<ThreadResult> => {
 
 export const fetchThreadById = async (threadId: number): Promise<SingleThreadResult> => {
   try {
-    const response = await axios.get<Thread>(`/threads/${threadId}`);
+    const response = await axiosInstance.get<Thread>(`/threads/${threadId}`);
 
     if (response.data) {
       return {
@@ -221,7 +221,7 @@ export const updateThread = async (
   }
 ): Promise<SingleThreadResult> => {
   try {
-    const response = await axios.put<Thread>(`/threads/${threadId}`, threadData);
+    const response = await axiosInstance.put<Thread>(`/threads/${threadId}`, threadData);
 
     if (response.data) {
       return {
@@ -287,7 +287,7 @@ export const updateThread = async (
 
 export const fetchCategories = async (): Promise<CategoryResponse> => {
   try {
-    const response = await axios.get<CategoryResponse>('/threads/categories');
+    const response = await axiosInstance.get<CategoryResponse>('/threads/categories');
 
     if (response.data) {
       return response.data;
