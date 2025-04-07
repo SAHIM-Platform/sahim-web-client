@@ -31,11 +31,11 @@ export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
 
 const ThreadItem = ({
   thread_id,
-  title,
+  title: initialTitle,
   author,
-  content,
+  content: initialContent,
   created_at,
-  category,
+  category: initialCategory,
   votes,
   _count,
   onUpvote,
@@ -59,6 +59,11 @@ const ThreadItem = ({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const lastVoteTime = useRef<number>(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  // State for thread data that can be updated
+  const [title, setTitle] = useState(initialTitle || "");
+  const [content, setContent] = useState(initialContent);
+  const [category, setCategory] = useState(initialCategory);
 
   // Update initial values when props change
   useEffect(() => {
@@ -67,6 +72,13 @@ const ThreadItem = ({
     setLocalVoteCount(votes.score ?? 0);
     setLocalUserVote(votes.user_vote ?? null);
   }, [votes.score, votes.user_vote]);
+
+  // Update thread data when props change
+  useEffect(() => {
+    setTitle(initialTitle || "");
+    setContent(initialContent);
+    setCategory(initialCategory);
+  }, [initialTitle, initialContent, initialCategory]);
 
   // Handle click outside to close dropdown
   useEffect(() => {
@@ -159,7 +171,24 @@ const ThreadItem = ({
     onDelete?.();
   };
 
-  const handleEditSuccess = () => {
+  const handleEditSuccess = (updatedThread: Thread) => {
+    // Update the local state with the new thread data
+    if (updatedThread) {
+      // Update the title if it exists in the updated thread
+      if (updatedThread.title) {
+        setTitle(updatedThread.title);
+      }
+      
+      // Update the content
+      setContent(updatedThread.content);
+      
+      // Update the category
+      if (updatedThread.category) {
+        setCategory(updatedThread.category);
+      }
+    }
+    
+    // Call the parent handler
     onEdit?.();
     toast.success('تم تحديث المناقشة بنجاح');
   };
@@ -339,25 +368,23 @@ const ThreadItem = ({
         </div>
       </Link>
 
-      {isEditModalOpen && (
-        <EditThreadModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          thread={{
-            thread_id,
-            title: title || "",
-            content,
-            category_id: category.category_id,
-            author_user_id: author.id,
-            created_at,
-            author,
-            category,
-            _count,
-            votes
-          }}
-          onSuccess={handleEditSuccess}
-        />
-      )}
+      <EditThreadModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        thread={{
+          thread_id,
+          title: title || "",
+          content,
+          category_id: category.category_id,
+          author_user_id: author.id,
+          author,
+          created_at,
+          category,
+          votes,
+          _count,
+        }}
+        onSuccess={handleEditSuccess}
+      />
     </>
   );
 };

@@ -17,7 +17,7 @@ interface EditThreadModalProps {
   isOpen: boolean;
   onClose: () => void;
   thread: Thread;
-  onSuccess?: () => void;
+  onSuccess?: (updatedThread: Thread) => void;
 }
 
 export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: EditThreadModalProps) {
@@ -85,8 +85,8 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
     try {
       const result = await updateThread(thread.thread_id, threadData);
       
-      if (result.success) {
-        onSuccess?.();
+      if (result.success && result.data) {
+        onSuccess?.(result.data);
         onClose();
       } else {
         setError(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
