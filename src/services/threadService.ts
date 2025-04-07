@@ -18,6 +18,13 @@ interface APIVoteResponse {
   };
 }
 
+interface CategoryResponse {
+  data: {
+    category_id: number;
+    name: string;
+  }[];
+}
+
 export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Promise<VoteResponse> {
   try {
     console.log("threadId ", threadId)
@@ -202,5 +209,31 @@ export const fetchThreadById = async (threadId: number): Promise<SingleThreadRes
         code: 'UNKNOWN_ERROR'
       }
     };
+  }
+};
+
+export const fetchCategories = async (): Promise<CategoryResponse> => {
+  try {
+    const response = await axios.get<CategoryResponse>('/threads/categories');
+
+    if (response.data) {
+      return response.data;
+    }
+
+    return {
+      data: []
+    };
+  } catch (error) {
+    console.error('Categories fetching error:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response?.status === 404) {
+        throw new Error(ERROR_MESSAGES.thread.NOT_FOUND);
+      }
+    }
+
+    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
   }
 };
