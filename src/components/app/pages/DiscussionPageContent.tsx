@@ -25,18 +25,18 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         const threadResult = await fetchThreadById(parseInt(discussionId));
-        
+
         if (threadResult.success && threadResult.data) {
           setThread(threadResult.data);
-          
+
           // Fitch similar threads (have same category)
           const threadsResult = await fetchThreads();
           if (threadsResult.success && threadsResult.data) {
             const threadsData = threadsResult.data.data;
             const currentThread = threadResult.data;
-            
+
             if (Array.isArray(threadsData)) {
               const similarThreads = threadsData
                 .filter((t: Thread) => t.category_id === currentThread.category_id && t.thread_id !== currentThread.thread_id)
@@ -71,6 +71,10 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     setComment(e.target.value);
   };
 
+  const handleThreadUpdate = (updatedThread: Thread) => {
+    setThread(updatedThread);
+  };
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -91,16 +95,16 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     );
   }
 
-  const { title, ...restThread } = thread;
-
   return (
     <>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">{title}</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">{thread?.title}</h1>
 
-      <div className="space-y-6">
+      <div className="flex flex-col gap-6">
         <ThreadItem
-          {...restThread}
+          {...thread}
           showFullContent={true}
+          hideTitle
+          onEdit={handleThreadUpdate}
         />
 
         <div className="bg-white rounded-xl border border-gray-200 p-4">

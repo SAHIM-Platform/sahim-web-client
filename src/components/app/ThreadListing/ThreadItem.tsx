@@ -17,16 +17,17 @@ import Divider from "@/components/Divider";
 import EditThreadModal from "../../Modal/EditThreadModal";
 
 export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
-  title?: string;
+  title: string;
   onUpvote?: () => void;
   onDownvote?: () => void;
   onReply?: () => void;
   onShare?: () => void;
-  onEdit?: () => void;
+  onEdit?: (updatedThread: Thread) => void;
   onDelete?: () => void;
   className?: string;
   showFullContent?: boolean;
   comments?: Thread['comments'];
+  hideTitle?: boolean;
 }
 
 const ThreadItem = ({
@@ -46,6 +47,7 @@ const ThreadItem = ({
   onDelete,
   className,
   showFullContent = false,
+  hideTitle = false,
 }: ThreadItemProps) => {
   // Use refs to store the initial values
   const initialVoteCount = useRef(votes.score ?? 0);
@@ -189,7 +191,7 @@ const ThreadItem = ({
     }
     
     // Call the parent handler
-    onEdit?.();
+    onEdit?.(updatedThread);
     toast.success('تم تحديث المناقشة بنجاح');
   };
 
@@ -246,7 +248,7 @@ const ThreadItem = ({
           </div>
 
           <div className="space-y-3">
-            {title && (
+            {!hideTitle && (
               <h3 className="font-semibold text-gray-900 line-clamp-2">
                 {title}
               </h3>
@@ -348,7 +350,7 @@ const ThreadItem = ({
               color="secondary"
               icon={<MessageSquare className="w-[18px] h-[18px]" />}
             >
-              {_count.comments}
+              {_count?.comments ?? 0}
             </Button>
             <Button
               onClick={(e) => {
@@ -373,7 +375,7 @@ const ThreadItem = ({
         onClose={() => setIsEditModalOpen(false)}
         thread={{
           thread_id,
-          title: title || "",
+          title: title,
           content,
           category_id: category.category_id,
           author_user_id: author.id,
