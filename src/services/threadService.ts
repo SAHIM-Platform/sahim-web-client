@@ -25,6 +25,29 @@ interface CategoryResponse {
   }[];
 }
 
+type CommentResponse = {
+  id: number;
+  content: string;
+  thread_id: number;
+  author_user_id: number;
+  created_at: string;
+  updated_at: string;
+  author: {
+    id: number;
+    username: string;
+    name: string | null;
+  };
+  votes: {
+    score: number; // Upvotes - Downvotes
+    user_vote: 'UP' | 'DOWN' | null; // The current user's vote
+    counts: {
+      up: number; // Number of upvotes
+      down: number; // Number of downvotes
+    };
+  };
+};
+
+
 export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Promise<VoteResponse> {
   try {
     console.log("threadId ", threadId)
@@ -75,6 +98,37 @@ export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Pro
     throw new Error(ERROR_MESSAGES.thread.DEFAULT);
   }
 }
+
+export async function createComment(threadId: number, content: string): Promise<CommentResponse> {
+  try {
+    const response = await axios.post<CommentResponse>(`/threads/${threadId}/comments`, {
+      content
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+  } catch (error) {
+    console.error('Error creating comment:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response?.status === 400) {
+        throw new Error(ERROR_MESSAGES.thread.VALIDATION_ERROR);
+      }
+
+      if (axiosError.response?.status === 404) {
+        throw new Error(ERROR_MESSAGES.thread.NOT_FOUND);
+      }
+    }
+
+    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+  }
+}
+
 
 export const fetchThreads = async (): Promise<ThreadResult> => {
   try {
@@ -146,7 +200,7 @@ export const fetchThreads = async (): Promise<ThreadResult> => {
 
 export const fetchThreadById = async (threadId: number): Promise<SingleThreadResult> => {
   try {
-    const response = await axios.get<Thread>(`/threads/${threadId}`);
+    const response = await axios.get<Thread>(`/threads/${threadId}?includeComments=true`);
 
     if (response.data) {
       return {
