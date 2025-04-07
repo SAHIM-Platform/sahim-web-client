@@ -40,7 +40,11 @@ function SearchModal({
   };
 
   return (
-    <Modal onClose={onClose}>
+    <Modal
+      onClose={onClose}
+      isOpen={true}
+      size="lg"
+    >
       <div className="mb-4">
         <SearchField
           searchQuery={searchQuery}

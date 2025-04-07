@@ -35,7 +35,7 @@ const ThreadListing = ({
       setIsLoading(true);
       setError(null);
       const result = await fetchThreads();
-      
+
       if (result.success && result.data) {
         setThreads(Array.isArray(result.data.data) ? result.data.data : [result.data.data]);
       } else {
@@ -50,7 +50,7 @@ const ThreadListing = ({
         stack: err instanceof Error ? err.stack : undefined,
         timestamp: new Date().toISOString(),
       });
-      
+
       const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المناقشات';
       setError(`${errorMessage}. حاول مرة أخرى.`);
       toast.error(errorMessage);
@@ -113,7 +113,7 @@ const ThreadListing = ({
           </p>
         </div>
       ) : (
-        <>
+        <div className="flex flex-col gap-5">
           {processedThreads
             .sort((a, b) => {
               const dateA = new Date(a.created_at).getTime();
@@ -128,7 +128,7 @@ const ThreadListing = ({
                 onShare={() => onShare?.(thread.thread_id)}
               />
             ))}
-        </>
+        </div>
       )}
     </div>
   );
