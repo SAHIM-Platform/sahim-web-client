@@ -24,14 +24,13 @@ export const validateSignupForm = (values: Partial<SignupFormData>) => {
   }
 
   // Academic number validation
-  if (!values.academicNumber?.trim()) {
-    errors.academicNumber = "الرقم الأكاديمي مطلوب";
-  } else if (values.academicNumber.length !== 13) {
-    errors.academicNumber = "يجب أن يتكون الرقم الأكاديمي من 13 رقم";
-  } else if (!/^\d+$/.test(values.academicNumber)) {
-    errors.academicNumber = "يجب أن يحتوي الرقم الأكاديمي على أرقام فقط";
-  }
-
+if (!values.academicNumber?.trim()) {
+  errors.academicNumber = "الرقم الأكاديمي مطلوب";
+} else if (values.academicNumber.length !== 13) {
+  errors.academicNumber = "يجب أن يتكون الرقم الأكاديمي من 13 رقم";
+} else if (!/^\d+$/.test(values.academicNumber)) {
+  errors.academicNumber = "يجب أن يحتوي الرقم الأكاديمي على أرقام فقط";
+}
   // Email validation
   if (!values.email?.trim()) {
     errors.email = "البريد الإلكتروني مطلوب";
