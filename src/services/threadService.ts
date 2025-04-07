@@ -212,6 +212,79 @@ export const fetchThreadById = async (threadId: number): Promise<SingleThreadRes
   }
 };
 
+export const updateThread = async (
+  threadId: number, 
+  threadData: {
+    title: string;
+    content: string;
+    category_id: number;
+  }
+): Promise<SingleThreadResult> => {
+  try {
+    const response = await axios.put<Thread>(`/threads/${threadId}`, threadData);
+
+    if (response.data) {
+      return {
+        success: true,
+        data: response.data
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  } catch (error) {
+    console.error('Thread update error:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response?.status === 400) {
+        const errorData = axiosError.response.data as ValidationErrorResponse;
+        return {
+          success: false,
+          error: {
+            message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            code: errorData.code || 'VALIDATION_ERROR'
+          }
+        };
+      }
+
+      if (axiosError.response?.status === 401) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            code: 'UNAUTHORIZED'
+          }
+        };
+      }
+
+      if (axiosError.response?.status === 404) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            code: 'NOT_FOUND'
+          }
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  }
+};
+
 export const fetchCategories = async (): Promise<CategoryResponse> => {
   try {
     const response = await axios.get<CategoryResponse>('/threads/categories');
