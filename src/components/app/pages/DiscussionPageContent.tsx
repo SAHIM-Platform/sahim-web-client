@@ -1,24 +1,26 @@
 'use client';
 
 import ThreadItem from "@/components/app/ThreadListing/ThreadItem";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import SimilarThreads from "@/components/app/SimilarThreads";
 import Textarea from "@/components/Textarea";
 import Button from "@/components/Button";
 import { useState, ChangeEvent, useEffect } from "react";
 import { Thread } from "@/types/thread";
 import { toast } from "react-hot-toast";
-import { fetchThreadById, fetchThreads } from "@/services/threadService";
+import { fetchThreadById, fetchThreads, deleteThread } from "@/services/threadService";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CommentListing from "@/components/app/Comment/CommentListing";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {
+  const router = useRouter();
   const [comment, setComment] = useState("");
   const [thread, setThread] = useState<Thread | null>(null);
   const [similarThreads, setSimilarThreads] = useState<Thread[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const loadThread = async () => {
@@ -31,7 +33,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
         if (threadResult.success && threadResult.data) {
           setThread(threadResult.data);
 
-          // Fitch similar threads (have same category)
+          // Fetch similar threads (have same category)
           const threadsResult = await fetchThreads();
           if (threadsResult.success && threadsResult.data) {
             const threadsData = threadsResult.data.data;
@@ -75,6 +77,27 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     setThread(updatedThread);
   };
 
+  const handleThreadDelete = async () => {
+    if (!thread || !window.confirm('هل أنت متأكد من حذف هذه المناقشة؟')) return;
+
+    try {
+      setIsDeleting(true);
+      const result = await deleteThread(thread.thread_id);
+
+      if (result.success) {
+        toast.success('تم حذف المناقشة بنجاح');
+        router.push('/explore');
+      } else {
+        toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
+      }
+    } catch (err) {
+      console.error('Error deleting thread:', err);
+      toast.error('حدث خطأ أثناء حذف المناقشة');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -105,6 +128,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
           showFullContent={true}
           hideTitle
           onEdit={handleThreadUpdate}
+          onDelete={handleThreadDelete}
         />
 
         <div className="bg-white rounded-xl border border-gray-200 p-4">

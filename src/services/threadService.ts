@@ -310,3 +310,67 @@ export const fetchCategories = async (): Promise<CategoryResponse> => {
     throw new Error(ERROR_MESSAGES.thread.DEFAULT);
   }
 };
+
+export interface DeleteThreadResult {
+  success: boolean;
+  error?: {
+    message: string;
+    code: string;
+  };
+}
+
+export const deleteThread = async (threadId: number): Promise<DeleteThreadResult> => {
+  try {
+    await axiosInstance.delete(`/threads/${threadId}`);
+    return {
+      success: true
+    };
+  } catch (error) {
+    console.error('Thread deletion error:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      // Handle unauthorized errors
+      if (axiosError.response?.status === 401) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            code: 'UNAUTHORIZED'
+          }
+        };
+      }
+
+      // Handle not found errors
+      if (axiosError.response?.status === 404) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            code: 'NOT_FOUND'
+          }
+        };
+      }
+
+      // Handle forbidden errors (e.g., trying to delete someone else's thread)
+      if (axiosError.response?.status === 403) {
+        return {
+          success: false,
+          error: {
+            message: 'لا يمكنك حذف هذه المناقشة',
+            code: 'FORBIDDEN'
+          }
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  }
+};
