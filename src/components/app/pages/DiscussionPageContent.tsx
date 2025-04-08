@@ -104,6 +104,9 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   };
 
   const handleThreadUpdate = (updatedThread: Thread) => {
+    if (thread && thread.comments) {
+      updatedThread.comments = thread.comments;
+    }
     setThread(updatedThread);
   };
 
