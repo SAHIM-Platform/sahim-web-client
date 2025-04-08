@@ -1,8 +1,9 @@
-import { AxiosInstance, isAxiosError } from "axios";
+import axiosInstance from '@/api/axios';
+import { isAxiosError } from "axios";
 import { AuthResult, LogoutResponse, APIError } from '@/types/auth';
 import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 
-export const logoutService = async (axiosInstance: AxiosInstance): Promise<AuthResult<LogoutResponse>> => {
+export const logoutService = async (): Promise<AuthResult<LogoutResponse>> => {
     try {
         const response = await axiosInstance.post('/auth/signout');
         return {

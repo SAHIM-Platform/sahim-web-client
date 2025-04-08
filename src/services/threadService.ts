@@ -1,4 +1,4 @@
-import axios from '@/api/axios';
+import axiosInstance from '@/api/axios';
 import { ThreadResult, ThreadResponse, SingleThreadResult, Thread } from '@/types/thread';
 import { AxiosError, isAxiosError } from 'axios';
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
@@ -29,7 +29,7 @@ export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Pro
   try {
     console.log("threadId ", threadId)
     console.log("voteType ", voteType)
-    const response = await axios.post<APIVoteResponse>(`/threads/${threadId}/vote`, {
+    const response = await axiosInstance.post<APIVoteResponse>(`/threads/${threadId}/vote`, {
       vote_type: voteType
     });
     
@@ -78,7 +78,7 @@ export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Pro
 
 export const fetchThreads = async (): Promise<ThreadResult> => {
   try {
-    const response = await axios.get<ThreadResponse>('/threads');
+    const response = await axiosInstance.get<ThreadResponse>('/threads');
 
     if (response.data) {
       return {
@@ -146,7 +146,7 @@ export const fetchThreads = async (): Promise<ThreadResult> => {
 
 export const fetchThreadById = async (threadId: number): Promise<SingleThreadResult> => {
   try {
-    const response = await axios.get<Thread>(`/threads/${threadId}`);
+    const response = await axiosInstance.get<Thread>(`/threads/${threadId}`);
 
     if (response.data) {
       return {
@@ -212,9 +212,83 @@ export const fetchThreadById = async (threadId: number): Promise<SingleThreadRes
   }
 };
 
+export const updateThread = async (
+  threadId: number, 
+  threadData: {
+    title: string;
+    content: string;
+    category_id: number;
+    thumbnail_url?: string | null;
+  }
+): Promise<SingleThreadResult> => {
+  try {
+    const response = await axiosInstance.put<Thread>(`/threads/${threadId}`, threadData);
+
+    if (response.data) {
+      return {
+        success: true,
+        data: response.data
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  } catch (error) {
+    console.error('Thread update error:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response?.status === 400) {
+        const errorData = axiosError.response.data as ValidationErrorResponse;
+        return {
+          success: false,
+          error: {
+            message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            code: errorData.code || 'VALIDATION_ERROR'
+          }
+        };
+      }
+
+      if (axiosError.response?.status === 401) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            code: 'UNAUTHORIZED'
+          }
+        };
+      }
+
+      if (axiosError.response?.status === 404) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            code: 'NOT_FOUND'
+          }
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  }
+};
+
 export const fetchCategories = async (): Promise<CategoryResponse> => {
   try {
-    const response = await axios.get<CategoryResponse>('/threads/categories');
+    const response = await axiosInstance.get<CategoryResponse>('/threads/categories');
 
     if (response.data) {
       return response.data;
@@ -235,5 +309,69 @@ export const fetchCategories = async (): Promise<CategoryResponse> => {
     }
 
     throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+  }
+};
+
+export interface DeleteThreadResult {
+  success: boolean;
+  error?: {
+    message: string;
+    code: string;
+  };
+}
+
+export const deleteThread = async (threadId: number): Promise<DeleteThreadResult> => {
+  try {
+    await axiosInstance.delete(`/threads/${threadId}`);
+    return {
+      success: true
+    };
+  } catch (error) {
+    console.error('Thread deletion error:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      // Handle unauthorized errors
+      if (axiosError.response?.status === 401) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            code: 'UNAUTHORIZED'
+          }
+        };
+      }
+
+      // Handle not found errors
+      if (axiosError.response?.status === 404) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            code: 'NOT_FOUND'
+          }
+        };
+      }
+
+      // Handle forbidden errors (e.g., trying to delete someone else's thread)
+      if (axiosError.response?.status === 403) {
+        return {
+          success: false,
+          error: {
+            message: 'لا يمكنك حذف هذه المناقشة',
+            code: 'FORBIDDEN'
+          }
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
   }
 };
