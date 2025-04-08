@@ -2,13 +2,13 @@
 
 import { Hash, X } from "lucide-react";
 import Divider from "../Divider";
-import { categories } from "@/data/mock-api";
 import Link from "next/link";
 import ThreadItemMinimal from "./ThreadListing/ThreadItemMinimal";
 import { Fragment, useState, useEffect } from "react";
 import { cn } from "@/utils/utils";
-import { fetchThreads } from "@/services/threadService";
+import { fetchThreads, fetchCategories } from "@/services/threadService";
 import { Thread } from "@/types/thread";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface AppInfoSidebarProps {
   isOpen: boolean;
@@ -49,10 +49,31 @@ function AppInfoSidebar({ isOpen, onClose }: AppInfoSidebarProps) {
 
 function SidebarContent() {
   const [latestDiscussions, setLatestDiscussions] = useState<Thread[]>([]);
+  const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+  const [categoriesError, setCategoriesError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadThreads = async () => {
+    const loadData = async () => {
       try {
+        // Load categories
+        const categoriesResponse = await fetchCategories();
+        if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
+          setCategories(categoriesResponse.data);
+        } else {
+          setCategoriesError("Failed to load categories");
+          setCategories([]);
+        }
+      } catch (error) {
+        console.error('Error loading categories:', error);
+        setCategoriesError("Failed to load categories");
+        setCategories([]);
+      } finally {
+        setIsLoadingCategories(false);
+      }
+
+      try {
+        // Load latest discussions
         const result = await fetchThreads();
         if (result.success && result.data) {
           const threads = result.data.data;
@@ -66,7 +87,7 @@ function SidebarContent() {
       }
     };
 
-    loadThreads();
+    loadData();
   }, []);
 
   return (
@@ -74,16 +95,25 @@ function SidebarContent() {
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">التصنيفات</span>
         <div className="space-y-1">
-          {categories.map((category) => (
-            <Link
-              key={category.id}
-              href={`/categories/${category.id}`}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors hover:bg-gray-100/80"
-            >
-              <Hash className="w-4 h-4 text-gray-500" />
-              {category.name}
-            </Link>
-          ))}
+          {isLoadingCategories ? (
+            <div className="flex justify-center py-4">
+              <LoadingSpinner size="sm" color="primary" />
+            </div>
+          ) : categoriesError ? (
+            <p className="text-sm text-red-500 px-3 py-2">{categoriesError}</p>
+          ) : categories.length === 0 ? (
+            <p className="text-sm text-gray-500 px-3 py-2">لا توجد تصنيفات متاحة</p>
+          ) : (
+            categories.map((category) => (
+              <div
+                key={category.category_id}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm"
+              >
+                <Hash className="w-4 h-4 text-gray-500" />
+                {category.name}
+              </div>
+            ))
+          )}
         </div>
       </div>
 
