@@ -12,7 +12,7 @@ async function signupService(data: SignupFormData): Promise<AuthResult> {
       username: data.username.trim(),
       password: data.password,
       name: data.name.trim(),
-      academicNumber: parseInt(data.academicNumber, 10),
+      academicNumber: data.academicNumber,
       department: data.department,
       studyLevel: Number(data.studyLevel)
     };
