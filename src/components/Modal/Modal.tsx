@@ -35,7 +35,7 @@ function Modal({ isOpen, onClose, children, title, size = 'md' }: ModalProps) {
     <>
       <Overlay onClick={onClose} />
       <div className={cn(
-        "fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl mt-20 p-4 bg-white rounded-xl shadow-xl border border-gray-200 z-[60]",
+        "fixed overflow-y-auto top-0 bottom-10 left-1/2 -translate-x-1/2 w-full max-w-3xl mt-20 p-4 bg-white rounded-xl shadow-xl border border-gray-200 z-[60]",
         sizeClasses[size]
       )}>
         <button
@@ -47,7 +47,9 @@ function Modal({ isOpen, onClose, children, title, size = 'md' }: ModalProps) {
         {title && (
           <h2 className="text-xl font-semibold mb-4 pt-2">{title}</h2>
         )}
-        <div className={!title ? "pt-12" : undefined}>
+        <div className={cn(
+          !title ? "pt-12" : undefined
+        )}>
           {children}
         </div>
       </div>

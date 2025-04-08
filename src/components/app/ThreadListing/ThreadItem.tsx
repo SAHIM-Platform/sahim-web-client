@@ -400,6 +400,7 @@ const ThreadItem = ({
           created_at,
           category,
           votes,
+          thumbnail_url,
           _count,
         }}
         onSuccess={handleEditSuccess}
