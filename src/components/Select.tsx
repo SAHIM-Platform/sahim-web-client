@@ -34,7 +34,7 @@ const selectVariants = cva(
     variants: {
       variant: {
         primary: [
-          "border border-gray-200/80 bg-white text-gray-800",
+          "border bg-white text-gray-800",
           "hover:border-gray-300 hover:bg-white",
           "focus-visible:border-primary/60 focus-visible:ring-primary/20 focus-visible:bg-white",
           "shadow-sm",

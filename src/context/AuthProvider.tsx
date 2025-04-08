@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   if (auth.loading) {
     return (
-      <LoadingSpinner size="xl" color="primary" />
+      <LoadingSpinner size="xl" color="primary" fullScreen={true} />
     );
   }
 
