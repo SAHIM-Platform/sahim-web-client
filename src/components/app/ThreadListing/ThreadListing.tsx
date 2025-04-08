@@ -11,6 +11,7 @@ import { Thread, ThreadResult } from "@/types/thread";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import Button from "@/components/Button";
 import { RefreshCw } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface ThreadListingProps {
   onReply?: (threadId: number) => void;
@@ -96,7 +97,7 @@ const ThreadListing = ({
   );
 
   if (isLoading) {
-    return <Loader />;
+    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
   }
 
   if (error) {
