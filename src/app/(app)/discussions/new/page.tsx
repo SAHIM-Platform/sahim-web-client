@@ -69,6 +69,7 @@ export default function NewDiscussionPage() {
       title: formData.title,
       content: formData.content,
       category_id: parseInt(formData.category), // Convert to number
+      thumbnail_url: formData.thumbnailUrl || null,
     };
 
     try {
