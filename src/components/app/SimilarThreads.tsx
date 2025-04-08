@@ -1,11 +1,11 @@
 import { Fragment } from "react";
-import { ThreadItemProps } from "./ThreadListing/ThreadItem";
 import ThreadItemMinimal from "./ThreadListing/ThreadItemMinimal";
 import Divider from "../Divider";
+import { Thread } from "@/types/thread";
 
 interface SimilarThreadsProps {
-  threads: ThreadItemProps[];
-  threadPageId: string;
+  threads: Thread[];
+  threadPageId: number;
 }
 
 function SimilarThreads({ threads, threadPageId }: SimilarThreadsProps) {
@@ -18,14 +18,14 @@ function SimilarThreads({ threads, threadPageId }: SimilarThreadsProps) {
 
         <div className="grid gap-3 -mr-3">
           {threads
-            .filter(t => t.id !== threadPageId)
-            .map((thread: ThreadItemProps, index) => (
-              <Fragment key={thread.id}>
+            .filter(t => t.thread_id !== threadPageId)
+            .map((thread, index) => (
+              <Fragment key={thread.thread_id}>
                 <ThreadItemMinimal
-                  id={thread.id}
-                  repliesCount={thread.repliesCount}
-                  timestamp={thread.timestamp}
-                  title={thread.title as string}
+                  thread_id={thread.thread_id}
+                  title={thread.title}
+                  commentsCount={thread._count.comments}
+                  created_at={thread.created_at}
                 />
                 {index < threads.length - 1 && (
                   <Divider label="" borderColor="gray-100" />

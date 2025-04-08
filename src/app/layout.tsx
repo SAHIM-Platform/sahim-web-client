@@ -1,5 +1,7 @@
 import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/context/AuthProvider";
+import { Toaster } from "react-hot-toast";
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
@@ -15,7 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${ibmPlexSansArabic.variable} antialiased`}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+        <Toaster position="bottom-center" />
       </body>
     </html>
   );

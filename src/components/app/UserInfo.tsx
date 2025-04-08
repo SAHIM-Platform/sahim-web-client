@@ -1,5 +1,5 @@
-import Image from "next/image";
 import DateBadge from "./Badge/DateBadge";
+import UserPhoto from "../UserPhoto";
 
 interface UserInfoProps {
   name?: string;
@@ -7,6 +7,7 @@ interface UserInfoProps {
   photoAlt?: string;
   date?: string;
   children?: React.ReactNode;
+  hideDetailsOnSmallScreens?: boolean;
 }
 
 function UserInfo({
@@ -14,24 +15,28 @@ function UserInfo({
   photo,
   photoAlt,
   date,
-  children
+  children,
+  hideDetailsOnSmallScreens = false,
 }: UserInfoProps) {
   return (
-    <div
-      className="flex items-center gap-3"
-    >
-      {photo && (photoAlt || name) && <Image
-        src={photo}
-        alt={name as string || photoAlt as string}
-        width={32}
-        height={32}
-        className="rounded-full ring-2 ring-white object-cover"
-      />}
-      {(name || photoAlt) && <div className="flex flex-col items-start gap-1">
+    <div className="flex items-center gap-3">
+      {(name || photoAlt) && (
+        <UserPhoto
+          name={name || photoAlt || ''}
+          size={32}
+          className="ring-2 ring-white"
+        />
+      )}
+      {(name || photoAlt) && 
+      <div className={`flex flex-col items-start gap-1 ${hideDetailsOnSmallScreens ? "hidden sm:block" : ""}`}>
         {name && <span className="text-[14px] font-semibold text-gray-700 leading-none">{name}</span>}
         {date && <DateBadge label={date} size="sm" />}
       </div>}
-      {children}
+      {children && (
+        <div className={hideDetailsOnSmallScreens? "hidden sm:block" : ""}>
+          {children}
+        </div>)
+      }
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import Button from "./Button";
 import Input from "./Input";
 import Select from "./Select";
@@ -9,11 +9,78 @@ import Divider from "./Divider";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, EyeOff, Mail, Lock, User, GraduationCap, Building2, GraduationCap as GraduationCap2 } from "lucide-react";
-import { departmentLabels } from "@/types";
+import { departmentLabels, Level } from "@/types";
+import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import validateSignupForm, { SignupFormData } from "@/utils/api/signup/validateSignupForm";
+import ErrorAlert from "./Form/ErrorAlert";
+import signupService from "@/services/auth/signupService";
 
 const SignupForm = () => {
+  const { setAuth } = useAuth();
+  const router = useRouter();
+  
+  const [formData, setFormData] = useState<Partial<SignupFormData>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleChange = (field: keyof SignupFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setFormError(null);
+    setIsLoading(true);
+    
+    // Validate form
+    const validationErrors = validateSignupForm(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      console.log('Starting signup submission...');
+      const result = await signupService(formData as SignupFormData);
+
+      console.log('Signup result:', result);
+
+      if (result.success && result.data?.accessToken) {
+        console.log('Signup successful, setting auth and redirecting...');
+        setAuth({
+          accessToken: result.data.accessToken,
+          loading: false
+        });
+        router.push('/explore');
+      } else {
+        console.log('Signup failed:', result.error);
+        if (result.error?.fields) {
+          setErrors(result.error.fields.reduce<Record<string, string>>((acc, field) => ({
+            ...acc,
+            [field]: result.error?.message || ''
+          }), {}));
+        }
+        setFormError(result.error?.message || "حدث خطأ أثناء إنشاء الحساب");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      setFormError("حدث خطأ غير متوقع أثناء إنشاء الحساب");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-[520px] flex flex-col justify-center items-center text-right gap-5 sm:gap-8 p-6 sm:p-8 lg:p-10 rounded-lg sm:rounded-xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/20 box-border" dir="rtl">
@@ -27,13 +94,16 @@ const SignupForm = () => {
 
       <div className="space-y-5 sm:space-y-6 w-full">
         <div className="space-y-4 w-full">
-          <form className="flex flex-col space-y-3 w-full">
+          <form onSubmit={handleSubmit} className="flex flex-col space-y-3 w-full">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 type="text"
                 placeholder="الاسم"
                 label="الاسم"
                 required
+                value={formData.name || ''}
+                onChange={(e) => handleChange('name', e.target.value)}
+                error={errors.name}
                 startIcon={<User className="w-[18px] h-[18px]" />}
               />
               <Input
@@ -41,22 +111,43 @@ const SignupForm = () => {
                 placeholder="الرقم الأكاديمي"
                 label="الرقم الأكاديمي"
                 required
+                value={formData.academicNumber || ''}
+                onChange={(e) => handleChange('academicNumber', e.target.value)}
+                error={errors.academicNumber}
                 startIcon={<GraduationCap className="w-[18px] h-[18px]" />}
               />
             </div>
-            <Input
-              type="email"
-              placeholder="البريد الإلكتروني"
-              label="البريد الإلكتروني"
-              required
-              startIcon={<Mail className="w-[18px] h-[18px]" />}
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Input
+                type="text"
+                placeholder="اسم المستخدم"
+                label="اسم المستخدم"
+                required
+                value={formData.username || ''}
+                onChange={(e) => handleChange('username', e.target.value)}
+                error={errors.username}
+                startIcon={<User className="w-[18px] h-[18px]" />}
+              />
+              <Input
+                type="email"
+                placeholder="البريد الإلكتروني"
+                label="البريد الإلكتروني"
+                required
+                value={formData.email || ''}
+                onChange={(e) => handleChange('email', e.target.value)}
+                error={errors.email}
+                startIcon={<Mail className="w-[18px] h-[18px]" />}
+              />
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 type={showPassword ? "text" : "password"}
                 placeholder="كلمة المرور"
                 label="كلمة المرور"
                 required
+                value={formData.password || ''}
+                onChange={(e) => handleChange('password', e.target.value)}
+                error={errors.password}
                 startIcon={<Lock className="w-[18px] h-[18px]" />}
                 endIcon={
                   showPassword ? (
@@ -83,6 +174,9 @@ const SignupForm = () => {
                 placeholder="تأكيد كلمة المرور"
                 label="تأكيد كلمة المرور"
                 required
+                value={formData.confirmPassword || ''}
+                onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                error={errors.confirmPassword}
                 startIcon={<Lock className="w-[18px] h-[18px]" />}
                 endIcon={
                   showConfirmPassword ? (
@@ -114,21 +208,38 @@ const SignupForm = () => {
                 placeholder="اختر القسم"
                 label="القسم"
                 required
+                value={formData.department || ''}
+                onChange={(e) => handleChange('department', e.target.value)}
+                error={errors.department}
                 startIcon={<Building2 className="w-[18px] h-[18px]" />}
               />
               <Select
-                options={[1, 2, 3, 4, 5].map((level) => ({
-                  value: level.toString(),
-                  label: `المستوى ${level}`
-                }))}
+                options={Object.values(Level)
+                  .filter((v): v is number => typeof v === "number")
+                  .map((level) => ({
+                    value: level.toString(),
+                    label: `المستوى ${level}`
+                  }))}
                 placeholder="اختر المستوى"
                 label="المستوى الدراسي"
                 required
+                value={formData.studyLevel?.toString() || ''}
+                onChange={(e) => handleChange('studyLevel', e.target.value)}
+                error={errors.studyLevel}
                 startIcon={<GraduationCap2 className="w-[18px] h-[18px]" />}
               />
             </div>
+
+            {formError && <ErrorAlert message={formError} />}
+
             <div className="pt-1 sm:pt-2">
-              <Button fullWidth variant="primary">
+              <Button
+                type="submit"
+                fullWidth
+                variant="primary"
+                isLoading={isLoading}
+                disabled={isLoading || Object.keys(errors).length > 0}
+              >
                 إنشاء حساب
               </Button>
             </div>

@@ -9,11 +9,11 @@ export const currentUser = {
 export const unreadNotifications = 8;
 
 export const categories = [
-  { id: "tech", name: "التقنية" },
-  { id: "design", name: "التصميم" },
-  { id: "development", name: "البرمجة" },
-  { id: "ai", name: "الذكاء الاصطناعي" },
-  { id: "business", name: "الأعمال" },
+  { id: "1", name: "التقنية" },
+  { id: "2", name: "التصميم" },
+  { id: "3", name: "البرمجة" },
+  { id: "4", name: "الذكاء الاصطناعي" },
+  { id: "5", name: "الأعمال" },
 ];
 
 export const discussionThreads: ThreadItemProps[] = [
@@ -25,19 +25,72 @@ export const discussionThreads: ThreadItemProps[] = [
     },
     title: "مرحباً بالجميع! هل يمكننا مناقشة المشروع الجديد؟",
     timestamp: "منذ 5 دقائق",
-    likesCount: 12,
+    votesCount: 12,
     repliesCount: 3,
-    isLiked: false,
+    userVote: null,
     category: categories[3].name,
-    content: `دعونا نبدأ مناقشة حول المشروع الجديد ونتبادل الأفكار والآراء لتحقيق أفضل النتائج. في هذه المناقشة، نود أن نناقش ما يلي:
-    1. ما هو سبب بدء هذا المشروع؟
-    2. ما هو الهدف الرئيسي لهذا المشروع؟
-    3. ما هي المخاطر المحتملة لهذا المشروع؟
-    4. ما هي الخطوات اللازمة لتحقيق النجاح في هذا المشروع؟
-    5. ما هو الدور الذي سيلعبه كل فرد في هذا المشروع؟
-    6. ما هي المكاسب المالية لهذا المشروع؟
-    7. ما هي المشاكل المحتملة التي ستواجهها في هذا المشروع؟
-    8. ما هو الحل الأفضل لهذه المشاكل؟`,
+    content: `
+  # مشروع إدارة المخزون - Inventory Management System
+
+  ## مقدمة
+  
+  مشروع **Inventory Management System** هو تطبيق مبتكر يهدف إلى تبسيط إدارة المخزون في الشركات والمؤسسات. يعتمد المشروع على تقنيات حديثة في البرمجة ويوفر واجهات سهلة الاستخدام لإضافة، تعديل، وحذف العناصر في المخزون بشكل آمن وفعال.
+  
+  ### التقنيات المستخدمة
+  
+  - **C#**: اللغة الأساسية لتطوير التطبيق باستخدام **.NET Framework**.
+  - **SQL Server**: قاعدة البيانات المستخدمة لتخزين البيانات المتعلقة بالعناصر في المخزون.
+  - **Windows Forms**: لبناء واجهات المستخدم التي تتيح التفاعل السهل مع النظام.
+  
+  ---
+  
+  ## الميزات الرئيسية
+  
+  ### إدارة العناصر
+  
+  يتيح التطبيق للمستخدمين إضافة وتعديل وحذف العناصر في المخزون، مما يسمح بتتبع الكميات المتاحة والعناصر المفقودة.
+  
+  ### تقارير المخزون
+  
+  يستطيع المستخدمون توليد تقارير دورية توضح حركة المخزون والمبيعات، بالإضافة إلى تحليل البيانات لتحديد الفجوات أو الفائض في المخزون.
+  
+  ### تنبيهات المخزون
+  
+  يتم إرسال تنبيهات عند انخفاض الكميات تحت الحد الأدنى المخطط له، مما يساعد في تجنب نفاد المخزون.
+  
+  ---
+  
+  ## روابط مهمة
+  
+  - رابط إلى [الموقع الرسمي لمشروع Inventory Management System](https://github.com/InventoryManagementSystem).
+  - رابط إلى [التوثيق](https://github.com/InventoryManagementSystem/docs).
+  
+  ---
+  
+  ## القوائم
+  
+  ### قائمة الميزات:
+  
+  - إضافة العناصر إلى المخزون.
+  - تعديل بيانات العناصر مثل السعر والكميات.
+  - إنشاء تقارير حركة المخزون.
+  - تنبيهات انخفاض المخزون.
+  
+  ### مراحل التطوير:
+  
+  1. بناء قاعدة البيانات.
+  2. تطوير واجهات المستخدم باستخدام Windows Forms.
+  3. تطوير نظام التنبيهات.
+  4. اختبار التطبيق وتحسين الأداء.
+  
+  ---
+  
+  ## مثال على كود مضمن
+  
+  \`\`\`csharp
+  Console.WriteLine("Adding item: " + name + " Quantity: " + quantity + " Price: " + price);
+  \`\`\`
+  `,
     comments: [
       {
         id: "1",
@@ -83,9 +136,9 @@ export const discussionThreads: ThreadItemProps[] = [
     title: "كيفية تحسين واجهة المستخدم في التطبيقات",
     thumbnail: "https://picsum.photos/id/48/600/400",
     timestamp: "منذ يومين",
-    likesCount: 8,
+    votesCount: 8,
     repliesCount: 5,
-    isLiked: false,
+    userVote: null,
     category: categories[1].name,
     content: "أريد معرفة الآراء والتجارب حول تحسين واجهة المستخدم لضمان تجربة أفضل للمستخدمين.",
     comments: [
@@ -122,9 +175,9 @@ export const discussionThreads: ThreadItemProps[] = [
     title: "أفضل الممارسات لتجربة المستخدم",
     thumbnail: "https://picsum.photos/id/7/600/400",
     timestamp: "منذ 3 أيام",
-    likesCount: 15,
+    votesCount: 15,
     repliesCount: 12,
-    isLiked: false,
+    userVote: null,
     category: categories[1].name,
     content: "شاركوني بالممارسات الجيدة التي تساهم في تحسين تجربة المستخدم وجعلها أكثر تفاعلية.",
     comments: [
@@ -160,9 +213,9 @@ export const discussionThreads: ThreadItemProps[] = [
     },
     title: "مناقشة حول تحسين أداء التطبيق",
     timestamp: "منذ 4 أيام",
-    likesCount: 10,
+    votesCount: 10,
     repliesCount: 7,
-    isLiked: false,
+    userVote: null,
     category: categories[2].name,
     content: "لنناقش الأساليب الفعالة في تحسين أداء التطبيق وتسريع استجابته للمستخدمين.",
     comments: [

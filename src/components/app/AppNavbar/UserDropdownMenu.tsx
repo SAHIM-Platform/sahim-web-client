@@ -1,88 +1,93 @@
-'use client';
-import { useState, useRef, useEffect } from 'react';
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, User, Settings, LogOut } from "lucide-react";
 import UserInfo from "../UserInfo";
 import { currentUser } from "@/data/mock-api";
+import useLogout from "@/hooks/useLogout";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from "@/utils/utils";
+import Divider from "@/components/Divider";
 
 function UserDropdownMenu() {
+  const { logout, error, isLoading } = useLogout();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleDropdown = () => setIsOpen(prev => !prev);
-
-  const closeDropdown = () => setIsOpen(false);
-   // الإغلاق عند الضغط في أي مكان بالصفحة
-   useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        closeDropdown();
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
       }
     };
-  document.addEventListener("mousedown", handleClickOutside);
-   return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleItemClick = () => {
+    setIsOpen(false);
+  };
+
   return (
-
-    <div className="relative space-x-6" ref={dropdownRef}>
-       <button onClick={toggleDropdown}>
-      <UserInfo
-        name={currentUser.name}
-        photo={currentUser.avatar}
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 focus:outline-none"
       >
-        <ChevronDown className="w-4 h-4 text-gray-500" />
-      </UserInfo>
+        <UserInfo
+          name={currentUser.name}
+          photo={currentUser.avatar}
+          hideDetailsOnSmallScreens={true}
+        >
+          <ChevronDown className={cn(
+            "w-4 h-4 text-gray-500 transition-transform duration-200",
+            isOpen && "rotate-180"
+          )} />
+        </UserInfo>
       </button>
-    </div>
-    <AnimatePresence>
-    {isOpen && (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: -10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: -10 }}
-        transition={{ duration: 0.2 }}
-        className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50"
-      >
-        <ul className="py-2 text-sm text-gray-700">
-          <li>
-            <Link
-              href="#profile"
-              onClick={closeDropdown}
-              className="block px-4 py-2 hover:bg-gray-100"
-            >
-              Profile
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#settings"
-              onClick={closeDropdown}
-              className="block px-4 py-2 hover:bg-gray-100"
-            >
-              Settings
-            </Link>
-          </li>
-          <li>
-            <button
-              onClick={() => {
-                // TODO: add sign out logic here
-                closeDropdown();
-              }}
-              className="w-full text-left px-4 py-2 hover:bg-gray-100"
-            >
-              Sign Out
-            </button>
-          </li>
-        </ul>
-      </motion.div>
-    )}
-  </AnimatePresence>
 
+      <div
+        className={cn(
+          "absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md transition-all duration-200 transform origin-top",
+          isOpen
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-95 pointer-events-none"
+        )}
+      >
+        <div>
+          <Link
+            href="/profile"
+            onClick={handleItemClick}
+            className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <User className="w-4 h-4" />
+            الملف الشخصي
+          </Link>
+          <Link
+            href="/settings"
+            onClick={handleItemClick}
+            className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <Settings className="w-4 h-4" />
+            الإعدادات
+          </Link>
+        </div>
+        <Divider label="" />
+        <button
+          onClick={() => {
+            handleItemClick();
+            logout();
+          }}
+          disabled={isLoading}
+          className="flex items-center gap-2 w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <LogOut className="w-4 h-4" />
+          {isLoading ? "جاري تسجيل الخروج..." : "تسجيل الخروج"}
+        </button>
+        {error && (
+          <p className="px-4 pb-2 text-xs text-red-600">{error}</p>
+        )}
+      </div>
+    </div>
   );
 }
 
