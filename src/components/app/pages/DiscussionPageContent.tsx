@@ -12,9 +12,14 @@ import { createComment, fetchThreadById, fetchThreads, deleteThread } from "@/se
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CommentListing from "@/components/app/Comment/CommentListing";
+import useAuth from "@/hooks/useAuth";
+import useAuthRedirect from "@/hooks/UseRedirect";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const router = useRouter();
+  const { isAuthenticated, auth } = useAuth();
+  useAuthRedirect(isAuthenticated);
+  
   const [comment, setComment] = useState("");
   const [thread, setThread] = useState<Thread | null>(null);
   const [similarThreads, setSimilarThreads] = useState<Thread[]>([]);
@@ -22,6 +27,10 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  if (auth.loading) {
+    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
+  }
 
   const loadThread = async () => {
     try {
@@ -132,7 +141,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   };
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
   }
 
   if (error) {

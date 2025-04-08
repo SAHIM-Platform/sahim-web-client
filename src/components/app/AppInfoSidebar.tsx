@@ -40,7 +40,7 @@ function AppInfoSidebar({ isOpen, onClose }: AppInfoSidebarProps) {
         <SidebarContent />
       </div>
 
-      <div className="hidden xl:block fixed top-14 left-0 w-[320px] h-[calc(100vh-3.5rem)] overflow-y-auto border-r bg-white">
+      <div className="hidden xl:block fixed top-14 left-0 w-[320px] h-[calc(100vh-3.5rem)] overflow-y-auto border-r bg-[#fafafa]">
         <SidebarContent />
       </div>
     </>

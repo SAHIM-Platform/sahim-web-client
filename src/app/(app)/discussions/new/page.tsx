@@ -14,10 +14,15 @@ import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import { fetchCategories } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import useAuth from "@/hooks/useAuth";
+import useAuthRedirect from "@/hooks/UseRedirect";
 
 export default function NewDiscussionPage() {
   const router = useRouter();
   const axios = useAxios();
+  const { isAuthenticated, auth } = useAuth();
+  useAuthRedirect(isAuthenticated);
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
   const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
@@ -29,6 +34,10 @@ export default function NewDiscussionPage() {
     thumbnailUrl: "",
   });
   const { isImageValid, isImageLoading } = useImageValidation(formData.thumbnailUrl);
+
+  if (auth.loading) {
+    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
+  }
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -94,7 +103,7 @@ export default function NewDiscussionPage() {
   const areAllRequiredFieldsFilled = formData.title && formData.category && formData.content;
 
   if (isLoadingCategories) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
   }
 
   if (error) {

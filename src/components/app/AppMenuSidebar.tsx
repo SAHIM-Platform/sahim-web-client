@@ -89,7 +89,7 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
         </div>
       </div>
 
-      <aside className="fixed top-14 right-0 w-[280px] h-[calc(100vh-3.5rem)] hidden lg:block border-l overflow-y-auto bg-white">
+      <aside className="fixed top-14 right-0 w-[280px] h-[calc(100vh-3.5rem)] hidden lg:block border-l overflow-y-auto bg-[#fafafa]">
         <div className="h-full overflow-y-auto pt-24 pb-12 px-4 space-y-3">
           {appMenuSidebarData.map((item) => (
             <Link
