@@ -38,7 +38,6 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
         if (threadsResult.success && threadsResult.data) {
           const threadsData = threadsResult.data.data;
           const currentThread = threadResult.data;
-
           if (Array.isArray(threadsData)) {
             const similarThreads = threadsData
               .filter((t: Thread) => t.category_id === currentThread.category_id && t.thread_id !== currentThread.thread_id)
@@ -61,8 +60,18 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   };
 
   useEffect(() => {
+    
+    
     loadThread();
   }, [discussionId]);
+
+  const refreshThread = async () => {
+    if (!thread) return;
+    const result = await fetchThreadById(thread?.thread_id);
+    if (result.success && result.data) {
+      setThread(result.data);
+    }
+  };
 
   const handleSubmitComment = async () => {
     if (!comment.trim()) {
@@ -173,7 +182,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
           </div>
         </div>
 
-        <CommentListing thread={thread} />
+        <CommentListing thread={thread} refreshThread={refreshThread}/>
       </div>
 
       <SimilarThreads
