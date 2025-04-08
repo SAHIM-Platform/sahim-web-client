@@ -121,7 +121,7 @@ export default function NewDiscussionPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <Input
           label="عنوان المناقشة"
           placeholder="اكتب عنواناً يوضّح موضوع مناقشتك"

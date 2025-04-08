@@ -1,4 +1,4 @@
-import axios from '@/api/axios';
+import axiosInstance from '@/api/axios';
 import { AuthError, AuthResult, LoginCredentials } from "@/types/auth";
 import { AxiosError, isAxiosError } from "axios";
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
@@ -6,7 +6,7 @@ import { ValidationErrorResponse } from '@/types';
 
 async function loginService(credentials: LoginCredentials): Promise<AuthResult> {
 	try {
-		const response = await axios.post('/auth/signin', credentials);
+		const response = await axiosInstance.post('/auth/signin', credentials);
 		console.log('response ', response)
 		// there is accessToken? consider it success
 		if (response.data && response.data.accessToken) {
