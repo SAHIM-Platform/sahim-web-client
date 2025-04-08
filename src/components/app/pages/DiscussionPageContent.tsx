@@ -65,6 +65,14 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     loadThread();
   }, [discussionId]);
 
+  const refreshThread = async () => {
+    if (!thread) return;
+    const result = await fetchThreadById(thread?.thread_id);
+    if (result.success && result.data) {
+      setThread(result.data);
+    }
+  };
+
   const handleSubmitComment = async () => {
     if (!comment.trim()) {
       toast.error("الرجاء إدخال تعليق");
@@ -146,7 +154,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
           </div>
         </div>
 
-        <CommentListing thread={thread} />
+        <CommentListing thread={thread} refreshThread={refreshThread}/>
       </div>
 
       <SimilarThreads
