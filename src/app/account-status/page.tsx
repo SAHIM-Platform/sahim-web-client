@@ -24,6 +24,7 @@ export default function AccountStatusPage() {
         <Button
           size="lg"
           icon={<ArrowLeft className="w-5 h-5" />}
+          iconPosition="end"
           href="/explore"
         >
           المتابعة إلى الصفحة الرئيسية
