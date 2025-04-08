@@ -218,6 +218,7 @@ export const updateThread = async (
     title: string;
     content: string;
     category_id: number;
+    thumbnail_url?: string | null;
   }
 ): Promise<SingleThreadResult> => {
   try {

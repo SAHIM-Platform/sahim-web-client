@@ -79,7 +79,7 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
       title: formData.title,
       content: formData.content,
       category_id: parseInt(formData.category),
-      // thumbnail_url: formData.thumbnailUrl || null,
+      thumbnail_url: formData.thumbnailUrl || null,
     };
 
     try {
