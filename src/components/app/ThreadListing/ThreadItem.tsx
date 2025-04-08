@@ -34,6 +34,7 @@ export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
 
 const ThreadItem = ({
   thread_id,
+  bookmarked,
   title: initialTitle,
   author,
   content: initialContent,
@@ -382,7 +383,7 @@ const ThreadItem = ({
             >
               مشاركة
             </Button>
-            <BookmarkToggle />
+            <BookmarkToggle threadId={thread_id} initiallyBookmarked={bookmarked === true} />
           </div>
         </div>
       </Link>
