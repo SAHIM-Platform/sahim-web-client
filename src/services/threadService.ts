@@ -129,7 +129,6 @@ export async function createComment(threadId: number, content: string): Promise<
   }
 }
 
-// Add these to your existing threadService.ts
 
 export async function updateComment(
   threadId: number,
@@ -497,5 +496,91 @@ export const deleteThread = async (threadId: number): Promise<DeleteThreadResult
         code: 'UNKNOWN_ERROR'
       }
     };
+  }
+};
+
+export interface BookmarkResult {
+  success: boolean;
+  message: string;
+  error?: string;
+}
+
+export const bookmarkThread = async (threadId: number): Promise<BookmarkResult> => {
+  try {
+    const response = await axiosInstance.post(`/threads/${threadId}/bookmark`);
+
+    if (response.data?.success) {
+      return {
+        success: true,
+        message: response.data.message
+      };
+    }
+
+    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+  } catch (error) {
+    console.error('Error bookmarking thread:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response?.status === 403) {
+        const message = (axiosError.response.data as { message?: string })?.message ?? 'Forbidden';
+        return {
+          success: false,
+          message,
+          error: 'FORBIDDEN'
+        };
+      }
+
+      if (axiosError.response?.status === 401) {
+        throw new Error(ERROR_MESSAGES.auth.UNAUTHORIZED);
+      }
+
+      if (axiosError.response?.status === 404) {
+        throw new Error(ERROR_MESSAGES.thread.NOT_FOUND);
+      }
+    }
+
+    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+  }
+};
+
+export const unbookmarkThread = async (threadId: number): Promise<BookmarkResult> => {
+  try {
+    const response = await axiosInstance.delete(`/threads/${threadId}/bookmark`);
+
+    if (response.data?.success) {
+      return {
+        success: true,
+        message: response.data.message
+      };
+    }
+
+    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+  } catch (error) {
+    console.error('Error unbookmarking thread:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response?.status === 403) {
+        const message = (axiosError.response.data as { message?: string })?.message ?? 'Forbidden';
+        return {
+          success: false,
+          message,
+          error: 'FORBIDDEN'
+        };
+      }
+
+      if (axiosError.response?.status === 401) {
+        throw new Error(ERROR_MESSAGES.auth.UNAUTHORIZED);
+      }
+
+      if (axiosError.response?.status === 404) {
+        throw new Error(ERROR_MESSAGES.thread.NOT_FOUND);
+      }
+    }
+
+    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
   }
 };

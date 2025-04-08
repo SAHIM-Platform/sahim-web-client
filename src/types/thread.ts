@@ -6,6 +6,7 @@ export interface Thread {
   content: string;
   created_at: string;
   thumbnail_url?: string;
+  bookmarked?: boolean;
   author: {
     id: number;
     username: string;
