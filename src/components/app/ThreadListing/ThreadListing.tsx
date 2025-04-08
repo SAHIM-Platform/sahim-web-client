@@ -4,7 +4,7 @@ import { categories } from "@/data/mock-api";
 import ThreadItem from "./ThreadItem";
 import ThreadListingHeader from "./ThreadListingHeader";
 import { useState, useEffect } from "react";
-import { fetchThreads } from "@/services/threadService";
+import { fetchThreads, deleteThread } from "@/services/threadService";
 import Loader from "@/components/Loader";
 import toast from "react-hot-toast";
 import { Thread, ThreadResult } from "@/types/thread";
@@ -29,13 +29,14 @@ const ThreadListing = ({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [threads, setThreads] = useState<Thread[]>([]);
+  const [deletingThreadId, setDeletingThreadId] = useState<number | null>(null);
 
   const loadThreads = async () => {
     try {
       setIsLoading(true);
       setError(null);
       const result = await fetchThreads();
-      
+
       if (result.success && result.data) {
         setThreads(Array.isArray(result.data.data) ? result.data.data : [result.data.data]);
       } else {
@@ -50,7 +51,7 @@ const ThreadListing = ({
         stack: err instanceof Error ? err.stack : undefined,
         timestamp: new Date().toISOString(),
       });
-      
+
       const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المناقشات';
       setError(`${errorMessage}. حاول مرة أخرى.`);
       toast.error(errorMessage);
@@ -65,6 +66,27 @@ const ThreadListing = ({
 
   const handleRetry = () => {
     loadThreads();
+  };
+
+  const handleDeleteThread = async (threadId: number) => {
+    if (window.confirm('هل أنت متأكد من حذف هذه المناقشة؟')) {
+      try {
+        setDeletingThreadId(threadId);
+        const result = await deleteThread(threadId);
+        
+        if (result.success) {
+          toast.success('تم حذف المناقشة بنجاح');
+          loadThreads();
+        } else {
+          toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
+        }
+      } catch (err) {
+        console.error('Error deleting thread:', err);
+        toast.error('حدث خطأ أثناء حذف المناقشة');
+      } finally {
+        setDeletingThreadId(null);
+      }
+    }
   };
 
   const processedThreads = threads.filter(
@@ -113,7 +135,7 @@ const ThreadListing = ({
           </p>
         </div>
       ) : (
-        <>
+        <div className="flex flex-col gap-5">
           {processedThreads
             .sort((a, b) => {
               const dateA = new Date(a.created_at).getTime();
@@ -126,9 +148,10 @@ const ThreadListing = ({
                 {...thread}
                 onReply={() => onReply?.(thread.thread_id)}
                 onShare={() => onShare?.(thread.thread_id)}
+                onDelete={() => handleDeleteThread(thread.thread_id)}
               />
             ))}
-        </>
+        </div>
       )}
     </div>
   );
