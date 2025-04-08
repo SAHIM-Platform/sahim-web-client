@@ -35,7 +35,7 @@ function Modal({ isOpen, onClose, children, title, size = 'md' }: ModalProps) {
     <>
       <Overlay onClick={onClose} />
       <div className={cn(
-        "fixed overflow-y-auto top-0 bottom-10 left-1/2 -translate-x-1/2 w-full max-w-3xl mt-20 p-4 bg-white rounded-xl shadow-xl border border-gray-200 z-[60]",
+        "fixed overflow-y-auto top-0 max-h-[90vh] left-1/2 -translate-x-1/2 w-full max-w-3xl mt-20 p-4 bg-white rounded-xl shadow-xl border border-gray-200 z-[60]",
         sizeClasses[size]
       )}>
         <button
