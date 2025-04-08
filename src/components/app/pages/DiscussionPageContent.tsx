@@ -8,7 +8,7 @@ import Button from "@/components/Button";
 import { useState, ChangeEvent, useEffect } from "react";
 import { Thread } from "@/types/thread";
 import { toast } from "react-hot-toast";
-import { fetchThreadById, fetchThreads, deleteThread } from "@/services/threadService";
+import { createComment, fetchThreadById, fetchThreads, deleteThread } from "@/services/threadService";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CommentListing from "@/components/app/Comment/CommentListing";
@@ -19,54 +19,75 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const [thread, setThread] = useState<Thread | null>(null);
   const [similarThreads, setSimilarThreads] = useState<Thread[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    const loadThread = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
+  const loadThread = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
 
-        const threadResult = await fetchThreadById(parseInt(discussionId));
+      const threadResult = await fetchThreadById(parseInt(discussionId));
 
-        if (threadResult.success && threadResult.data) {
-          setThread(threadResult.data);
+      if (threadResult.success && threadResult.data) {
+        setThread(threadResult.data);
 
-          // Fetch similar threads (have same category)
-          const threadsResult = await fetchThreads();
-          if (threadsResult.success && threadsResult.data) {
-            const threadsData = threadsResult.data.data;
-            const currentThread = threadResult.data;
+        // Fetch similar threads (have same category)
+        const threadsResult = await fetchThreads();
+        if (threadsResult.success && threadsResult.data) {
+          const threadsData = threadsResult.data.data;
+          const currentThread = threadResult.data;
 
-            if (Array.isArray(threadsData)) {
-              const similarThreads = threadsData
-                .filter((t: Thread) => t.category_id === currentThread.category_id && t.thread_id !== currentThread.thread_id)
-                .slice(0, 3);
-              setSimilarThreads(similarThreads);
-            }
+          if (Array.isArray(threadsData)) {
+            const similarThreads = threadsData
+              .filter((t: Thread) => t.category_id === currentThread.category_id && t.thread_id !== currentThread.thread_id)
+              .slice(0, 3);
+            setSimilarThreads(similarThreads);
           }
-        } else {
-          setError(threadResult.error?.message || 'حدث خطأ أثناء تحميل المناقشة');
-          toast.error(threadResult.error?.message || 'حدث خطأ أثناء تحميل المناقشة');
         }
-      } catch (err) {
-        console.error('Thread loading error:', err);
-        const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المناقشة';
-        setError(errorMessage);
-        toast.error(errorMessage);
-      } finally {
-        setIsLoading(false);
+      } else {
+        setError(threadResult.error?.message || 'حدث خطأ أثناء تحميل المناقشة');
+        toast.error(threadResult.error?.message || 'حدث خطأ أثناء تحميل المناقشة');
       }
-    };
+    } catch (err) {
+      console.error('Thread loading error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المناقشة';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     loadThread();
   }, [discussionId]);
 
-  const handleSubmitComment = () => {
-    if (!comment.trim()) return;
-    console.log("Submitting comment:", comment);
-    setComment("");
+  const handleSubmitComment = async () => {
+    if (!comment.trim()) {
+      toast.error("الرجاء إدخال تعليق");
+      return;
+    }
+    if (!thread) return;
+
+    try {
+      setIsSubmittingComment(true);
+
+      await createComment(thread.thread_id, comment);
+
+      await loadThread();
+
+      toast.success("تم إضافة تعليقك بنجاح");
+      
+      setComment("");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'حدث خطأ أثناء إضافة التعليق';
+      toast.error(errorMessage);
+
+    } finally {
+      setIsSubmittingComment(false);
+    }
   };
 
   const handleCommentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -144,6 +165,8 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
               onClick={handleSubmitComment}
               variant="primary"
               size="sm"
+              isLoading={isSubmittingComment}
+              loadingText="جاري الإرسال..."
             >
               إضافة تعليق
             </Button>
