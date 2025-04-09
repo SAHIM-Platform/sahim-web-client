@@ -49,6 +49,7 @@ export type ThreadMinimal = {
   title: Thread['title'];
   created_at: Thread['created_at'];
   commentsCount: Thread['_count']['comments'];
+  authorName: Thread['author']['name']; 
 };
 
 export interface ThreadResponse {
@@ -75,4 +76,20 @@ export interface SingleThreadResult {
   success: boolean;
   data?: Thread;
   error?: ThreadError;
+}
+
+export interface ApiSearchResult {
+  id: number;
+  title: string;
+  createdAt: string;
+  author: { id: number; name: string };
+  commentsCount: number;
+}
+
+export interface SearchResult {
+  id: string;
+  title: string;
+  timestamp: string;
+  authorName: string;
+  repliesCount: number;
 }

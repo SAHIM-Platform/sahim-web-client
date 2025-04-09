@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/utils/utils";
 import { Search } from "lucide-react";
 import SearchModal from "../Modal/SearchModal";
-import { discussionThreads } from "@/data/mock-api";
+import { searchThreads } from "@/services/threadService";
+import { ApiSearchResult, SearchResult } from "@/types/thread";
+import toast from "react-hot-toast";
 
 interface SearchButtonProps {
   isSearchFocused: boolean;
@@ -12,23 +14,24 @@ interface SearchButtonProps {
   fullWidth?: boolean;
 }
 
-interface SearchResult {
-  id: string;
-  title?: string;
-  content: string;
-  category: string;
-  repliesCount: number;
-  timestamp: string;
-}
+const mapApiToSearchResult = (apiResult: ApiSearchResult): SearchResult => ({
+  id: apiResult.id.toString(),
+  title: apiResult.title,
+  timestamp: apiResult.createdAt,
+  authorName: apiResult.author.name,
+  repliesCount: apiResult.commentsCount,
+});
 
 function SearchButton({
   isSearchFocused,
   setIsSearchFocused,
   placeholder = "ابحث في المناقشات ...",
-  fullWidth
+  fullWidth,
 }: SearchButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) {
@@ -36,36 +39,41 @@ function SearchButton({
       return;
     }
 
+    if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+
     setIsLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const results = discussionThreads.filter(thread => 
-        (thread.title && thread.title.toLowerCase().includes(query.toLowerCase())) ||
-        thread.content.toLowerCase().includes(query.toLowerCase()) ||
-        thread.category.name.toLowerCase().includes(query.toLowerCase())
-      );
-      
-      const mappedResults = results.map(thread => ({
-        id: thread.thread_id.toString(),
-        title: thread.title,
-        content: thread.content,
-        category: thread.category.name,
-        repliesCount: thread._count.comments,
-        timestamp: thread.created_at
-      }));
-      
-      setSearchResults(mappedResults);
-    } finally {
-      setIsLoading(false);
-    }
+    setError(null);
+
+    debounceTimeout.current = setTimeout(async () => {
+      try {
+        const apiResults = await searchThreads(query);
+        setSearchResults(apiResults.map(mapApiToSearchResult));
+      } catch (err) {
+        setError("فشل تحميل نتائج البحث");
+        setSearchResults([]);
+        toast.error("فشل تحميل نتائج البحث");
+      } finally {
+        setIsLoading(false);
+      }
+    }, 500);
   };
 
+  // Add cleanup:
+  useEffect(() => {
+    return () => {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+    };
+  }, []);
+
   return (
-    <div className={cn(
-      'flex-1',
-      fullWidth ? 'w-full' : 'max-w-xl min-w-[24px] sm:min-w-[240px] md:min-w-[300px] lg:min-w-[400px]'
-    )}>
+    <div
+      className={cn(
+        "flex-1",
+        fullWidth
+          ? "w-full"
+          : "max-w-xl min-w-[24px] sm:min-w-[240px] md:min-w-[300px] lg:min-w-[400px]"
+      )}
+    >
       <button
         onClick={() => setIsSearchFocused(true)}
         className={cn(
@@ -80,7 +88,9 @@ function SearchButton({
         <Search className="w-5 h-5" />
         <span className="flex-1 text-right hidden sm:block">{placeholder}</span>
         <div className="flex items-center gap-1 text-xs text-gray-400 hidden md:block">
-          <kbd className="py-0.5 px-1.5 rounded bg-white font-medium text-gray-500 shadow-sm border border-gray-100">/</kbd>
+          <kbd className="py-0.5 px-1.5 rounded bg-white font-medium text-gray-500 shadow-sm border border-gray-100">
+            /
+          </kbd>
           للبحث السريع
         </div>
       </button>
@@ -94,6 +104,7 @@ function SearchButton({
           onSearch={handleSearch}
           searchResults={searchResults}
           isLoading={isLoading}
+          error={error}
         />
       )}
     </div>

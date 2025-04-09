@@ -1,8 +1,9 @@
 import axiosInstance from '@/api/axios';
-import { ThreadResult, ThreadResponse, SingleThreadResult, Thread } from '@/types/thread';
+import { ThreadResult, ThreadResponse, SingleThreadResult, Thread, ApiSearchResult } from '@/types/thread';
 import { AxiosError, isAxiosError } from 'axios';
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
+import { SearchResult } from '@/types/thread';
 
 interface VoteResponse {
   success: boolean;
@@ -332,6 +333,16 @@ export const fetchThreadById = async (threadId: number): Promise<SingleThreadRes
         code: 'UNKNOWN_ERROR'
       }
     };
+  }
+};
+
+export const searchThreads = async (query: string): Promise<ApiSearchResult[]> => {
+  try {
+    const response = await axiosInstance.get<ApiSearchResult[]>(`/threads/search?query=${encodeURIComponent(query)}`);
+    return response.data;
+  } catch (error) {
+    console.error('Search failed:', error);
+    throw error;
   }
 };
 
