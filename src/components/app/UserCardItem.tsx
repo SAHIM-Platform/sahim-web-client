@@ -2,18 +2,12 @@
 
 import Button from "../Button";
 import { Check, X } from "lucide-react";
-import { Department, Level } from "@/types";
+import { Student } from "@/types";
 
 interface UserCardItemProps {
-  student: {
-    id: number;
-    fullName: string;
-    academicNumber: string;
-    studyLevel: Level;
-    department: Department;
-  };
-  onApprove: (id: number) => void;
-  onReject: (id: number) => void;
+  student: Student;
+  onApprove: (id: string) => void;
+  onReject: (id: string) => void;
 }
 
 const UserCardItem: React.FC<UserCardItemProps> = ({
@@ -21,6 +15,10 @@ const UserCardItem: React.FC<UserCardItemProps> = ({
   onApprove,
   onReject,
 }) => {
+  const handleApprove = () => {
+    onApprove(student.id);
+  };
+
   const handleReject = () => {
     const confirmed = window.confirm("هل أنت متأكد من رفض الطالب؟");
     if (confirmed) {
@@ -28,16 +26,12 @@ const UserCardItem: React.FC<UserCardItemProps> = ({
     }
   };
 
-  const handleApprove = () => {
-    onApprove(student.id);
-  };
-
   return (
     <div className="bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200 p-6 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
       <div className="flex flex-col gap-1 text-sm text-gray-700">
-        <h3 className="text-base font-semibold text-gray-900">{student.fullName}</h3>
+        <h3 className="text-base font-semibold text-gray-900">{student.name}</h3>
         <p className="font-light">الرقم الأكاديمي: <span className="font-normal">{student.academicNumber}</span></p>
-        <p className="font-light">المستوى الدراسي: <span className="font-normal">{student.studyLevel}</span></p>
+        <p className="font-light">المستوى الدراسي: <span className="font-normal">{student.level}</span></p>
         <p className="font-light">القسم: <span className="font-normal">{student.department}</span></p>
       </div>
 
