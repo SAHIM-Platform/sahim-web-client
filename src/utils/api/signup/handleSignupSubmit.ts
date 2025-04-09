@@ -19,7 +19,7 @@ export const handleSignupSubmit = async (
     username: values.username.trim(),
     password: values.password,
     name: values.name.trim(),
-    academicNumber: parseInt(values.academicNumber, 10),
+    academicNumber: values.academicNumber,
     department: values.department,
     studyLevel: Number(values.studyLevel)
   };
