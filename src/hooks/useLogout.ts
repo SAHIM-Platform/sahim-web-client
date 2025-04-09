@@ -29,6 +29,7 @@ const useLogout = () => {
       setAuth({
         accessToken: undefined,
         loading: false,
+        user: undefined
       });
       router.push("/login");
 

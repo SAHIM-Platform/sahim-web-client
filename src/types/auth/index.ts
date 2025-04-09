@@ -16,6 +16,11 @@ export type Student = Pick<User, "id" | "name" | "academicNumber" | "department"
 
 export interface AuthState {
   accessToken?: string;
+  user?: {
+    id: string;
+    name: string;
+    username: string;
+  };
   loading: boolean;
 }
 
@@ -32,6 +37,11 @@ export interface LoginCredentials {
 export interface AuthResponse {
   message: string;
   accessToken: string;
+  user: {
+    id: string;
+    name: string;
+    username: string;
+  };
 }
 
 export interface LogoutResponse {
