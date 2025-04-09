@@ -6,11 +6,16 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/utils/utils";
 import Divider from "@/components/Divider";
+import useAuth from "@/hooks/useAuth";
 
 function UserDropdownMenu() {
   const { logout, error, isLoading } = useLogout();
+  const { auth } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Get user information from auth state
+  const userName = auth.user?.name || "مستخدم";
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -34,8 +39,7 @@ function UserDropdownMenu() {
         className="flex items-center gap-2 focus:outline-none"
       >
         <UserInfo
-          name={currentUser.name}
-          photo={currentUser.avatar}
+          name={userName}
           hideDetailsOnSmallScreens={true}
         >
           <ChevronDown className={cn(
