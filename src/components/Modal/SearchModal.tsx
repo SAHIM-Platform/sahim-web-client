@@ -7,28 +7,22 @@ import SearchField from "../app/SearchField";
 import Loader from "../Loader";
 import ThreadItemMinimal from "../app/ThreadListing/ThreadItemMinimal";
 import Divider from "../Divider";
-
-interface SearchResult {
-  id: string;
-  title?: string;
-  content: string;
-  category: string;
-  repliesCount: number;
-  timestamp: string;
-}
+import { SearchResult } from "@/types/thread";
 
 interface SearchModalProps {
   onClose: () => void;
   onSearch: (query: string) => void;
   searchResults?: SearchResult[];
   isLoading?: boolean;
+  error?: string | null;
 }
 
 function SearchModal({
   onClose,
   onSearch,
   searchResults = [],
-  isLoading = false
+  isLoading = false,
+  error = null,
 }: SearchModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -37,6 +31,10 @@ function SearchModal({
       e.preventDefault();
       onClose();
     }
+  };
+
+  const handleThreadClick = () => {
+    onClose(); 
   };
 
   return (
@@ -64,7 +62,7 @@ function SearchModal({
         <div className="min-h-[200px] max-h-[400px] overflow-y-auto">
           {isLoading ? (
             <Loader />
-          ) : searchQuery && searchResults.length === 0 ? (
+          ) : searchQuery && searchResults.length === 0 && !error? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <Search className="w-12 h-12 text-gray-300 mb-3" />
               <p className="text-gray-500">لا توجد نتائج</p>
@@ -78,12 +76,14 @@ function SearchModal({
             <div className="flex flex-col gap-1">
               {searchResults.map((result, index) => (
                 <Fragment key={result.id}>
-                  <ThreadItemMinimal
-                    thread_id={parseInt(result.id)}
-                    title={result.title as string}
-                    commentsCount={result.repliesCount}
-                    created_at={result.timestamp}
-                  />
+                <ThreadItemMinimal
+                  thread_id={parseInt(result.id)}
+                  title={result.title}
+                  authorName={result.authorName}
+                  commentsCount={result.repliesCount}
+                  created_at={result.timestamp}
+                  onNavigate={handleThreadClick}
+                />
                   {index < searchResults.length - 1 && (
                     <Divider label="" className="my-1" borderColor="gray-100" />
                   )}
@@ -92,7 +92,14 @@ function SearchModal({
             </div>
           )}
         </div>
+        {error && (
+            <div className="bg-red-100 text-red-600 p-4 text-center rounded-md mt-2">
+              {error}
+            </div>
+          )}
+        
       </div>
+      
     </Modal>
   );
 }

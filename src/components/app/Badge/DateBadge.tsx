@@ -11,7 +11,7 @@ dayjs.locale("ar");
 
 export function formatArabicDate(inputDate: string): string {
   const parsedDate = dayjs(inputDate);
-  
+
   if (!parsedDate.isValid()) {
     return "تاريخ غير صالح";
   }
@@ -35,7 +35,7 @@ export function formatArabicDate(inputDate: string): string {
 
 interface DateBadgeProps {
   label: string;
-  size?: 'default' | 'sm';
+  size?: 'default' | 'sm' | 'xs';
 }
 
 function DateBadge({ label, size = 'default' }: DateBadgeProps) {
@@ -45,11 +45,12 @@ function DateBadge({ label, size = 'default' }: DateBadgeProps) {
     <span className={cn(
       'flex items-center gap-1 text-gray-500',
       size === 'sm' && 'text-xs',
+      size === 'xs' && 'text-[10px]',
     )}>
-      <Clock className={size === 'sm' ? 'w-3 h-3' : 'w-3 h-3'} />
+      <Clock className={size === 'xs' ? 'w-2.5 h-2.5' : 'w-3 h-3'} />
       {displayTime}
     </span>
-  )
+  );
 }
 
 export default DateBadge;

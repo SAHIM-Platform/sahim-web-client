@@ -1,0 +1,65 @@
+OpenSSH_9.7p1, OpenSSL 3.2.1 30 Jan 2024
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: Connecting to github.com [20.87.245.0] port 22.
+debug1: Connection established.
+debug1: identity file /c/Users/pc/.ssh/id_ed25519 type 3
+debug1: identity file /c/Users/pc/.ssh/id_ed25519-cert type -1
+debug1: Local version string SSH-2.0-OpenSSH_9.7
+debug1: Remote protocol version 2.0, remote software version 91b3cc9c
+debug1: compat_banner: no match: 91b3cc9c
+debug1: Authenticating to github.com:22 as 'git'
+debug1: load_hostkeys: fopen /c/Users/pc/.ssh/known_hosts2: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+debug1: SSH2_MSG_KEXINIT sent
+debug1: SSH2_MSG_KEXINIT received
+debug1: kex: algorithm: curve25519-sha256
+debug1: kex: host key algorithm: ssh-ed25519
+debug1: kex: server->client cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none
+debug1: kex: client->server cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none
+debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
+debug1: SSH2_MSG_KEX_ECDH_REPLY received
+debug1: Server host key: ssh-ed25519 SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU
+debug1: load_hostkeys: fopen /c/Users/pc/.ssh/known_hosts2: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+debug1: Host 'github.com' is known and matches the ED25519 host key.
+debug1: Found key in /c/Users/pc/.ssh/known_hosts:1
+debug1: ssh_packet_send2_wrapped: resetting send seqnr 3
+debug1: rekey out after 134217728 blocks
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug1: ssh_packet_read_poll2: resetting read seqnr 3
+debug1: SSH2_MSG_NEWKEYS received
+debug1: rekey in after 134217728 blocks
+debug1: SSH2_MSG_EXT_INFO received
+debug1: kex_ext_info_client_parse: server-sig-algs=<ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-rsa-cert-v01@openssh.com,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,ssh-ed25519,ecdsa-sha2-nistp521,ecdsa-sha2-nistp384,ecdsa-sha2-nistp256,rsa-sha2-512,rsa-sha2-256,ssh-rsa>
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug1: Authentications that can continue: publickey
+debug1: Next authentication method: publickey
+debug1: get_agent_identities: bound agent to hostkey
+debug1: get_agent_identities: agent returned 1 keys
+debug1: Will attempt key: /c/Users/pc/.ssh/id_ed25519 ED25519 SHA256:vrt/JNmmN+b2FewjVX85UjEB0oGpmUgjk4sR0QEgVGI explicit agent
+debug1: Offering public key: /c/Users/pc/.ssh/id_ed25519 ED25519 SHA256:vrt/JNmmN+b2FewjVX85UjEB0oGpmUgjk4sR0QEgVGI explicit agent
+debug1: Server accepts key: /c/Users/pc/.ssh/id_ed25519 ED25519 SHA256:vrt/JNmmN+b2FewjVX85UjEB0oGpmUgjk4sR0QEgVGI explicit agent
+Authenticated to github.com ([20.87.245.0]:22) using "publickey".
+debug1: channel 0: new session [client-session] (inactive timeout: 0)
+debug1: Entering interactive session.
+debug1: pledge: filesystem
+debug1: client_input_global_request: rtype hostkeys-00@openssh.com want_reply 0
+debug1: client_input_hostkeys: searching /c/Users/pc/.ssh/known_hosts for github.com / (none)
+debug1: client_input_hostkeys: searching /c/Users/pc/.ssh/known_hosts2 for github.com / (none)
+debug1: client_input_hostkeys: hostkeys file /c/Users/pc/.ssh/known_hosts2 does not exist
+debug1: client_input_hostkeys: no new or deprecated keys from server
+debug1: Sending command: git-receive-pack 'SAHIM-Platform/sahim-web-client.git'
+debug1: pledge: fork
+debug1: client_input_channel_req: channel 0 rtype exit-status reply 0
+ERROR: Write access to repository not granted.
+debug1: channel 0: free: client-session, nchannels 1
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+Transferred: sent 2192, received 2512 bytes, in 1.0 seconds
+Bytes per second: sent 2138.5, received 2450.7
+debug1: Exit status 1
