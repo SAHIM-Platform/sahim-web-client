@@ -33,6 +33,7 @@ function ThreadItemMinimal({
           photoAlt={authorName}
           hideDetailsOnSmallScreens={true}
           date={created_at}
+          size="sm"
         >
           <div className="flex items-center gap-1">
             <MessageSquare className="w-3.5 h-3.5" />

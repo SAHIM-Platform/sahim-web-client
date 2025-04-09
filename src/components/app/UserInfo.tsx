@@ -8,6 +8,7 @@ interface UserInfoProps {
   date?: string;
   children?: React.ReactNode;
   hideDetailsOnSmallScreens?: boolean;
+  size?: "default" | "sm";
 }
 
 function UserInfo({
@@ -17,26 +18,42 @@ function UserInfo({
   date,
   children,
   hideDetailsOnSmallScreens = false,
+  size = "default",
 }: UserInfoProps) {
+  const isSmall = size === "sm";
+
   return (
-    <div className="flex items-center gap-3">
-      {(name || photoAlt) && (
-        <UserPhoto
-          name={name || photoAlt || ''}
-          size={32}
-          className="ring-2 ring-white"
-        />
-      )}
-      {(name || photoAlt) && 
-      <div className={`flex flex-col items-start gap-1 ${hideDetailsOnSmallScreens ? "hidden sm:block" : ""}`}>
-        {name && <span className="text-[14px] font-semibold text-gray-700 leading-none">{name}</span>}
-        {date && <DateBadge label={date} size="sm" />}
-      </div>}
+    <div className={`flex items-center gap-3`}>
+      <div className={`flex items-center ${!isSmall ? 'gap-3' : 'gap-2'}`}>
+        {(name || photoAlt) && (
+          <UserPhoto
+            name={name || photoAlt || ''}
+            size={isSmall ? 24 : 32}
+            className="ring-2 ring-white"
+          />
+        )}
+        {(name || photoAlt) && (
+          <div
+            className={`flex flex-col items-start ${!isSmall ? 'gap-1' : ''} ${hideDetailsOnSmallScreens ? "hidden sm:block" : ""
+              }`}
+          >
+            {name && (
+              <span
+                className={`${isSmall ? "text-xs" : "text-[14px]"
+                  } font-semibold text-gray-700 leading-none`}
+              >
+                {name}
+              </span>
+            )}
+            {date && <DateBadge label={date} size="xs" />}
+          </div>
+        )}
+      </div>
       {children && (
-        <div className={hideDetailsOnSmallScreens? "hidden sm:block" : ""}>
+        <div className={hideDetailsOnSmallScreens ? "hidden sm:block" : ""}>
           {children}
-        </div>)
-      }
+        </div>
+      )}
     </div>
   );
 }
