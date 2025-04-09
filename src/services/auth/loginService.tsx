@@ -14,7 +14,8 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 				success: true,
 				data: {
 					message: response.data.message,
-					accessToken: response.data.accessToken
+					accessToken: response.data.accessToken,
+					user: response.data.user
 				}
 			};
 		} else {

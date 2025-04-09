@@ -10,7 +10,8 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [auth, setAuth] = useState<AuthState>({
     loading: true,
-    accessToken: undefined
+    accessToken: undefined,
+    user: undefined
   });
 
   useEffect(() => {
@@ -40,8 +41,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!auth.loading) {
       console.log('Current auth state:', {
-        isAuthenticated: !!auth.accessToken,
-        accessToken: auth.accessToken ? 'present' : 'none'
+        isAuthenticated: !!auth.accessToken && !!auth.user,
+        accessToken: auth.accessToken ? 'present' : 'none',
+        user: auth.user ? {
+          id: auth.user.id,
+          name: auth.user.name,
+          username: auth.user.username
+        } : 'none'
       });
     }
   }, [auth]);

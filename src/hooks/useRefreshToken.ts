@@ -17,7 +17,8 @@ const useRefreshToken = () => {
     } catch (error) {
       setAuth({
         accessToken: undefined,
-        loading: false
+        loading: false,
+        user: undefined
       });
       throw error;
     }
