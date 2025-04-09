@@ -107,15 +107,6 @@ const StudentsListing = ({
               تصفح جميع حسابات الطلاب المسجلين
             </p>
           </div>
-          <Button
-            href="/discussions/new"
-            variant="primary"
-            size="sm"
-            icon={<MessageSquare className="w-5 h-5" />}
-            className="shadow-sm"
-          >
-            ابدأ مناقشة
-          </Button>
         </div>
 
         <div className="flex flex-col gap-3">
