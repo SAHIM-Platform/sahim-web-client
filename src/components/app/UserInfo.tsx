@@ -1,5 +1,6 @@
 import DateBadge from "./Badge/DateBadge";
 import UserPhoto from "../UserPhoto";
+import { getDisplayName } from "@/utils/getDisplayName";
 
 interface UserInfoProps {
   name?: string;
@@ -42,7 +43,7 @@ function UserInfo({
                 className={`${isSmall ? "text-xs" : "text-[14px]"
                   } font-semibold text-gray-700 leading-none`}
               >
-                {name}
+                {getDisplayName(name)}
               </span>
             )}
             {date && <DateBadge label={date} size="xs" />}
