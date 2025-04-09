@@ -1,16 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-const useAdminRoleGuard = (isAdmin: boolean , isSuperAdmin: boolean): void => {
+const useAdminRoleGuard = (isAdmin: boolean, isSuperAdmin: boolean): void => {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (!isAdmin && !isSuperAdmin) {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted && !isAdmin && !isSuperAdmin) {
       router.replace("/");
     }
-  }, [isAdmin, isSuperAdmin, router]);
+  }, [isAdmin, isSuperAdmin, router, isMounted]);
 };
 
 export default useAdminRoleGuard;
