@@ -1,4 +1,5 @@
 import { ThreadItemProps } from "@/components/app/ThreadListing/ThreadItem";
+import { Department, Level, Student } from "@/types";
 
 export const currentUser = {
   id: 1,
@@ -7,6 +8,51 @@ export const currentUser = {
 }
 
 export const unreadNotifications = 8;
+
+export const mockStudents: Student[] = [
+  {
+    id: "1",
+    name: "مستخدم جديد",
+    academicNumber: "4390123456789",
+    department: Department.IT,
+    level: Level.LEVEL_1,
+  },
+  {
+    id: "2",
+    name: "مستخدمة جديدة",
+    academicNumber: "4390123456790",
+    department: Department.SE,
+    level: Level.LEVEL_2,
+  },
+  {
+    id: "3",
+    name: "مستخدم جديد 2",
+    academicNumber: "4390123456791",
+    department: Department.MRE,
+    level: Level.LEVEL_3,
+  },
+  {
+    id: "4",
+    name: "مستخدم جديد 3",
+    academicNumber: "4390123456791",
+    department: Department.MRE,
+    level: Level.LEVEL_3,
+  },
+  {
+    id: "5",
+    name: "مستخدمة جديدة 2",
+    academicNumber: "4390123456792",
+    department: Department.COM,
+    level: Level.LEVEL_4,
+  },
+  {
+    id: "6",
+    name: "مستخدم جديد 4",
+    academicNumber: "4390123456793",
+    department: Department.CND,
+    level: Level.LEVEL_5,
+  },
+];
 
 export const categories = [
   { id: "1", name: "التقنية" },

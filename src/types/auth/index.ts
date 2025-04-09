@@ -12,6 +12,8 @@ export interface User {
   password: string;
 }
 
+export type Student = Pick<User, "id" | "name" | "academicNumber" | "department" | "level">;
+
 export interface AuthState {
   accessToken?: string;
   loading: boolean;
