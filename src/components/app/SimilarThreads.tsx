@@ -26,6 +26,7 @@ function SimilarThreads({ threads, threadPageId }: SimilarThreadsProps) {
                   title={thread.title}
                   commentsCount={thread._count.comments}
                   created_at={thread.created_at}
+                  authorName={thread.author?.name ?? "مستخدم"}
                 />
                 {index < threads.length - 1 && (
                   <Divider label="" borderColor="gray-100" />
