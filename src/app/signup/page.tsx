@@ -4,11 +4,11 @@ import Container from '@/components/Container';
 import SignupForm from "@/components/SignupForm";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import useAuth from "@/hooks/useAuth";
-import useAuthRedirect from "@/hooks/UseRedirect";
+import useAuthRedirect from "@/hooks/UseAuthRedirect";
 
 export default function SignupPage() {
   const { isAuthenticated, auth } = useAuth();
-  useAuthRedirect(isAuthenticated);
+  useAuthRedirect();
 
   if (auth.loading) {
     return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
