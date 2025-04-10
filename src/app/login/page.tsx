@@ -4,7 +4,7 @@ import Container from '@/components/Container';
 import LoginForm from '@/components/LoginForm';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import useAuth from '@/hooks/useAuth';
-import useAuthRedirect from '@/hooks/UseRedirect';
+import useAuthRedirect from '@/hooks/UseAuthRedirect';
 
 export default function Home() {
   const { isAuthenticated, auth } = useAuth();

@@ -2,10 +2,12 @@
 
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import useAuth from "./useAuth";
 
-const useAuthRedirect = (isAuthenticated: boolean): void => {
+const useAuthRedirect = (): void => {
   const router = useRouter();
   const pathName = usePathname();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {

@@ -13,7 +13,7 @@ import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CommentListing from "@/components/app/Comment/CommentListing";
 import useAuth from "@/hooks/useAuth";
-import useAuthRedirect from "@/hooks/UseRedirect";
+import useAuthRedirect from "@/hooks/UseAuthRedirect";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const router = useRouter();

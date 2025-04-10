@@ -14,11 +14,9 @@ import toast from "react-hot-toast";
 export default function NewCategoryPage() {
   const router = useRouter();
   const { auth } = useAuth();
-  const isAdmin = true;
-  const isSuperAdmin = true;
   
   // Apply admin role guard
-  useAdminRoleGuard(isAdmin, isSuperAdmin);
+  useAdminRoleGuard('admin');
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>("");

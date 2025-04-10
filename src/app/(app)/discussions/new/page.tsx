@@ -15,7 +15,7 @@ import ErrorAlert from "@/components/Form/ErrorAlert";
 import { fetchCategories } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import useAuth from "@/hooks/useAuth";
-import useAuthRedirect from "@/hooks/UseRedirect";
+import useAuthRedirect from "@/hooks/UseAuthRedirect";
 
 export default function NewDiscussionPage() {
   const router = useRouter();
