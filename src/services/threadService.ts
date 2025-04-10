@@ -595,3 +595,92 @@ export const unbookmarkThread = async (threadId: number): Promise<BookmarkResult
     throw new Error(ERROR_MESSAGES.thread.DEFAULT);
   }
 };
+
+export interface BookmarkedThreadsResult {
+  success: boolean;
+  data?: Thread[];
+  error?: {
+    message: string;
+    code: string;
+  };
+}
+
+export const fetchBookmarkedThreads = async (): Promise<BookmarkedThreadsResult> => {
+  try {
+    const response = await axiosInstance.get<{ data: Thread[], meta: any }>('/users/me/bookmarks');
+
+
+    if (response.data && response.data.data) {
+      return {
+        success: true,
+        data: response.data.data
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching bookmarked threads:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      
+      // Handle validation errors
+      if (axiosError.response?.status === 400) {
+        const errorData = axiosError.response.data as ValidationErrorResponse;
+        return {
+          success: false,
+          error: {
+            message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            code: errorData.code || 'VALIDATION_ERROR'
+          }
+        };
+      }
+
+      // Handle unauthorized errors
+      if (axiosError.response?.status === 401) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            code: 'UNAUTHORIZED'
+          }
+        };
+      }
+
+      // Handle not found errors
+      if (axiosError.response?.status === 404) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            code: 'NOT_FOUND'
+          }
+        };
+      }
+
+      // Handle server errors
+      return {
+        success: false,
+        error: {
+          message: ERROR_MESSAGES.thread.SERVER_ERROR,
+          code: 'SERVER_ERROR'
+        }
+      };
+    }
+
+    // Handle unexpected errors
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  }
+};

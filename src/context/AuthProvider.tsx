@@ -21,7 +21,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const response = await axios.post('/auth/refresh');
         console.log('Refresh token successful:', {
           isAuthenticated: true,
-          user: response.data.user
         });
         setAuth({
           accessToken: response.data.accessToken,

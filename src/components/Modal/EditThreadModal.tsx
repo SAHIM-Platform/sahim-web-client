@@ -111,7 +111,7 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
   };
 
   const areAllRequiredFieldsFilled = formData.title && formData.category && formData.content;
-  console.log("thumbnail_url ", formData.thumbnailUrl);
+
   return (
     <Modal
       isOpen={isOpen}
