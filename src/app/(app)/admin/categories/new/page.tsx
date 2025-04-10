@@ -8,6 +8,8 @@ import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import useAuth from "@/hooks/useAuth";
 import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
+import { createCategory } from "@/services/adminService";
+import toast from "react-hot-toast";
 
 export default function NewCategoryPage() {
   const router = useRouter();
@@ -32,17 +34,16 @@ export default function NewCategoryPage() {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
-
-    // This is just a placeholder for the API call
-    // No actual API integration in this task
+    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await createCategory(formData.name);
+      setFormData({ name: "" });
       
+      toast.success("تم إنشاء التصنيف بنجاح!");
       // Redirect to categories list page after successful creation
       router.push("/admin/categories");
     } catch (error: any) {
-      setError("حدث خطأ أثناء إنشاء التصنيف. يرجى المحاولة مرة أخرى.");
+      setError(error.message);  
       console.error("Error creating category:", error);
     } finally {
       setIsSubmitting(false);
