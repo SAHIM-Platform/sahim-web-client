@@ -8,7 +8,7 @@ import useAuthRedirect from "@/hooks/UseAuthRedirect";
 
 export default function SignupPage() {
   const { isAuthenticated, auth } = useAuth();
-  useAuthRedirect(isAuthenticated);
+  useAuthRedirect();
 
   if (auth.loading) {
     return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;

@@ -17,8 +17,8 @@ import useAuthRedirect from "@/hooks/UseAuthRedirect";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const router = useRouter();
-  const { isAuthenticated, auth } = useAuth();
-  useAuthRedirect(isAuthenticated);
+  const { auth } = useAuth();
+  useAuthRedirect();
   
   const [comment, setComment] = useState("");
   const [thread, setThread] = useState<Thread | null>(null);

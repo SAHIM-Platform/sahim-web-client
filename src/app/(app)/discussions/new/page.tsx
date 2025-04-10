@@ -20,8 +20,8 @@ import useAuthRedirect from "@/hooks/UseAuthRedirect";
 export default function NewDiscussionPage() {
   const router = useRouter();
   const axios = useAxios();
-  const { isAuthenticated, auth } = useAuth();
-  useAuthRedirect(isAuthenticated);
+  const { auth } = useAuth();
+  useAuthRedirect();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
