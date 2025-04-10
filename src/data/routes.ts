@@ -9,7 +9,7 @@ export const routesData = [
   },
   {
     name: "المحفوظات",
-    path: "/discussions/saved",
+    path: "/discussions/bookmarked",
   },
   {
     name: "الملخصات والمراجع",
