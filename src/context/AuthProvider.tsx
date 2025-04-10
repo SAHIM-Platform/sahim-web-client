@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!auth.loading) {
       console.log('Current auth state:', {
-        isAuthenticated: !!auth.accessToken && !!auth.user,
+        isAuthenticated: !!auth.accessToken,
         accessToken: auth.accessToken ? 'present' : 'none',
         user: auth.user ? {
           id: auth.user.id,

@@ -88,7 +88,7 @@ const useAuth = () => {
     login,
     signup,
     setAuth,
-    isAuthenticated: !!auth.accessToken && !!auth.user,
+    isAuthenticated: !!auth.accessToken,
   };
 };
 
