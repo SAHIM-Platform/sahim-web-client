@@ -14,6 +14,10 @@ export interface User {
 
 export type Student = Pick<User, "id" | "name" | "academicNumber" | "department" | "level">;
 
+export type Admin = Pick<User, "id" | "name" | "email" | "username"> & {
+  created_at: string;
+};
+
 export interface AuthState {
   accessToken?: string;
   user?: {
