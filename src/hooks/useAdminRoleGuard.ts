@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-const useAdminRoleGuard = (isAdmin: boolean, isSuperAdmin: boolean): void => {
+const useAdminRoleGuard = (userRole?: string): void => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
 
@@ -12,10 +12,15 @@ const useAdminRoleGuard = (isAdmin: boolean, isSuperAdmin: boolean): void => {
   }, []);
 
   useEffect(() => {
-    if (isMounted && !isAdmin && !isSuperAdmin) {
-      router.replace("/");
+    if (isMounted) {
+      const isAdmin = userRole === "admin";
+      const isSuperAdmin = userRole === "super_admin";
+      
+      if (!isAdmin && !isSuperAdmin) {
+        router.replace("/");
+      }
     }
-  }, [isAdmin, isSuperAdmin, router, isMounted]);
+  }, [userRole, router, isMounted]);
 };
 
 export default useAdminRoleGuard;
