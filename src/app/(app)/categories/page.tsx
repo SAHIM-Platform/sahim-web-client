@@ -11,7 +11,7 @@ export default function CategoriesPage() {
           تصفّح جميع تصنيفات المناقشات المتاحة
         </p>
       </div>
-      <CategoriesListing />
+      <CategoriesListing allowManagement />
     </div>
   );
 }

@@ -1,19 +1,24 @@
 'use client';
 
-import { categories } from "@/data/mock-api";
-import { Hash } from "lucide-react";
+import { Hash, Edit, Trash2 } from "lucide-react";
 import LoadingSpinner from "../LoadingSpinner";
 import { useState, useEffect } from "react";
 import { fetchCategories } from "@/services/threadService";
+import useAuth from "@/hooks/useAuth";
+import Button from "../Button";
 
 interface CategoriesListingProps {
-
+  allowManagement?: boolean;
 }
 
-function CategoriesListing({ }: CategoriesListingProps) {
+function CategoriesListing({ allowManagement = false }: CategoriesListingProps) {
+  const { auth } = useAuth();
   const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [categoriesError, setCategoriesError] = useState<string | null>(null);
+
+  const isSuperAdmin = auth.user?.role === 'SUPER_ADMIN';
+  const showManagementIcons = allowManagement && isSuperAdmin;
 
   useEffect(() => {
     const loadData = async () => {
@@ -37,12 +42,6 @@ function CategoriesListing({ }: CategoriesListingProps) {
     loadData();
   }, []);
 
-  useEffect(() => {
-    const loadCategories = async () => {
-      const response = await fetchCategories();
-    }
-  }, []);
-
   return (
     <div className="space-y-1">
       {isLoadingCategories ? (
@@ -57,10 +56,27 @@ function CategoriesListing({ }: CategoriesListingProps) {
         categories.map((category) => (
           <div
             key={category.category_id}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm"
+            className="flex items-center justify-start gap-8 px-3 py-2 rounded-lg text-sm hover:bg-gray-50 group"
           >
             <Hash className="w-4 h-4 text-gray-500" />
-            {category.name}
+            <span>{category.name}</span>
+
+            {showManagementIcons && (
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-1 hover:bg-gray-100 rounded-full"
+                  icon={<Edit className="w-4 h-4 text-gray-500" />}
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-1 hover:bg-gray-100 rounded-full"
+                  icon={<Trash2 className="w-4 h-4 text-red-500" />}
+                />
+              </div>
+            )}
           </div>
         ))
       )}

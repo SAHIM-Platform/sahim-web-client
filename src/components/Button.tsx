@@ -64,7 +64,8 @@ const buttonVariants = cva(
         lg: "h-[46px] sm:h-12 px-5 sm:px-6 py-2 sm:py-3 text-[14px] sm:text-[15px] rounded-xl gap-2.5 sm:gap-3",
         default: "h-[42px] sm:h-11 px-4 sm:px-5 py-2 text-[14px] sm:text-[15px] rounded-lg gap-2 sm:gap-2.5",
         sm: "h-9 px-3 sm:px-4 py-1.5 text-sm rounded-md gap-1.5 sm:gap-2",
-        icon: "h-[42px] w-[42px] sm:h-11 sm:w-11 p-2 rounded-lg"
+        icon: "h-[42px] w-[42px] sm:h-11 sm:w-11 p-2 rounded-lg",
+        iconSm: "h-9 w-9 p-1.5 rounded-md"
       },
       fullWidth: {
         true: "w-full",
@@ -94,6 +95,35 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
   color,
   ...props
 }, ref) => {
+  // Determine if this is an icon-only button
+  const isIconOnly = icon && !children;
+
+  // Adjust size for icon-only buttons
+  const adjustedSize = isIconOnly ? (size === 'sm' ? 'iconSm' : 'icon') : size;
+
+  const buttonContent = isLoading ? (
+    <>
+      <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
+      {loadingText && <span className="truncate">{loadingText}</span>}
+    </>
+  ) : (
+    <>
+      {icon && iconPosition === "start" && (
+        <span className={cn(
+          "inline-flex items-center justify-center",
+          isIconOnly ? "w-full h-full" : "shrink-0 text-[1.15em]"
+        )}>{icon}</span>
+      )}
+      {!isIconOnly && <span className="truncate">{children}</span>}
+      {icon && iconPosition === "end" && (
+        <span className={cn(
+          "inline-flex items-center justify-center",
+          isIconOnly ? "w-full h-full" : "shrink-0 text-[1.15em]"
+        )}>{icon}</span>
+      )}
+    </>
+  );
+
   if (href) {
     return (
       <a
@@ -102,28 +132,13 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         target={target}
         rel={target === "_blank" ? "noopener noreferrer" : undefined}
         className={cn(
-          buttonVariants({ variant, size, fullWidth }),
+          buttonVariants({ variant, size: adjustedSize, fullWidth }),
           isLoading && "cursor-wait",
           className
         )}
         {...props as React.AnchorHTMLAttributes<HTMLAnchorElement>}
       >
-        {isLoading ? (
-          <>
-            <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
-            {loadingText && <span className="truncate">{loadingText}</span>}
-          </>
-        ) : (
-          <>
-            {icon && iconPosition === "start" && (
-              <span className="inline-flex shrink-0 text-[1.15em]">{icon}</span>
-            )}
-            <span className="truncate">{children}</span>
-            {icon && iconPosition === "end" && (
-              <span className="inline-flex shrink-0 text-[1.15em]">{icon}</span>
-            )}
-          </>
-        )}
+        {buttonContent}
       </a>
     );
   }
@@ -132,30 +147,15 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     <button
       ref={ref as React.ForwardedRef<HTMLButtonElement>}
       className={cn(
-        buttonVariants({ variant, size, fullWidth }),
+        buttonVariants({ variant, size: adjustedSize, fullWidth }),
         isLoading && "cursor-wait",
-        variant === 'ghost' && color && `text-${color}`, // Apply color class here
+        variant === 'ghost' && color && `text-${color}`,
         className
       )}
       disabled={isLoading || props.disabled}
       {...props as React.ButtonHTMLAttributes<HTMLButtonElement>}
     >
-      {isLoading ? (
-        <>
-          <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
-          {loadingText && <span className="truncate">{loadingText}</span>}
-        </>
-      ) : (
-        <>
-          {icon && iconPosition === "start" && (
-            <span className="inline-flex shrink-0 text-[1.15em]">{icon}</span>
-          )}
-          <span className="truncate">{children}</span>
-          {icon && iconPosition === "end" && (
-            <span className="inline-flex shrink-0 text-[1.15em]">{icon}</span>
-          )}
-        </>
-      )}
+      {buttonContent}
     </button>
   );
 });
