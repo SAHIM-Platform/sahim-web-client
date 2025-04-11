@@ -18,13 +18,15 @@ export type Admin = Pick<User, "id" | "name" | "email" | "username"> & {
   created_at: string;
 };
 
+export type UserRole = "SUPER_ADMIN" | "ADMIN" | "STUDENT";
+
 export interface AuthState {
   accessToken?: string;
   user?: {
     id: string;
     name: string;
     username: string;
-    role: string;
+    role: UserRole;
   };
   loading: boolean;
 }
