@@ -24,6 +24,7 @@ export interface AuthState {
     id: string;
     name: string;
     username: string;
+    role: string;
   };
   loading: boolean;
 }
@@ -45,6 +46,7 @@ export interface AuthResponse {
     id: string;
     name: string;
     username: string;
+    role: string;
   };
 }
 

@@ -16,7 +16,7 @@ export default function NewCategoryPage() {
   const { auth } = useAuth();
   
   // Apply admin role guard
-  useAdminRoleGuard('admin');
+  useAdminRoleGuard();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
