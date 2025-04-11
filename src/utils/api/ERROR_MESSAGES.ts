@@ -62,6 +62,7 @@ const ERROR_MESSAGES = {
         EMPTY_CONTENT: 'لا يمكن إضافة تعليق فارغ',
         SERVER_ERROR: 'خطأ في الخادم أثناء معالجة التعليق',
         VALIDATION_ERROR: 'يحتوي التعليق على محتوى غير مسموح به',
+        FORBIDDEN: 'لا يمكنك تعديل أو حذف هذا التعليق',
     },
     category: {
         SERVER_ERROR: "نواجه صعوبات تقنية. يرجى المحاولة مرة أخرى لاحقاً",
