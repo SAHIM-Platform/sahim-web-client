@@ -399,6 +399,16 @@ export const updateThread = async (
         };
       }
 
+      if (axiosError.response?.status === 403) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.FORBIDDEN,
+            code: 'FORBIDDEN'
+          }
+        };
+      }
+
       if (axiosError.response?.status === 404) {
         return {
           success: false,
@@ -477,6 +487,17 @@ export const deleteThread = async (threadId: number): Promise<DeleteThreadResult
         };
       }
 
+      // Handle forbidden errors (e.g., trying to delete someone else's thread)
+      if (axiosError.response?.status === 403) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.FORBIDDEN,
+            code: 'FORBIDDEN'
+          }
+        };
+      }
+
       // Handle not found errors
       if (axiosError.response?.status === 404) {
         return {
@@ -484,17 +505,6 @@ export const deleteThread = async (threadId: number): Promise<DeleteThreadResult
           error: {
             message: ERROR_MESSAGES.thread.NOT_FOUND,
             code: 'NOT_FOUND'
-          }
-        };
-      }
-
-      // Handle forbidden errors (e.g., trying to delete someone else's thread)
-      if (axiosError.response?.status === 403) {
-        return {
-          success: false,
-          error: {
-            message: 'لا يمكنك حذف هذه المناقشة',
-            code: 'FORBIDDEN'
           }
         };
       }
