@@ -49,6 +49,7 @@ function AppInfoSidebar({ isOpen, onClose }: AppInfoSidebarProps) {
 
 function SidebarContent() {
   const [latestDiscussions, setLatestDiscussions] = useState<Thread[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
@@ -64,7 +65,10 @@ function SidebarContent() {
         }
       } catch (error) {
         console.error('Error loading latest discussions:', error);
+      } finally {
+        setIsLoading(false); 
       }
+
     };
 
     loadData();
@@ -81,22 +85,26 @@ function SidebarContent() {
 
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">آخر المناقشات</span>
-        <div className="flex flex-col gap-1">
-          {latestDiscussions.map((thread, index) => (
-            <Fragment key={thread.thread_id}>
-              <ThreadItemMinimal
-                thread_id={thread.thread_id}
-                title={thread.title}
-                commentsCount={thread._count.comments}
-                created_at={thread.created_at}
-                authorName={thread.author?.name ?? "مستخدم"}
-              />
-              {index < latestDiscussions.length - 1 && (
-                <Divider label="" className="my-1" borderColor="gray-100" />
-              )}
-            </Fragment>
-          ))}
-        </div>
+        {isLoading ? (
+          <LoadingSpinner size="md" className="min-h-[100px]" /> 
+        ) : (
+          <div className="flex flex-col gap-1"> 
+            {latestDiscussions.map((thread, index) => (
+              <Fragment key={thread.thread_id}>
+                <ThreadItemMinimal
+                  thread_id={thread.thread_id}
+                  title={thread.title}
+                  commentsCount={thread._count.comments}
+                  created_at={thread.created_at}
+                  authorName={thread.author?.name ?? "مستخدم"}
+                />
+                {index < latestDiscussions.length - 1 && (
+                  <Divider label="" className="my-1" borderColor="gray-100" />
+                )}
+              </Fragment>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
