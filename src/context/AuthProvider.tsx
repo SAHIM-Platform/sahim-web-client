@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
         setAuth({
           accessToken: response.data.accessToken,
+          user: response.data.user,
           loading: false
         });
       } catch (error) {

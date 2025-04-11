@@ -10,12 +10,14 @@ import useAuth from "@/hooks/useAuth";
 import validateCreateAdminForm, { AdminFormData } from "@/utils/api/admin/validateCreateAdminForm";
 import createAdminService from "@/services/admin/createAdminService";
 import { Eye, EyeOff, Lock } from "lucide-react";
+import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
 
 export default function NewAdminPage() {
   const router = useRouter();
   const { auth } = useAuth();
-  const isSuperAdmin = true; // Temporarily set to true for testing
   
+  useAdminRoleGuard();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -29,20 +31,9 @@ export default function NewAdminPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  useEffect(() => {
-    // Redirect non-super-admin users to the home page
-    if (!auth.loading && !isSuperAdmin) {
-      router.replace("/");
-    }
-  }, [auth.loading, isSuperAdmin, router]);
 
   if (auth.loading) {
     return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
-  }
-
-  // If not a super admin, don't render the form
-  if (!isSuperAdmin) {
-    return null;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuthRedirect from "./UseAuthRedirect";
+import useAuth from "./useAuth";
 
-const useSuperAdminRoleGuard = (userRole?: string): void => {
+const useSuperAdminRoleGuard = (): void => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
+  const { auth } = useAuth();
 
   // If user is not authenticated, redirect to login page
   useAuthRedirect();
@@ -17,13 +19,11 @@ const useSuperAdminRoleGuard = (userRole?: string): void => {
 
   useEffect(() => {
     if (isMounted) {
-      const isSuperAdmin = userRole === "super_admin";
-      
-      if (!isSuperAdmin) {
-        router.replace("/");
+      if (!auth.user || auth?.user?.role !== 'SUPER_ADMIN') {
+        router.replace("/"); 
       }
     }
-  }, [userRole, router, isMounted]);
+  }, [auth?.user, router, isMounted]);
 };
 
 export default useSuperAdminRoleGuard;
