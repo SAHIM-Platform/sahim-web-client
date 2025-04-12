@@ -10,13 +10,13 @@ import useAuth from "@/hooks/useAuth";
 import validateCreateAdminForm, { AdminFormData } from "@/utils/api/admin/validateCreateAdminForm";
 import createAdminService from "@/services/admin/createAdminService";
 import { Eye, EyeOff, Lock } from "lucide-react";
-import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
+import useSuperAdminRoleGuard from "@/hooks/useSuperAdminRoleGuard";
 
 export default function NewAdminPage() {
   const router = useRouter();
   const { auth } = useAuth();
   
-  useAdminRoleGuard();
+  useSuperAdminRoleGuard();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
@@ -58,7 +58,7 @@ export default function NewAdminPage() {
 
       if (result.success) {
         console.log('Admin creation successful, redirecting...');
-        router.push('/admin/');
+        router.push('/admins/');
       } else {
         console.log('Admin creation failed:', result.error);
         setError(result.error?.message || "حدث خطأ أثناء إنشاء حساب المشرف");

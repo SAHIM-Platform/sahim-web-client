@@ -77,6 +77,14 @@ const ERROR_MESSAGES = {
         FORBIDDEN: "ليس لديك صلاحية لإنشاء التصنيف",
         CONFLICT: "التصنيف الذي تحاول إنشائه موجود بالفعل.",  
     },    
+    admin: {
+        CREATION_ERROR: "حدث خطأ أثناء إنشاء حساب المشرف",
+        DUPLICATE_EMAIL: "البريد الإلكتروني مسجل مسبقاً",
+        DUPLICATE_USERNAME: "اسم المستخدم مسجل مسبقاً",
+        VALIDATION_ERROR: "يرجى التحقق من المعلومات المدخلة والمحاولة مرة أخرى",
+        SERVER_ERROR: "نواجه صعوبات تقنية. يرجى المحاولة مرة أخرى لاحقاً",
+        DEFAULT: "حدث خطأ أثناء إنشاء حساب المشرف",
+    },
 };
 
 export default ERROR_MESSAGES;
