@@ -8,14 +8,15 @@ import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import useAuth from "@/hooks/useAuth";
 import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
-import { createCategory } from "@/services/adminService";
+import useAxios from "@/hooks/useAxios";
+import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 import toast from "react-hot-toast";
 
 export default function NewCategoryPage() {
   const router = useRouter();
+  const axios = useAxios();
   const { auth } = useAuth();
   
-  // Apply admin role guard
   useAdminRoleGuard();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,14 +35,20 @@ export default function NewCategoryPage() {
     setIsSubmitting(true);
     
     try {
-      await createCategory(formData.name);
-      setFormData({ name: "" });
-      
-      toast.success("تم إنشاء التصنيف بنجاح!");
-      // Redirect to categories list page after successful creation
-      router.push("/admin/categories");
+      const response = await axios.post('/categories', {
+        name: formData.name.trim()
+      });
+
+      if (response.data) {
+        toast.success("تم إنشاء التصنيف بنجاح!");
+        router.push("/categories");
+      }
     } catch (error: any) {
-      setError(error.message);  
+      if (error.response?.status === 500) {
+        setError(ERROR_MESSAGES.category?.SERVER_ERROR || 'حدث خطأ في الخادم');
+      } else {
+        setError(ERROR_MESSAGES.category?.DEFAULT || 'حدث خطأ أثناء إنشاء التصنيف');
+      }
       console.error("Error creating category:", error);
     } finally {
       setIsSubmitting(false);
