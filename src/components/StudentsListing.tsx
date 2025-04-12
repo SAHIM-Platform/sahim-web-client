@@ -10,9 +10,9 @@ import Select from "./Select";
 import Divider from "./Divider";
 import UsersBadge from "./app/Badge/UsersBadge";
 import UserCardItem from "./app/UserCardItem";
-import { ArrowUpDown, RefreshCw, MessageSquare } from "lucide-react";
-import { mockStudents } from "@/data/mock-api";
-import { Student, departmentLabels } from "@/types";
+import { ArrowUpDown, RefreshCw } from "lucide-react";
+import { Student, ApprovalStatus } from "@/types";
+import { fetchStudents } from "@/services/admin/studentService";
 
 interface StudentsListingProps {
   onApprove: (id: string) => void;
@@ -27,7 +27,7 @@ const StudentsListing = ({
   const [error, setError] = useState<string | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<ApprovalStatus | null>(null);
   const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
 
   const loadStudents = async () => {
@@ -35,9 +35,14 @@ const StudentsListing = ({
       setIsLoading(true);
       setError(null);
 
-      await new Promise((res) => setTimeout(res, 500));
+      const result = await fetchStudents(selectedStatus || undefined);
 
-      setStudents(mockStudents);
+      if (result.success && result.data) {
+        setStudents(result.data);
+      } else {
+        setError(result.error?.message || "فشل تحميل بيانات الطلاب");
+        toast.error(result.error?.message || "فشل تحميل بيانات الطلاب");
+      }
     } catch (err) {
       setError("فشل تحميل بيانات الطلاب");
       toast.error("فشل تحميل بيانات الطلاب");
@@ -48,18 +53,17 @@ const StudentsListing = ({
 
   useEffect(() => {
     loadStudents();
-  }, []);
+  }, [selectedStatus]);
 
   const handleRetry = () => {
     loadStudents();
   };
 
-  const departmentOptions = [
-    { value: "", label: "كل الأقسام" },
-    ...Object.entries(departmentLabels).map(([key, label]) => ({
-      value: key,
-      label,
-    })),
+  const statusOptions = [
+    { value: "", label: "جميع الحالات" },
+    { value: ApprovalStatus.PENDING, label: "قيد الانتظار" },
+    { value: ApprovalStatus.APPROVED, label: "تمت الموافقة" },
+    { value: ApprovalStatus.REJECTED, label: "مرفوض" },
   ];
 
   const processedStudents = students.filter((student) => {
@@ -68,11 +72,7 @@ const StudentsListing = ({
         student.academicNumber.includes(searchQuery)
       : true;
 
-    const matchesDepartment = selectedDepartment
-      ? student.department === selectedDepartment
-      : true;
-
-    return matchesSearch && matchesDepartment;
+    return matchesSearch;
   });
 
   if (isLoading) {
@@ -119,10 +119,10 @@ const StudentsListing = ({
 
             <div className="w-48">
               <Select
-                value={selectedDepartment || ""}
-                onChange={(e) => setSelectedDepartment(e.target.value || null)}
-                placeholder="اختر القسم"
-                options={departmentOptions}
+                value={selectedStatus || ""}
+                onChange={(e) => setSelectedStatus(e.target.value as ApprovalStatus || null)}
+                placeholder="حالة الموافقة"
+                options={statusOptions}
               />
             </div>
           </div>
@@ -159,9 +159,11 @@ const StudentsListing = ({
         <div className="flex flex-col gap-5">
           {processedStudents
             .sort((a, b) => {
+              const aNumber = a.academicNumber || '';
+              const bNumber = b.academicNumber || '';
               return sortOrder === "recent"
-                ? b.academicNumber.localeCompare(a.academicNumber)
-                : a.academicNumber.localeCompare(b.academicNumber);
+                ? bNumber.localeCompare(aNumber)
+                : aNumber.localeCompare(bNumber);
             })
             .map((student) => (
               <UserCardItem

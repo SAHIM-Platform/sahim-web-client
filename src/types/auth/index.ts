@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { Department, Level } from "..";
+import { Department, Level, ApprovalStatus } from "..";
 
 export interface User {
   id: string;
@@ -12,7 +12,9 @@ export interface User {
   password: string;
 }
 
-export type Student = Pick<User, "id" | "name" | "academicNumber" | "department" | "level">;
+export type Student = Pick<User, "id" | "name" | "academicNumber" | "department" | "level"> & {
+  approvalStatus: ApprovalStatus;
+};
 
 export type Admin = Pick<User, "id" | "name" | "email" | "username"> & {
   created_at: string;
