@@ -66,9 +66,8 @@ function SidebarContent() {
       } catch (error) {
         console.error('Error loading latest discussions:', error);
       } finally {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
-
     };
 
     loadData();
@@ -86,9 +85,11 @@ function SidebarContent() {
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">آخر المناقشات</span>
         {isLoading ? (
-          <LoadingSpinner size="md" className="min-h-[100px]" /> 
+          <div className="flex justify-center py-4">
+            <LoadingSpinner size="sm" color="primary" />
+          </div>
         ) : (
-          <div className="flex flex-col gap-1"> 
+          <div className="flex flex-col gap-1">
             {latestDiscussions.map((thread, index) => (
               <Fragment key={thread.thread_id}>
                 <ThreadItemMinimal
