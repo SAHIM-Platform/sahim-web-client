@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { Thread } from "@/types/thread";
 import Divider from "@/components/Divider";
 import EditThreadModal from "../../Modal/EditThreadModal";
+import useAuth from "@/hooks/useAuth";
 
 export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
   title: string;
@@ -53,6 +54,9 @@ const ThreadItem = ({
   showFullContent = false,
   hideTitle = false,
 }: ThreadItemProps) => {
+  const { auth } = useAuth();
+  const isOwner = auth.user?.id?.toString() === author.id.toString();
+
   // Use refs to store the initial values
   const initialVoteCount = useRef(votes.score ?? 0);
   const initialUserVote = useRef(votes.user_vote);
@@ -216,38 +220,40 @@ const ThreadItem = ({
             />
             <div className="flex items-center gap-2">
               <CategoryBadge name={category.name} />
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={handleDropdownToggle}
-                  className="p-0.5 hover:bg-gray-100 rounded-full transition-colors"
-                >
-                  <Ellipsis className="w-6 h-6 text-gray-500" />
-                </button>
+              {isOwner && (
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={handleDropdownToggle}
+                    className="p-0.5 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <Ellipsis className="w-6 h-6 text-gray-500" />
+                  </button>
 
-                {isDropdownOpen && (
-                  <div className="absolute top-full left-0 w-40 bg-white border border-gray-200 shadow-lg rounded-md z-10 transition-all duration-200 transform origin-top">
-                    <Button
-                      onClick={handleEdit}
-                      variant="ghost"
-                      size="sm"
-                      className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 justify-start"
-                      icon={<Edit className="w-4 h-4" />}
-                    >
-                      تعديل المناقشة
-                    </Button>
-                    <Divider label="" />
-                    <Button
-                      onClick={handleDelete}
-                      variant="ghost"
-                      size="sm"
-                      className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-gray-100 justify-start"
-                      icon={<Trash2 className="w-4 h-4" />}
-                    >
-                      حذف المناقشة
-                    </Button>
-                  </div>
-                )}
-              </div>
+                  {isDropdownOpen && (
+                    <div className="absolute top-full left-0 w-40 bg-white border border-gray-200 shadow-lg rounded-md z-10 transition-all duration-200 transform origin-top">
+                      <Button
+                        onClick={handleEdit}
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 justify-start"
+                        icon={<Edit className="w-4 h-4" />}
+                      >
+                        تعديل المناقشة
+                      </Button>
+                      <Divider label="" />
+                      <Button
+                        onClick={handleDelete}
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-gray-100 justify-start"
+                        icon={<Trash2 className="w-4 h-4" />}
+                      >
+                        حذف المناقشة
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

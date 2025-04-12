@@ -3,7 +3,7 @@ import { Thread } from "@/types/thread";
 import CommentItem from "./CommentItem";
 import { updateComment, deleteComment } from "@/services/threadService";
 import toast from "react-hot-toast";
-import useAuth from "@/hooks/useAuth";
+import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 
 interface CommentListingProps {
   thread: Thread;
@@ -11,14 +11,6 @@ interface CommentListingProps {
 }
 
 function CommentListing({ thread, refreshThread }: CommentListingProps) {
-  const { auth } = useAuth();
-
-  // TODO: Currently only accessToken is available in auth context
-  // Will be updated when we implement full user data storage:
-  // const currentUserId = auth?.user?.id || '0';
-  // For now using hardcoded value for development
-  const currentUserId = '1';
-
   const handleEditComment = async (commentId: number, newContent: string) => {
     try {
       await updateComment(thread.thread_id, commentId, newContent);
@@ -27,7 +19,7 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
     } catch (error) {
       console.error('Failed to update comment:', error);
       toast.error(
-        error instanceof Error ? error.message : "حدث خطأ أثناء تحديث التعليق"
+        error instanceof Error ? error.message : ERROR_MESSAGES.comment.UPDATE_FAILED
       );
     }
   };
@@ -42,7 +34,7 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
     } catch (error) {
       console.error('Failed to delete comment:', error);
       toast.error(
-        error instanceof Error ? error.message : "حدث خطأ أثناء حذف التعليق"
+        error instanceof Error ? error.message : ERROR_MESSAGES.comment.DELETE_FAILED
       );
     }
   };
@@ -62,17 +54,9 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
         <CommentItem
           key={comment.comment_id}
           id={comment.comment_id.toString()}
-          author={{
-            name: comment.author.name || comment.author.username,
-            avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
-              comment.author.username
-            )}&background=random`,
-            id: comment.author.id.toString(),
-          }}
           content={comment.content}
           timestamp={comment.created_at}
           votes={comment.votes}
-          currentUserId={currentUserId}
           onEdit={(newContent) => handleEditComment(comment.comment_id, newContent)}
           onDelete={() => handleDeleteComment(comment.comment_id)}
         />

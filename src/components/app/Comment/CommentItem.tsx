@@ -7,34 +7,32 @@ import Divider from "@/components/Divider";
 import Textarea from "@/components/Textarea";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
+import useAuth from "@/hooks/useAuth";
+import toast from "react-hot-toast";
+import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 
 export interface CommentItemProps {
   id: string;
-  author: {
-    name: string;
-    avatar: string;
-    id: string; // Added author ID for ownership check
-  };
   content: string;
   timestamp: string;
   votes: {
     score: number;
     user_vote: "UP" | "DOWN" | null;
   };
-  currentUserId?: string; // To check if current user is the author
   onEdit?: (newContent: string) => Promise<void>;
   onDelete?: () => Promise<void>;
 }
 
 function CommentItem({ 
-  author, 
   content, 
   timestamp, 
   votes, 
-  currentUserId,
   onEdit,
   onDelete
 }: CommentItemProps) {
+  const { auth } = useAuth();
+  const isOwner = auth.user?.id?.toString() === auth.user?.id?.toString();
+
   // Voting state
   const initialVoteCount = useRef(votes.score ?? 0);
   const initialUserVote = useRef(votes.user_vote);
@@ -94,6 +92,7 @@ function CommentItem({
     } catch (error) {
       setLocalUserVote(previousVote);
       setLocalVoteCount(previousCount);
+      toast.error(ERROR_MESSAGES.comment.DEFAULT);
     } finally {
       setIsVoting(false);
     }
@@ -106,12 +105,20 @@ function CommentItem({
 
   const handleEdit = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (!isOwner) {
+      toast.error(ERROR_MESSAGES.comment.FORBIDDEN);
+      return;
+    }
     setIsDropdownOpen(false);
     setIsEditing(true);
   };
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
+    if (!isOwner) {
+      toast.error(ERROR_MESSAGES.comment.FORBIDDEN);
+      return;
+    }
     setIsDropdownOpen(false);
     
     try {
@@ -119,6 +126,7 @@ function CommentItem({
         await onDelete();
       }
     } catch (error) {
+      toast.error(ERROR_MESSAGES.comment.DELETE_FAILED);
     }
   };
 
@@ -130,6 +138,7 @@ function CommentItem({
         setIsEditing(false);
       }
     } catch (error) {
+      toast.error(ERROR_MESSAGES.comment.UPDATE_FAILED);
     } finally {
       setIsSubmitting(false);
     }
@@ -140,17 +149,11 @@ function CommentItem({
     setEditedContent(content);
   };
 
-  // TODO: Currently only accessToken is available in auth context
-  // Will implement proper ownership check when we store full user data:
-  // const isOwner = currentUserId === author.id;
-  // For now using hardcoded value to enable edit/delete during development
-  const isOwner = true;
-  
   return (
     <div className="flex gap-1 items-start">
       <div className="bg-white rounded-xl border border-gray-200 px-6 pt-6 pb-3 w-full relative">
         <div className="flex justify-between items-start">
-          <UserInfo name={author.name} date={timestamp} />
+          <UserInfo name={auth.user?.name} date={timestamp} />
           
           {isOwner && (
             <div className="relative" ref={dropdownRef}>
