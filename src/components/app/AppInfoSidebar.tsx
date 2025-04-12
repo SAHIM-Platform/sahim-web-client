@@ -5,7 +5,7 @@ import Divider from "../Divider";
 import ThreadItemMinimal from "./ThreadListing/ThreadItemMinimal";
 import { Fragment, useState, useEffect } from "react";
 import { cn } from "@/utils/utils";
-import { fetchThreads } from "@/services/threadService";
+import { fetchThreads, fetchCategories } from "@/services/threadService";
 import { Thread } from "@/types/thread";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CategoriesListing from "./CategoriesListing";
@@ -50,6 +50,8 @@ function AppInfoSidebar({ isOpen, onClose }: AppInfoSidebarProps) {
 function SidebarContent() {
   const [latestDiscussions, setLatestDiscussions] = useState<Thread[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
@@ -63,21 +65,46 @@ function SidebarContent() {
             .slice(0, 3);
           setLatestDiscussions(sortedThreads);
         }
+
+        // Load categories
+        const categoriesResponse = await fetchCategories();
+        if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
+          setCategories(categoriesResponse.data);
+        }
       } catch (error) {
-        console.error('Error loading latest discussions:', error);
+        console.error('Error loading data:', error);
       } finally {
         setIsLoading(false);
+        setIsLoadingCategories(false);
       }
     };
 
     loadData();
   }, []);
 
+  const handleCategoriesChange = async () => {
+    setIsLoadingCategories(true);
+    try {
+      const categoriesResponse = await fetchCategories();
+      if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
+        setCategories(categoriesResponse.data);
+      }
+    } catch (error) {
+      console.error('Error reloading categories:', error);
+    } finally {
+      setIsLoadingCategories(false);
+    }
+  };
+
   return (
     <div className="pt-24 pb-12 px-4 flex flex-col gap-10">
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">التصنيفات</span>
-        <CategoriesListing />
+        <CategoriesListing 
+          categories={categories}
+          isLoading={isLoadingCategories}
+          onCategoriesChange={handleCategoriesChange}
+        />
       </div>
 
       <Divider label="" />
