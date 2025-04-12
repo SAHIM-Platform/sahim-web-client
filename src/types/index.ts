@@ -1,3 +1,5 @@
+import { UserRole } from './auth';
+
 export * from './auth';
 export * from './form';
 
@@ -37,3 +39,20 @@ export enum ApprovalStatus {
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
 }
+
+export interface Profile {
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+  role: UserRole;
+  academicNumber?: string;
+  department?: Department;
+  level?: Level;
+}
+
+export const userRoleLabels: Record<UserRole, string> = {
+  [UserRole.SUPER_ADMIN]: "مدير النظام",
+  [UserRole.ADMIN]: "مُشرف",
+  [UserRole.STUDENT]: "طالب"
+};

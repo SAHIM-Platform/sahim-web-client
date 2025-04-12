@@ -66,14 +66,6 @@ function UserDropdownMenu() {
             <User className="w-4 h-4" />
             الملف الشخصي
           </Link>
-          <Link
-            href="/settings"
-            onClick={handleItemClick}
-            className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            <Settings className="w-4 h-4" />
-            الإعدادات
-          </Link>
         </div>
         <Divider label="" />
         <button
