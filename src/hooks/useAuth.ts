@@ -3,7 +3,7 @@
 import { useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/context/AuthProvider';
-import { AuthResult, LoginCredentials } from '@/types/auth';
+import { AuthResult, LoginCredentials, UserRole } from '@/types/auth';
 import loginService from '@/services/auth/loginService';
 import { SignupFormData } from '@/utils/api/signup/validateSignupForm';
 import signupService from '@/services/auth/signupService';
@@ -29,7 +29,12 @@ const useAuth = () => {
 
         setAuth({
           accessToken: authData.data.accessToken,
-          user: authData.data.user,
+          user: {
+            id: authData.data.user.id,
+            name: authData.data.user.name,
+            username: authData.data.user.username,
+            role: authData.data.user.role as UserRole
+          },
           loading: false,
         });
 
@@ -59,13 +64,17 @@ const useAuth = () => {
         console.log('Setting auth state with access token');
 
         setAuth({
-          accessToken: authData.data?.accessToken,
-          user: authData.data?.user,
+          accessToken: authData.data.accessToken,
+          user: {
+            id: authData.data.user.id,
+            name: authData.data.user.name,
+            username: authData.data.user.username,
+            role: authData.data.user.role as UserRole
+          },
           loading: false,
         });
         router.push('/explore');
 
-        console.log('Signup failed:', authData.error);
         return authData;
       }
 

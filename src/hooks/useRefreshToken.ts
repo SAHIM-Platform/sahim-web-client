@@ -2,19 +2,25 @@
 
 import axios from '@/api/axios';
 import useAuth from './useAuth';
+import { AuthResponse, UserRole } from '@/types/auth';
 
 const useRefreshToken = () => {
   const { setAuth } = useAuth();
 
   const refresh = async () => {
     try {
-      const response = await axios.post('/auth/refresh');
+      const response = await axios.post<AuthResponse>('/auth/refresh');
+      const { accessToken, user } = response.data;
+
       setAuth({
-        accessToken: response.data.accessToken,
-        user: response.data.user,
+        accessToken,
+        user: {
+          ...user
+        },
         loading: false,
       });
-      return response.data.accessToken;
+
+      return { accessToken, user };
     } catch (error) {
       setAuth({
         accessToken: undefined,

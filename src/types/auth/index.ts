@@ -48,7 +48,7 @@ export interface AuthResponse {
     id: string;
     name: string;
     username: string;
-    role: string;
+    role: UserRole;
   };
 }
 
