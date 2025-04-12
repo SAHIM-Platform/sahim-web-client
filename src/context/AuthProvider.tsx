@@ -2,7 +2,7 @@
 
 import { createContext, useState, useMemo, useEffect } from "react";
 import axios from '@/api/axios';
-import { AuthState, AuthContextType } from '@/types/auth';
+import { AuthState, AuthContextType, AuthResponse, UserRole } from '@/types/auth';
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,13 +18,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const initializeAuth = async () => {
       try {
         console.log('Checking authentication state...');
-        const response = await axios.post('/auth/refresh');
+        const response = await axios.post<AuthResponse>('/auth/refresh');
+        const { accessToken, user } = response.data;
+        
         console.log('Refresh token successful:', {
           isAuthenticated: true,
+          user: {
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            role: user.role as UserRole
+          }
         });
+        
         setAuth({
-          accessToken: response.data.accessToken,
-          user: response.data.user,
+          accessToken,
+          user: {
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            role: user.role as UserRole
+          },
           loading: false
         });
       } catch (error) {
@@ -46,7 +60,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user: auth.user ? {
           id: auth.user.id,
           name: auth.user.name,
-          username: auth.user.username
+          username: auth.user.username,
+          role: auth.user.role
         } : 'none'
       });
     }
