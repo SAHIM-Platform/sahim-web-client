@@ -31,3 +31,9 @@ export enum Level {
   LEVEL_4 = 4,
   LEVEL_5 = 5,
 }
+
+export enum ApprovalStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}

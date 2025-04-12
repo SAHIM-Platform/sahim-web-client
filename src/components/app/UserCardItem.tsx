@@ -2,7 +2,7 @@
 
 import Button from "../Button";
 import { Check, X, Trash2 } from "lucide-react";
-import { Admin, Student } from "@/types";
+import { Admin, Student, ApprovalStatus } from "@/types";
 
 interface UserCardItemProps {
   student?: Student;
@@ -39,7 +39,32 @@ const UserCardItem = ({
   const handleDelete = () => {
     return;
   };
-  
+
+  const getStatusText = (status: ApprovalStatus) => {
+    switch (status) {
+      case ApprovalStatus.PENDING:
+        return "قيد الانتظار";
+      case ApprovalStatus.APPROVED:
+        return "تمت الموافقة";
+      case ApprovalStatus.REJECTED:
+        return "مرفوض";
+      default:
+        return "غير معروف";
+    }
+  };
+
+  const getStatusColor = (status: ApprovalStatus) => {
+    switch (status) {
+      case ApprovalStatus.PENDING:
+        return "text-amber-500";
+      case ApprovalStatus.APPROVED:
+        return "text-primary";
+      case ApprovalStatus.REJECTED:
+        return "text-red-600";
+      default:
+        return "";
+    }
+  };
 
   // Render student card
   if (student) {
@@ -50,28 +75,31 @@ const UserCardItem = ({
           <p className="font-light">الرقم الأكاديمي: <span className="font-normal">{student.academicNumber}</span></p>
           <p className="font-light">المستوى الدراسي: <span className="font-normal">{student.level}</span></p>
           <p className="font-light">القسم: <span className="font-normal">{student.department}</span></p>
+          <p className="font-light">حالة الموافقة: <span className={`font-normal ${getStatusColor(student.approvalStatus)}`}>{getStatusText(student.approvalStatus)}</span></p>
         </div>
 
-        <div className="flex items-center gap-2 sm:mt-0 mt-3">
-          <Button
-            onClick={handleApprove}
-            size="sm"
-            icon={<Check className="w-4 h-4" />}
-          >
-            موافقة
-          </Button>
+        {student.approvalStatus === ApprovalStatus.PENDING && (
+          <div className="flex items-center gap-2 sm:mt-0 mt-3">
+            <Button
+              onClick={handleApprove}
+              size="sm"
+              icon={<Check className="w-4 h-4" />}
+            >
+              موافقة
+            </Button>
 
-          <Button
-            onClick={handleReject}
-            variant="outline"
-            size="sm"
-            color="secondary"
-            icon={<X className="w-4 h-4" />}
-            className="text-red-600 hover:border-red-700 hover:text-red-600 hover:shadow-none"
-          >
-            رفض
-          </Button>
-        </div>
+            <Button
+              onClick={handleReject}
+              variant="outline"
+              size="sm"
+              color="secondary"
+              icon={<X className="w-4 h-4" />}
+              className="text-red-600 hover:border-red-700 hover:text-red-600 hover:shadow-none"
+            >
+              رفض
+            </Button>
+          </div>
+        )}
       </div>
     );
   }
