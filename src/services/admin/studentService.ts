@@ -85,4 +85,65 @@ export const fetchStudents = async (
       }
     };
   }
+};
+
+export const searchStudents = async (
+  query: string,
+  status?: ApprovalStatus
+): Promise<StudentsResult> => {
+  try {
+    const response = await axiosInstance.get<StudentResponse[]>(
+      // `/admins/users/students/search?query=${encodeURIComponent(query)}${status ? `&status=${status}` : ""}`
+      `/admins/users/students/search?query=${encodeURIComponent(query)}`
+    );
+
+    const students: Student[] = response.data.map((user: StudentResponse) => ({
+      id: user.id.toString(),
+      name: user.name,
+      email: user.email,
+      academicNumber: user.student.academicNumber,
+      department: user.student.department,
+      level: user.student.studyLevel,
+      approvalStatus: user.student.approvalStatus,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }));
+
+    return {
+      success: true,
+      data: students,
+    };
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      
+      if (axiosError.response?.status === 401) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            code: 'UNAUTHORIZED'
+          }
+        };
+      }
+      
+      if (axiosError.response?.status === 403) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.FORBIDDEN,
+            code: 'FORBIDDEN'
+          }
+        };
+      }
+    }
+    
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.SERVER_ERROR,
+        code: 'SERVER_ERROR'
+      }
+    };
+  }
 }; 
