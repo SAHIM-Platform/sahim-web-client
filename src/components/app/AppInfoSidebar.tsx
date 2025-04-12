@@ -101,14 +101,23 @@ function SidebarContent() {
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">التصنيفات</span>
         <CategoriesListing 
-          categories={categories}
+          categories={categories.slice(0, 5)}
           isLoading={isLoadingCategories}
           onCategoriesChange={handleCategoriesChange}
         />
+
+        <div className="mt-2 text-center">
+          <a
+            href="/categories"
+            className="text-blue-500 text-sm font-semibold hover:underline"
+          >
+            عرض الكل
+          </a>
+        </div>
       </div>
-
+  
       <Divider label="" />
-
+  
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">آخر المناقشات</span>
         {isLoading ? (
