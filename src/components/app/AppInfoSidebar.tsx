@@ -9,6 +9,7 @@ import { fetchThreads, fetchCategories } from "@/services/threadService";
 import { Thread } from "@/types/thread";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CategoriesListing from "./CategoriesListing";
+import Link from "next/link";
 
 interface AppInfoSidebarProps {
   isOpen: boolean;
@@ -107,12 +108,11 @@ function SidebarContent() {
         />
 
         <div className="mt-2 text-center">
-          <a
+          <link
             href="/categories"
-            className="text-blue-500 text-sm font-semibold hover:underline"
-          >
+            className="text-blue-500 text-sm font-semibold hover:underline">
             عرض الكل
-          </a>
+          </link>
         </div>
       </div>
   
