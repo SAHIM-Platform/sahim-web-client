@@ -1,6 +1,5 @@
 'use client';
 
-import { categories } from "@/data/mock-api";
 import ThreadItem from "./ThreadItem";
 import ThreadListingHeader from "./ThreadListingHeader";
 import { useState, useEffect } from "react";
@@ -119,7 +118,6 @@ const ThreadListing = ({
   return (
     <div className="space-y-5">
       <ThreadListingHeader
-        categories={categories}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         processedThreads={processedThreads}
