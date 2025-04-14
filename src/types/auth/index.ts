@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { Department, Level } from "..";
+import { Department, Level, ApprovalStatus } from "..";
 
 export interface User {
   id: string;
@@ -12,13 +12,19 @@ export interface User {
   password: string;
 }
 
-export type Student = Pick<User, "id" | "name" | "academicNumber" | "department" | "level">;
+export type Student = Pick<User, "id" | "name" | "academicNumber" | "department" | "level"> & {
+  approvalStatus: ApprovalStatus;
+};
 
 export type Admin = Pick<User, "id" | "name" | "email" | "username"> & {
   created_at: string;
 };
 
-export type UserRole = "SUPER_ADMIN" | "ADMIN" | "STUDENT";
+export enum UserRole {
+  SUPER_ADMIN = "SUPER_ADMIN",
+  ADMIN = "ADMIN",
+  STUDENT = "STUDENT"
+}
 
 export interface AuthState {
   accessToken?: string;

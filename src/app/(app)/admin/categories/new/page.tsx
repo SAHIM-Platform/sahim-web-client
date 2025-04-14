@@ -8,13 +8,11 @@ import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import useAuth from "@/hooks/useAuth";
 import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
-import useAxios from "@/hooks/useAxios";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import { createCategory } from "@/services/admin/categoryService";
 import toast from "react-hot-toast";
 
 export default function NewCategoryPage() {
   const router = useRouter();
-  const axios = useAxios();
   const { auth } = useAuth();
   
   useAdminRoleGuard();
@@ -35,21 +33,17 @@ export default function NewCategoryPage() {
     setIsSubmitting(true);
     
     try {
-      const response = await axios.post('/categories', {
-        name: formData.name.trim()
-      });
+      const result = await createCategory(formData.name.trim());
 
-      if (response.data) {
+      if (result.success) {
         toast.success("تم إنشاء التصنيف بنجاح!");
         router.push("/categories");
-      }
-    } catch (error: any) {
-      if (error.response?.status === 500) {
-        setError(ERROR_MESSAGES.category?.SERVER_ERROR || 'حدث خطأ في الخادم');
       } else {
-        setError(ERROR_MESSAGES.category?.DEFAULT || 'حدث خطأ أثناء إنشاء التصنيف');
+        setError(result.error?.message || "حدث خطأ أثناء إنشاء التصنيف");
       }
+    } catch (error) {
       console.error("Error creating category:", error);
+      setError("حدث خطأ غير متوقع أثناء إنشاء التصنيف");
     } finally {
       setIsSubmitting(false);
     }
