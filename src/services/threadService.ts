@@ -48,6 +48,88 @@ type CommentResponse = {
   };
 };
 
+export interface CreateThreadPayload {
+  title: string;
+  content: string;
+  category_id: number;
+  thumbnail_url?: string | null;
+}
+
+export const createThread = async (payload: CreateThreadPayload): Promise<SingleThreadResult> => {
+  try {
+    console.log('Creating thread with payload:', payload);
+    console.log('Request headers:', axiosInstance.defaults.headers);
+    
+    const response = await axiosInstance.post<Thread>('/threads', payload);
+    
+    console.log('Thread creation response:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+      data: response.data
+    });
+
+    if (response.data) {
+      return {
+        success: true,
+        data: response.data
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  } catch (error) {
+    console.error('Thread creation error:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response?.status === 400) {
+        const errorData = axiosError.response.data as ValidationErrorResponse;
+        return {
+          success: false,
+          error: {
+            message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            code: errorData.code || 'VALIDATION_ERROR'
+          }
+        };
+      }
+
+      if (axiosError.response?.status === 401) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            code: 'UNAUTHORIZED'
+          }
+        };
+      }
+
+      if (axiosError.response?.status === 403) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.FORBIDDEN,
+            code: 'FORBIDDEN'
+          }
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  }
+};
 
 export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Promise<VoteResponse> {
   try {
