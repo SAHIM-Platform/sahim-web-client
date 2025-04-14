@@ -14,12 +14,15 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import CommentListing from "@/components/app/Comment/CommentListing";
 import useAuth from "@/hooks/useAuth";
 import useAuthRedirect from "@/hooks/UseAuthRedirect";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import { RefreshCw } from "lucide-react";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const router = useRouter();
   const { auth } = useAuth();
   useAuthRedirect();
-  
+
+  // State management
   const [comment, setComment] = useState("");
   const [thread, setThread] = useState<Thread | null>(null);
   const [similarThreads, setSimilarThreads] = useState<Thread[]>([]);
@@ -27,10 +30,11 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  if (auth.loading) {
-    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
-  }
+  
+  // Pagination state for similar threads
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingSimilar, setIsLoadingSimilar] = useState(false);
 
   const loadThread = async () => {
     try {
@@ -41,25 +45,15 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
 
       if (threadResult.success && threadResult.data) {
         setThread(threadResult.data);
-
-        // Fetch similar threads (have same category)
-        const threadsResult = await fetchThreads();
-        if (threadsResult.success && threadsResult.data) {
-          const threadsData = threadsResult.data.data;
-          const currentThread = threadResult.data;
-          if (Array.isArray(threadsData)) {
-            const similarThreads = threadsData
-              .filter((t: Thread) => t.category_id === currentThread.category_id && t.thread_id !== currentThread.thread_id)
-              .slice(0, 3);
-            setSimilarThreads(similarThreads);
-          }
-        }
+        // Reset similar threads when main thread changes
+        setSimilarThreads([]);
+        setPage(1);
+        setHasMore(true);
       } else {
         setError(threadResult.error?.message || 'حدث خطأ أثناء تحميل المناقشة');
         toast.error(threadResult.error?.message || 'حدث خطأ أثناء تحميل المناقشة');
       }
     } catch (err) {
-      console.error('Thread loading error:', err);
       const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المناقشة';
       setError(errorMessage);
       toast.error(errorMessage);
@@ -68,19 +62,68 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     }
   };
 
-  useEffect(() => {
-    
-    
-    loadThread();
-  }, [discussionId]);
-
-  const refreshThread = async () => {
+  // Load initial similar threads
+  const fetchInitialSimilarThreads = async () => {
     if (!thread) return;
-    const result = await fetchThreadById(thread?.thread_id);
-    if (result.success && result.data) {
-      setThread(result.data);
+    
+    setIsLoadingSimilar(true);
+    setError(null);
+
+    try {
+      const threadsResult = await fetchThreads({ 
+        page: 1, 
+        category_id: thread.category_id 
+      });
+
+      if (threadsResult.success && threadsResult.data) {
+        const filtered = threadsResult.data.data.filter(
+          (t: Thread) => t.thread_id !== thread.thread_id
+        );
+        setSimilarThreads(filtered);
+        setHasMore(threadsResult.data.meta.page < threadsResult.data.meta.totalPages);
+        setPage(2); // Prepare for next page
+      }
+    } catch (err) {
+      console.error("Error loading similar threads:", err);
+      toast.error("حدث خطأ أثناء تحميل المناقشات المشابهة");
+    } finally {
+      setIsLoadingSimilar(false);
     }
   };
+
+  // Load more similar threads
+  const fetchMoreSimilarThreads = async () => {
+    if (!thread || isLoadingSimilar || !hasMore) return;
+    
+    setIsLoadingSimilar(true);
+    try {
+      const threadsResult = await fetchThreads({ 
+        page, 
+        category_id: thread.category_id 
+      });
+
+      if (threadsResult.success && threadsResult.data) {
+        const newThreads = threadsResult.data.data.filter(
+          (t: Thread) => t.thread_id !== thread.thread_id
+        );
+        
+        setSimilarThreads(prev => [...prev, ...newThreads]);
+        setHasMore(threadsResult.data.meta.page < threadsResult.data.meta.totalPages);
+        setPage(prev => prev + 1);
+      }
+    } catch (err) {
+      console.error("Error loading more threads:", err);
+      toast.error("حدث خطأ أثناء تحميل المزيد من المناقشات");
+    } finally {
+      setIsLoadingSimilar(false);
+    }
+  };
+
+  const lastElementRef = useInfiniteScroll({
+    hasMore,
+    isLoading: isLoading || isLoadingSimilar,
+    onLoadMore: fetchMoreSimilarThreads,
+  });
 
   const handleSubmitComment = async () => {
     if (!comment.trim()) {
@@ -91,18 +134,13 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
 
     try {
       setIsSubmittingComment(true);
-
       await createComment(thread.thread_id, comment);
-
       await loadThread();
-
       toast.success("تم إضافة تعليقك بنجاح");
-      
       setComment("");
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'حدث خطأ أثناء إضافة التعليق';
       toast.error(errorMessage);
-
     } finally {
       setIsSubmittingComment(false);
     }
@@ -133,14 +171,31 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
         toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
       }
     } catch (err) {
-      console.error('Error deleting thread:', err);
       toast.error('حدث خطأ أثناء حذف المناقشة');
     } finally {
       setIsDeleting(false);
     }
   };
 
-  if (isLoading) {
+  const refreshThread = async () => {
+    if (!thread) return;
+    const result = await fetchThreadById(thread.thread_id);
+    if (result.success && result.data) {
+      setThread(result.data);
+    }
+  };
+
+  useEffect(() => {
+    loadThread();
+  }, [discussionId]);
+
+  useEffect(() => {
+    if (thread) {
+      fetchInitialSimilarThreads();
+    }
+  }, [thread]);
+
+  if (auth.loading || isLoading) {
     return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
   }
 
@@ -148,21 +203,25 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     return (
       <div className="space-y-4">
         <ErrorAlert message={error} />
+        <Button
+          onClick={loadThread}
+          variant="outline"
+          icon={<RefreshCw className="w-4" />}
+          color="secondary"
+        >
+          إعادة المحاولة
+        </Button>
       </div>
     );
   }
 
   if (!thread) {
-    return (
-      <div className="space-y-4">
-        <ErrorAlert message="لم يتم العثور على المناقشة المطلوبة" />
-      </div>
-    );
+    return <ErrorAlert message="لم يتم العثور على المناقشة المطلوبة" />;
   }
 
   return (
     <>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">{thread?.title}</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">{thread.title}</h1>
 
       <div className="flex flex-col gap-6">
         <ThreadItem
@@ -194,12 +253,14 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
           </div>
         </div>
 
-        <CommentListing thread={thread} refreshThread={refreshThread}/>
+        <CommentListing thread={thread} refreshThread={refreshThread} />
       </div>
 
       <SimilarThreads
         threadPageId={parseInt(discussionId)}
         threads={similarThreads}
+        lastElementRef={lastElementRef}
+        isLoading={isLoadingSimilar}
       />
     </>
   );

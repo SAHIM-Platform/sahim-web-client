@@ -5,13 +5,13 @@ import ThreadItem from "./ThreadItem";
 import ThreadListingHeader from "./ThreadListingHeader";
 import { useState, useEffect } from "react";
 import { fetchThreads, deleteThread } from "@/services/threadService";
-import Loader from "@/components/Loader";
 import toast from "react-hot-toast";
-import { Thread, ThreadResult } from "@/types/thread";
+import { Thread } from "@/types/thread";
 import ErrorAlert from "@/components/Form/ErrorAlert";
-import Button from "@/components/Button";
 import { RefreshCw } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Button from "@/components/Button";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 
 interface ThreadListingProps {
   onReply?: (threadId: number) => void;
@@ -26,33 +26,38 @@ const ThreadListing = ({
 }: ThreadListingProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
+  const [sortOrder, setSortOrder] = useState<"latest" | "oldest">("latest");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [threads, setThreads] = useState<Thread[]>([]);
   const [deletingThreadId, setDeletingThreadId] = useState<number | null>(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-  const loadThreads = async () => {
+  const fetchInitialThreads = async () => {
+    setPage(1);
+    setHasMore(true);
+    setIsLoading(true);
+    setError(null);
+
     try {
-      setIsLoading(true);
-      setError(null);
-      const result = await fetchThreads();
+      const result = await fetchThreads({
+        sort: sortOrder,
+        page: 1,
+        category_id: selectedCategory ? Number(selectedCategory) : undefined,
+      });
 
       if (result.success && result.data) {
-        setThreads(Array.isArray(result.data.data) ? result.data.data : [result.data.data]);
+        setThreads(result.data.data);
+        setHasMore(result.data.meta.page < result.data.meta.totalPages);
+        setPage(2);
       } else {
         const errorMessage = result.error?.message || 'حدث خطأ أثناء تحميل المناقشات';
         setError(errorMessage);
         toast.error(errorMessage);
       }
     } catch (err) {
-      console.error('Thread loading error:', {
-        error: err,
-        message: err instanceof Error ? err.message : 'Unknown error',
-        stack: err instanceof Error ? err.stack : undefined,
-        timestamp: new Date().toISOString(),
-      });
-
       const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المناقشات';
       setError(`${errorMessage}. حاول مرة أخرى.`);
       toast.error(errorMessage);
@@ -61,12 +66,34 @@ const ThreadListing = ({
     }
   };
 
-  useEffect(() => {
-    loadThreads();
-  }, []);
+  const fetchMoreThreads = async () => {
+    if (isFetchingMore || !hasMore) return;
+    
+    setIsFetchingMore(true);
+    try {
+      const result = await fetchThreads({
+        sort: sortOrder,
+        page,
+        category_id: selectedCategory ? Number(selectedCategory) : undefined,
+      });
+
+      if (result.success && result.data) {
+        const newThreads = result.data.data;
+        setThreads((prev) => [...prev, ...newThreads]);
+        setHasMore(result.data.meta.page < result.data.meta.totalPages);
+        setPage((prev) => prev + 1);
+      } else {
+        toast.error(result.error?.message || 'حدث خطأ أثناء تحميل المزيد من المناقشات');
+      }
+    } catch (err) {
+      toast.error("حدث خطأ أثناء تحميل المزيد من المناقشات");
+    } finally {
+      setIsFetchingMore(false);
+    }
+  };
 
   const handleRetry = () => {
-    loadThreads();
+    fetchInitialThreads();
   };
 
   const handleDeleteThread = async (threadId: number) => {
@@ -74,15 +101,14 @@ const ThreadListing = ({
       try {
         setDeletingThreadId(threadId);
         const result = await deleteThread(threadId);
-        
+
         if (result.success) {
           toast.success('تم حذف المناقشة بنجاح');
-          loadThreads();
+          fetchInitialThreads();
         } else {
           toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
         }
       } catch (err) {
-        console.error('Error deleting thread:', err);
         toast.error('حدث خطأ أثناء حذف المناقشة');
       } finally {
         setDeletingThreadId(null);
@@ -92,9 +118,19 @@ const ThreadListing = ({
 
   const processedThreads = threads.filter(
     (thread) =>
-      (!selectedCategory || thread.category.name === selectedCategory) &&
+      (!selectedCategory || thread.category.category_id === Number(selectedCategory)) &&
       (!searchQuery || (thread.title && thread.title.includes(searchQuery)))
   );
+
+  const loadMoreRef = useInfiniteScroll({
+    hasMore,
+    isLoading: isFetchingMore,
+    onLoadMore: fetchMoreThreads,
+  });
+
+  useEffect(() => {
+    fetchInitialThreads();
+  }, [sortOrder, selectedCategory]);
 
   if (isLoading) {
     return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
@@ -136,24 +172,35 @@ const ThreadListing = ({
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-5">
-          {processedThreads
-            .sort((a, b) => {
-              const dateA = new Date(a.created_at).getTime();
-              const dateB = new Date(b.created_at).getTime();
-              return sortOrder === "recent" ? dateB - dateA : dateA - dateB;
-            })
-            .map((thread) => (
-              <ThreadItem
-                key={thread.thread_id}
-                {...thread}
-                onReply={() => onReply?.(thread.thread_id)}
-                onShare={() => onShare?.(thread.thread_id)}
-                onDelete={() => handleDeleteThread(thread.thread_id)}
-              />
-            ))}
-        </div>
+        <>
+          <div className="flex flex-col gap-5">
+            {processedThreads
+              .sort((a, b) => {
+                const dateA = new Date(a.created_at).getTime();
+                const dateB = new Date(b.created_at).getTime();
+                return sortOrder === "latest" ? dateB - dateA : dateA - dateB;
+              })
+              .map((thread) => (
+                <ThreadItem
+                  key={thread.thread_id}
+                  {...thread}
+                  onReply={() => onReply?.(thread.thread_id)}
+                  onShare={() => onShare?.(thread.thread_id)}
+                  onDelete={() => handleDeleteThread(thread.thread_id)}
+                />
+              ))}
+          </div>
+
+          {isFetchingMore && (
+            <div className="flex justify-center py-4">
+              <LoadingSpinner size="md" />
+            </div>
+          )}
+        </>
       )}
+
+      {/* Used by the hook to detect when to load more */}
+      <div ref={loadMoreRef} className="h-1" />
     </div>
   );
 };

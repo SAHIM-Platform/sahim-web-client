@@ -12,8 +12,8 @@ interface ThreadListingHeaderProps {
   categories: CategoryBadgeProps[];
   selectedCategory: string | null;
   setSelectedCategory: (category: string | null) => void;
-  sortOrder: "recent" | "oldest";
-  setSortOrder: (sortOrder: "recent" | "oldest") => void;
+  sortOrder: "latest" | "oldest";
+  setSortOrder: (sortOrder: "latest" | "oldest") => void;
 }
 
 function ThreadListingHeader({
@@ -77,11 +77,11 @@ function ThreadListingHeader({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setSortOrder(sortOrder === "recent" ? "oldest" : "recent")}
+            onClick={() => setSortOrder(sortOrder === "latest" ? "oldest" : "latest")}
             className="text-[13px] text-gray-600"
             icon={<ArrowUpDown className="w-4 h-4" />}
           >
-            {sortOrder === "recent" ? "الأحدث أولاً" : "الأقدم أولاً"}
+            {sortOrder === "latest" ? "الأحدث أولاً" : "الأقدم أولاً"}
           </Button>
         </div>
       </div>

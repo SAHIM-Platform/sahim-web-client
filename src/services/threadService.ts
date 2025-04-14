@@ -1,9 +1,11 @@
 import axiosInstance from '@/api/axios';
-import { ThreadResult, ThreadResponse, SingleThreadResult, Thread, ApiSearchResult } from '@/types/thread';
+import { ThreadResult, ThreadResponse, SingleThreadResult, Thread, ApiSearchResult, BookmarkedThreadsResult } from '@/types/thread';
 import { AxiosError, isAxiosError } from 'axios';
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
 import { SearchResult } from '@/types/thread';
+import { THREADS_LIMIT } from '@/utils/constant';
+
 
 interface VoteResponse {
   success: boolean;
@@ -200,9 +202,31 @@ export async function deleteComment(
 }
 
 
-export const fetchThreads = async (): Promise<ThreadResult> => {
+export const fetchThreads = async ({
+  sort = "latest",
+  page = 0,
+  limit = THREADS_LIMIT,
+  category_id,
+}: {
+  sort?: string;
+  page?: number;
+  limit?: number;
+  category_id?: number;
+}): Promise<ThreadResult> => {
   try {
-    const response = await axiosInstance.get<ThreadResponse>('/threads');
+    console.log("inside fetch threads")
+
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+      sort,
+    });
+
+    if (category_id !== undefined) {
+      params.append("category_id", String(category_id));
+    }
+
+    const response = await axiosInstance.get<ThreadResponse>(`/threads?${params.toString()}`);
 
     if (response.data) {
       return {
@@ -223,10 +247,10 @@ export const fetchThreads = async (): Promise<ThreadResult> => {
 
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError;
+      const status = axiosError.response?.status;
 
-      // Handle validation errors
-      if (axiosError.response?.status === 400) {
-        const errorData = axiosError.response.data as ValidationErrorResponse;
+      if (status === 400) {
+        const errorData = axiosError.response?.data as ValidationErrorResponse;
         return {
           success: false,
           error: {
@@ -236,8 +260,7 @@ export const fetchThreads = async (): Promise<ThreadResult> => {
         };
       }
 
-      // Handle not found errors
-      if (axiosError.response?.status === 404) {
+      if (status === 404) {
         return {
           success: false,
           error: {
@@ -247,7 +270,6 @@ export const fetchThreads = async (): Promise<ThreadResult> => {
         };
       }
 
-      // Handle server errors
       return {
         success: false,
         error: {
@@ -257,7 +279,6 @@ export const fetchThreads = async (): Promise<ThreadResult> => {
       };
     }
 
-    // Handle unexpected errors
     return {
       success: false,
       error: {
@@ -606,24 +627,29 @@ export const unbookmarkThread = async (threadId: number): Promise<BookmarkResult
   }
 };
 
-export interface BookmarkedThreadsResult {
-  success: boolean;
-  data?: Thread[];
-  error?: {
-    message: string;
-    code: string;
-  };
-}
 
-export const fetchBookmarkedThreads = async (): Promise<BookmarkedThreadsResult> => {
+export const fetchBookmarkedThreads = async ({
+  sort = "latest",
+  page = 0,
+  limit = THREADS_LIMIT,
+}: {
+  sort?: string;
+  page?: number;
+  limit?: number;
+}): Promise<BookmarkedThreadsResult> => {
+
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    sort,
+  });
   try {
-    const response = await axiosInstance.get<{ data: Thread[], meta: any }>('/users/me/bookmarks');
-
+    const response = await axiosInstance.get<ThreadResponse>(`/users/me/bookmarks?${params}`);
 
     if (response.data && response.data.data) {
       return {
         success: true,
-        data: response.data.data
+        data: response.data,
       };
     }
 
@@ -631,8 +657,8 @@ export const fetchBookmarkedThreads = async (): Promise<BookmarkedThreadsResult>
       success: false,
       error: {
         message: ERROR_MESSAGES.thread.DEFAULT,
-        code: 'UNKNOWN_ERROR'
-      }
+        code: 'UNKNOWN_ERROR',
+      },
     };
   } catch (error) {
     console.error('Error fetching bookmarked threads:', error);
@@ -647,8 +673,8 @@ export const fetchBookmarkedThreads = async (): Promise<BookmarkedThreadsResult>
           success: false,
           error: {
             message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
-            code: errorData.code || 'VALIDATION_ERROR'
-          }
+            code: errorData.code || 'VALIDATION_ERROR',
+          },
         };
       }
 
@@ -658,8 +684,8 @@ export const fetchBookmarkedThreads = async (): Promise<BookmarkedThreadsResult>
           success: false,
           error: {
             message: ERROR_MESSAGES.auth.UNAUTHORIZED,
-            code: 'UNAUTHORIZED'
-          }
+            code: 'UNAUTHORIZED',
+          },
         };
       }
 
@@ -669,8 +695,8 @@ export const fetchBookmarkedThreads = async (): Promise<BookmarkedThreadsResult>
           success: false,
           error: {
             message: ERROR_MESSAGES.thread.NOT_FOUND,
-            code: 'NOT_FOUND'
-          }
+            code: 'NOT_FOUND',
+          },
         };
       }
 
@@ -679,8 +705,8 @@ export const fetchBookmarkedThreads = async (): Promise<BookmarkedThreadsResult>
         success: false,
         error: {
           message: ERROR_MESSAGES.thread.SERVER_ERROR,
-          code: 'SERVER_ERROR'
-        }
+          code: 'SERVER_ERROR',
+        },
       };
     }
 
@@ -689,8 +715,9 @@ export const fetchBookmarkedThreads = async (): Promise<BookmarkedThreadsResult>
       success: false,
       error: {
         message: ERROR_MESSAGES.thread.DEFAULT,
-        code: 'UNKNOWN_ERROR'
-      }
+        code: 'UNKNOWN_ERROR',
+      },
     };
   }
 };
+

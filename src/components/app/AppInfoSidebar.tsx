@@ -9,6 +9,7 @@ import { fetchThreads, fetchCategories } from "@/services/threadService";
 import { Thread } from "@/types/thread";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CategoriesListing from "./CategoriesListing";
+import { LATEST_THREADS_LIMIT } from "@/utils/constant";
 
 interface AppInfoSidebarProps {
   isOpen: boolean;
@@ -57,13 +58,10 @@ function SidebarContent() {
     const loadData = async () => {
       try {
         // Load latest discussions
-        const result = await fetchThreads();
+        const result = await fetchThreads({ page: 1, limit: LATEST_THREADS_LIMIT});
         if (result.success && result.data) {
           const threads = result.data.data;
-          const sortedThreads = threads
-            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-            .slice(0, 3);
-          setLatestDiscussions(sortedThreads);
+          setLatestDiscussions(threads);
         }
 
         // Load categories
