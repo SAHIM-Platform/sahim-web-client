@@ -27,6 +27,18 @@ const validateThreadForm = (
     errors.category_id = "تصنيف المناقشة مطلوب";
   }
 
+  // Thumbnail URL validation (if provided)
+  if (values.thumbnail_url && values.thumbnail_url.trim()) {
+    try {
+      const url = new URL(values.thumbnail_url);
+      if (!['http:', 'https:'].includes(url.protocol)) {
+        errors.thumbnail_url = "يجب أن يكون الرابط صالحاً (http أو https)";
+      }
+    } catch (e) {
+      errors.thumbnail_url = "يجب أن يكون الرابط صالحاً";
+    }
+  }
+
   return errors;
 };
 

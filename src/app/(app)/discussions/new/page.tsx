@@ -62,13 +62,39 @@ export default function NewDiscussionPage() {
     loadCategories();
   }, []);
 
+  const handleChange = (field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    // Validate the changed field
+    const errors = validateThreadForm({
+      ...formData,
+      [field]: value,
+      category_id: field === 'category_id' ? value : formData.category_id,
+      thumbnail_url: field === 'thumbnail_url' ? value : formData.thumbnail_url
+    });
+
+    // Only update the validation error for the changed field
+    setValidationErrors((prev) => ({
+      ...prev,
+      [field === 'category_id' ? 'category_id' : field === 'thumbnail_url' ? 'thumbnail_url' : field]: errors[field === 'category_id' ? 'category_id' : field === 'thumbnail_url' ? 'thumbnail_url' : field]
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setValidationErrors({});
 
-    // Validate form
-    const errors = validateThreadForm(formData);
+    // Validate all fields on submit
+    const errors = validateThreadForm({
+      title: formData.title,
+      content: formData.content,
+      category_id: formData.category_id,
+      thumbnail_url: formData.thumbnail_url
+    });
+    
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
       return;
@@ -97,13 +123,6 @@ export default function NewDiscussionPage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
   };
 
   const clearThumbnail = () => {
@@ -188,6 +207,7 @@ export default function NewDiscussionPage() {
             optional
             helperText="يمكنك إضافة رابط صورة لتظهر كصورة مصغرة للمناقشة"
             endIcon={formData.thumbnail_url ? <X className="w-4 h-4 cursor-pointer" onClick={clearThumbnail} /> : undefined}
+            error={validationErrors.thumbnail_url}
           />
 
           {formData.thumbnail_url && (
