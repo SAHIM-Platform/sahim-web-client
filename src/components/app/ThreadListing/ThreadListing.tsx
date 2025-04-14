@@ -27,6 +27,7 @@ const ThreadListing = ({
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
   const [isLoading, setIsLoading] = useState(true);
+  const [isFiltering, setIsFiltering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [threads, setThreads] = useState<Thread[]>([]);
   const [deletingThreadId, setDeletingThreadId] = useState<number | null>(null);
@@ -34,16 +35,22 @@ const ThreadListing = ({
   const loadThreads = async (filters?: { category_id?: number; query?: string }) => {
     try {
       setIsLoading(true);
+      setIsFiltering(!!filters);
       setError(null);
       
       let result;
       if (filters?.category_id || filters?.query) {
         result = await searchThreads(filters);
+        if (!result || !Array.isArray(result.data)) {
+          throw new Error('Invalid response format from search');
+        }
         setThreads(result.data);
       } else {
         result = await fetchThreads();
         if (result.success && result.data) {
           setThreads(Array.isArray(result.data.data) ? result.data.data : [result.data.data]);
+        } else {
+          throw new Error(result.error?.message || 'Failed to fetch threads');
         }
       }
     } catch (err) {
@@ -59,6 +66,7 @@ const ThreadListing = ({
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
+      setIsFiltering(false);
     }
   };
 
@@ -123,6 +131,11 @@ const ThreadListing = ({
       ) : isLoading ? (
         <div className="flex items-center justify-center py-12">
           <LoadingSpinner size="lg" color="primary" />
+        </div>
+      ) : isFiltering ? (
+        <div className="flex items-center justify-center py-6">
+          <LoadingSpinner size="md" color="primary" />
+          <span className="mr-2 text-sm text-gray-600">جاري البحث...</span>
         </div>
       ) : threads.length === 0 ? (
         <div className="text-center py-12">

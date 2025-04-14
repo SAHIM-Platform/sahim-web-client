@@ -33,16 +33,23 @@ function ThreadListingHeader({
 }: ThreadListingHeaderProps) {
   const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadCategories = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
         const categoriesResponse = await fetchCategories();
         if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
           setCategories(categoriesResponse.data);
+        } else {
+          throw new Error('Invalid categories response format');
         }
       } catch (error) {
         console.error('Error loading categories:', error);
+        setError('حدث خطأ أثناء تحميل التصنيفات');
       } finally {
         setIsLoading(false);
       }
@@ -51,11 +58,55 @@ function ThreadListingHeader({
     loadCategories();
   }, []);
 
+  const validateSearchQuery = (query: string): boolean => {
+    if (!query.trim()) {
+      setSearchError('يرجى إدخال كلمة البحث');
+      return false;
+    }
+    if (query.trim().length < 2) {
+      setSearchError('يجب أن تكون كلمة البحث على الأقل حرفين');
+      return false;
+    }
+    setSearchError(null);
+    return true;
+  };
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value ? parseInt(e.target.value) : null;
+    setSelectedCategory(value);
+    // Only trigger search if we have a valid category or clearing the selection
+    if (value !== null || selectedCategory !== null) {
+      onSearch({
+        category_id: value || undefined,
+        query: searchQuery.trim() || undefined
+      });
+    }
+  };
+
   const handleSearch = () => {
-    onSearch({
-      category_id: selectedCategory || undefined,
-      query: searchQuery || undefined
-    });
+    setSearchError(null);
+    const trimmedQuery = searchQuery.trim();
+    
+    // If we have a search query, validate it
+    if (trimmedQuery && !validateSearchQuery(trimmedQuery)) {
+      return;
+    }
+
+    // Only trigger search if we have a valid query or category
+    if (trimmedQuery || selectedCategory !== null) {
+      onSearch({
+        category_id: selectedCategory || undefined,
+        query: trimmedQuery || undefined
+      });
+    }
+  };
+
+  const handleSearchInputChange = (value: string) => {
+    setSearchQuery(value);
+    // Clear search error when user starts typing
+    if (searchError) {
+      setSearchError(null);
+    }
   };
 
   return (
@@ -81,25 +132,26 @@ function ThreadListingHeader({
       </div>
       <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
-          <SearchField
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            onSearch={handleSearch}
-          />
+          <div className="flex-1">
+            <SearchField
+              searchQuery={searchQuery}
+              setSearchQuery={handleSearchInputChange}
+              onSearch={handleSearch}
+              error={searchError}
+            />
+          </div>
 
           <div className="w-48">
             {isLoading ? (
               <div className="flex items-center justify-center h-10">
                 <LoadingSpinner size="sm" />
               </div>
+            ) : error ? (
+              <div className="text-red-500 text-sm">{error}</div>
             ) : (
               <Select
                 value={selectedCategory?.toString() || ""}
-                onChange={(e) => {
-                  const value = e.target.value ? parseInt(e.target.value) : null;
-                  setSelectedCategory(value);
-                  handleSearch();
-                }}
+                onChange={handleCategoryChange}
                 placeholder="جميع التصنيفات"
                 options={[
                   { value: "", label: "جميع التصنيفات" },
