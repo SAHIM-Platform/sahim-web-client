@@ -12,10 +12,11 @@ import { useImageValidation } from "@/hooks/useImageValidation";
 import useAxios from "@/hooks/useAxios";
 import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
-import { fetchCategories } from "@/services/threadService";
+import { fetchCategories, createThread } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import useAuth from "@/hooks/useAuth";
 import useAuthRedirect from "@/hooks/UseAuthRedirect";
+import validateThreadForm from "@/utils/api/thread/validateThreadForm";
 
 export default function NewDiscussionPage() {
   const router = useRouter();
@@ -25,15 +26,16 @@ export default function NewDiscussionPage() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [formData, setFormData] = useState({
     title: "",
-    category: "",
+    category_id: "",
     content: "",
-    thumbnailUrl: "",
+    thumbnail_url: "",
   });
-  const { isImageValid, isImageLoading } = useImageValidation(formData.thumbnailUrl);
+  const { isImageValid, isImageLoading } = useImageValidation(formData.thumbnail_url);
 
   if (auth.loading) {
     return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
@@ -60,54 +62,80 @@ export default function NewDiscussionPage() {
     loadCategories();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsSubmitting(true);
-
-    const payload = {
-      title: formData.title,
-      content: formData.content,
-      category_id: parseInt(formData.category), // Convert to number
-      thumbnail_url: formData.thumbnailUrl || null,
-    };
-
-    try {
-
-      console.log(payload);
-      const response = await axios.post("/threads", payload);
-
-      router.push(`/discussions/${response.data.thread_id}`);
-    } catch (error: any) {
-      if (error.response?.status === 500) {
-        setError(ERROR_MESSAGES.thread.SERVER_ERROR);
-      } else {
-        setError(ERROR_MESSAGES.thread.DEFAULT);
-      }
-      console.error("Error creating thread:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
+
+    // Validate the changed field
+    const errors = validateThreadForm({
+      ...formData,
+      [field]: value,
+      category_id: field === 'category_id' ? value : formData.category_id,
+      thumbnail_url: field === 'thumbnail_url' ? value : formData.thumbnail_url
+    });
+
+    // Only update the validation error for the changed field
+    setValidationErrors((prev) => ({
+      ...prev,
+      [field === 'category_id' ? 'category_id' : field === 'thumbnail_url' ? 'thumbnail_url' : field]: errors[field === 'category_id' ? 'category_id' : field === 'thumbnail_url' ? 'thumbnail_url' : field]
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    // Validate all fields on submit
+    const errors = validateThreadForm({
+      title: formData.title,
+      content: formData.content,
+      category_id: formData.category_id,
+      thumbnail_url: formData.thumbnail_url
+    });
+    
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const payload = {
+        title: formData.title,
+        content: formData.content,
+        category_id: parseInt(formData.category_id),
+        thumbnail_url: formData.thumbnail_url || null,
+      };
+
+      const result = await createThread(payload);
+      
+      if (result.success && result.data) {
+        router.push(`/discussions/${result.data.thread_id}`);
+      } else {
+        setError(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
+      }
+    } catch (error: any) {
+      console.error("Error creating thread:", error);
+      setError(error.message || ERROR_MESSAGES.thread.DEFAULT);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const clearThumbnail = () => {
-    handleChange("thumbnailUrl", "");
+    handleChange("thumbnail_url", "");
   };
 
-  const areAllRequiredFieldsFilled = formData.title && formData.category && formData.content;
+  const areAllRequiredFieldsFilled = formData.title && formData.category_id && formData.content;
 
   if (isLoadingCategories) {
     return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
   }
 
-  if (error) {
+  if (error && !isSubmitting) {
     return (
       <div className="space-y-4">
         <ErrorAlert message={error} />
@@ -139,18 +167,23 @@ export default function NewDiscussionPage() {
           onChange={(e) => handleChange("title", e.target.value)}
           required
           fullWidth
+          error={validationErrors.title}
         />
 
         <Select
           label="التصنيف"
           placeholder="اختر تصنيف المناقشة"
-          value={formData.category}
-          onChange={(e) => handleChange("category", e.target.value)}
+          value={formData.category_id}
+          onChange={(e) => handleChange("category_id", e.target.value)}
           required
-          options={categories.map((category) => ({
-            value: category.category_id.toString(),
-            label: category.name,
-          }))}
+          options={[
+            { value: "", label: "اختر تصنيفاً" },
+            ...categories.map((category) => ({
+              value: category.category_id.toString(),
+              label: category.name,
+            }))
+          ]}
+          error={validationErrors.category_id}
         />
 
         <Textarea
@@ -162,23 +195,25 @@ export default function NewDiscussionPage() {
           fullWidth
           textareaSize="lg"
           helperText="يدعم تنسيق Markdown"
+          error={validationErrors.content}
         />
 
         <div className="space-y-2">
           <Input
             label="رابط الصورة المصغرة"
             placeholder="https://example.com/image.jpg"
-            value={formData.thumbnailUrl}
-            onChange={(e) => handleChange("thumbnailUrl", e.target.value)}
+            value={formData.thumbnail_url}
+            onChange={(e) => handleChange("thumbnail_url", e.target.value)}
             optional
             helperText="يمكنك إضافة رابط صورة لتظهر كصورة مصغرة للمناقشة"
-            endIcon={formData.thumbnailUrl ? <X className="w-4 h-4 cursor-pointer" onClick={clearThumbnail} /> : undefined}
+            endIcon={formData.thumbnail_url ? <X className="w-4 h-4 cursor-pointer" onClick={clearThumbnail} /> : undefined}
+            error={validationErrors.thumbnail_url}
           />
 
-          {formData.thumbnailUrl && (
+          {formData.thumbnail_url && (
             <ThumbnailPreview
               clearThumbnail={clearThumbnail}
-              thumbnailUrl={formData.thumbnailUrl}
+              thumbnailUrl={formData.thumbnail_url}
               isImageLoading={isImageLoading}
               isImageValid={isImageValid}
             />

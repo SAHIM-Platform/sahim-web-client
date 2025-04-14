@@ -48,6 +48,88 @@ type CommentResponse = {
   };
 };
 
+export interface CreateThreadPayload {
+  title: string;
+  content: string;
+  category_id: number;
+  thumbnail_url?: string | null;
+}
+
+export const createThread = async (payload: CreateThreadPayload): Promise<SingleThreadResult> => {
+  try {
+    console.log('Creating thread with payload:', payload);
+    console.log('Request headers:', axiosInstance.defaults.headers);
+    
+    const response = await axiosInstance.post<Thread>('/threads', payload);
+    
+    console.log('Thread creation response:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+      data: response.data
+    });
+
+    if (response.data) {
+      return {
+        success: true,
+        data: response.data
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  } catch (error) {
+    console.error('Thread creation error:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response?.status === 400) {
+        const errorData = axiosError.response.data as ValidationErrorResponse;
+        return {
+          success: false,
+          error: {
+            message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            code: errorData.code || 'VALIDATION_ERROR'
+          }
+        };
+      }
+
+      if (axiosError.response?.status === 401) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            code: 'UNAUTHORIZED'
+          }
+        };
+      }
+
+      if (axiosError.response?.status === 403) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.FORBIDDEN,
+            code: 'FORBIDDEN'
+          }
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  }
+};
 
 export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Promise<VoteResponse> {
   try {
@@ -200,9 +282,19 @@ export async function deleteComment(
 }
 
 
-export const fetchThreads = async (): Promise<ThreadResult> => {
+export const fetchThreads = async (category_id?: number): Promise<ThreadResult> => {
   try {
-    const response = await axiosInstance.get<ThreadResponse>('/threads');
+    console.log('Fetching threads with category_id:', category_id);
+    
+    const url = category_id ? `/threads?category_id=${category_id}` : '/threads';
+    console.log('Fetch URL:', url);
+    
+    const response = await axiosInstance.get<ThreadResponse>(url);
+    
+    console.log('Threads fetch response:', {
+      status: response.status,
+      data: response.data
+    });
 
     if (response.data) {
       return {
@@ -224,7 +316,6 @@ export const fetchThreads = async (): Promise<ThreadResult> => {
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError;
 
-      // Handle validation errors
       if (axiosError.response?.status === 400) {
         const errorData = axiosError.response.data as ValidationErrorResponse;
         return {
@@ -236,7 +327,6 @@ export const fetchThreads = async (): Promise<ThreadResult> => {
         };
       }
 
-      // Handle not found errors
       if (axiosError.response?.status === 404) {
         return {
           success: false,
@@ -246,18 +336,8 @@ export const fetchThreads = async (): Promise<ThreadResult> => {
           }
         };
       }
-
-      // Handle server errors
-      return {
-        success: false,
-        error: {
-          message: ERROR_MESSAGES.thread.SERVER_ERROR,
-          code: 'SERVER_ERROR'
-        }
-      };
     }
 
-    // Handle unexpected errors
     return {
       success: false,
       error: {
@@ -343,6 +423,18 @@ export interface SearchFilters {
 
 export const searchThreads = async (filters: SearchFilters): Promise<ThreadResponse> => {
   try {
+    console.log('Searching threads with filters:', filters);
+    
+    // If only category_id is provided, use fetchThreads instead
+    if (filters.category_id && !filters.query) {
+      const result = await fetchThreads(filters.category_id);
+      if (!result.success || !result.data) {
+        throw new Error(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
+      }
+      return result.data;
+    }
+    
+    // If search query is provided, use the search endpoint
     const params = new URLSearchParams();
     if (filters.category_id) {
       params.append('category_id', filters.category_id.toString());
@@ -351,10 +443,28 @@ export const searchThreads = async (filters: SearchFilters): Promise<ThreadRespo
       params.append('query', filters.query);
     }
 
-    const response = await axiosInstance.get<ThreadResponse>(`/threads/search?${params.toString()}`);
+    const url = `/threads/search?${params.toString()}`;
+    console.log('Search URL:', url);
+    
+    const response = await axiosInstance.get<ThreadResponse>(url);
+    
+    console.log('Search response:', {
+      status: response.status,
+      data: response.data,
+      filtersApplied: filters
+    });
+
+    if (!response.data) {
+      throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+    }
+
     return response.data;
   } catch (error) {
-    console.error('Search failed:', error);
+    console.error('Search failed:', {
+      error,
+      filters,
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
     throw error;
   }
 };
@@ -369,7 +479,14 @@ export const updateThread = async (
   }
 ): Promise<SingleThreadResult> => {
   try {
-    const response = await axiosInstance.put<Thread>(`/threads/${threadId}`, threadData);
+    const response = await axiosInstance.patch<Thread>(`/threads/${threadId}`, threadData);
+    console.log('request URL', `/threads/${threadId}`)
+    console.log('Thread update response:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+      data: response.data
+    });
 
     if (response.data) {
       return {
