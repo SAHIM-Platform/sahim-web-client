@@ -2,14 +2,12 @@ import Divider from "@/components/Divider"
 import DiscussionsBadge from "../Badge/DiscussionsBadge"
 import Button from "@/components/Button"
 import { ArrowUpDown, MessageSquare } from "lucide-react"
-import { CategoryBadgeProps } from "../Badge/CategoryBadge"
 import { Thread } from "@/types/thread"
 import Select from "@/components/Select"
-import SearchField from "../SearchField"
+import SearchField from "@/components/SearchField"
 import { useEffect, useState } from "react"
 import { fetchCategories, searchThreads } from "@/services/threadService"
 import LoadingSpinner from "@/components/LoadingSpinner"
-
 interface ThreadListingHeaderProps {
   searchQuery: string
   setSearchQuery: (value: string) => void
