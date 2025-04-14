@@ -3,7 +3,7 @@
 import ThreadItem from "./ThreadItem";
 import ThreadListingHeader from "./ThreadListingHeader";
 import { useState, useEffect } from "react";
-import { fetchThreads, deleteThread } from "@/services/threadService";
+import { fetchThreads, deleteThread, searchThreads } from "@/services/threadService";
 import Loader from "@/components/Loader";
 import toast from "react-hot-toast";
 import { Thread, ThreadResult } from "@/types/thread";
@@ -23,7 +23,7 @@ const ThreadListing = ({
   onShare,
   emptyMessage = "لا توجد مناقشات حالياً"
 }: ThreadListingProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
   const [isLoading, setIsLoading] = useState(true);
@@ -31,18 +31,20 @@ const ThreadListing = ({
   const [threads, setThreads] = useState<Thread[]>([]);
   const [deletingThreadId, setDeletingThreadId] = useState<number | null>(null);
 
-  const loadThreads = async () => {
+  const loadThreads = async (filters?: { category_id?: number; query?: string }) => {
     try {
       setIsLoading(true);
       setError(null);
-      const result = await fetchThreads();
-
-      if (result.success && result.data) {
-        setThreads(Array.isArray(result.data.data) ? result.data.data : [result.data.data]);
+      
+      let result;
+      if (filters?.category_id || filters?.query) {
+        result = await searchThreads(filters);
+        setThreads(result.data);
       } else {
-        const errorMessage = result.error?.message || 'حدث خطأ أثناء تحميل المناقشات';
-        setError(errorMessage);
-        toast.error(errorMessage);
+        result = await fetchThreads();
+        if (result.success && result.data) {
+          setThreads(Array.isArray(result.data.data) ? result.data.data : [result.data.data]);
+        }
       }
     } catch (err) {
       console.error('Thread loading error:', {
@@ -89,45 +91,40 @@ const ThreadListing = ({
     }
   };
 
-  const processedThreads = threads.filter(
-    (thread) =>
-      (!selectedCategory || thread.category.name === selectedCategory) &&
-      (!searchQuery || (thread.title && thread.title.includes(searchQuery)))
-  );
-
-  if (isLoading) {
-    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-4">
-        <ErrorAlert message={error} />
-        <Button
-          onClick={handleRetry}
-          variant="outline"
-          icon={<RefreshCw className="w-4" />}
-          color="secondary"
-        >
-          إعادة المحاولة
-        </Button>
-      </div>
-    );
-  }
+  const handleSearch = (filters: { category_id?: number; query?: string }) => {
+    loadThreads(filters);
+  };
 
   return (
     <div className="space-y-5">
       <ThreadListingHeader
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
-        processedThreads={processedThreads}
+        processedThreads={threads}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
+        onSearch={handleSearch}
       />
 
-      {processedThreads.length === 0 ? (
+      {error ? (
+        <div className="space-y-4">
+          <ErrorAlert message={error} />
+          <Button
+            onClick={handleRetry}
+            variant="outline"
+            icon={<RefreshCw className="w-4" />}
+            color="secondary"
+          >
+            إعادة المحاولة
+          </Button>
+        </div>
+      ) : isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <LoadingSpinner size="lg" color="primary" />
+        </div>
+      ) : threads.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 text-[14px] sm:text-[15px]">
             {emptyMessage}
@@ -135,7 +132,7 @@ const ThreadListing = ({
         </div>
       ) : (
         <div className="flex flex-col gap-5">
-          {processedThreads
+          {threads
             .sort((a, b) => {
               const dateA = new Date(a.created_at).getTime();
               const dateB = new Date(b.created_at).getTime();

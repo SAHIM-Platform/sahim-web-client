@@ -14,10 +14,11 @@ interface ThreadListingHeaderProps {
   searchQuery: string
   setSearchQuery: (value: string) => void
   processedThreads: Thread[];
-  selectedCategory: string | null;
-  setSelectedCategory: (category: string | null) => void;
+  selectedCategory: number | null;
+  setSelectedCategory: (category: number | null) => void;
   sortOrder: "recent" | "oldest";
   setSortOrder: (sortOrder: "recent" | "oldest") => void;
+  onSearch: (filters: { category_id?: number; query?: string }) => void;
 }
 
 function ThreadListingHeader({
@@ -28,6 +29,7 @@ function ThreadListingHeader({
   setSearchQuery,
   selectedCategory,
   setSelectedCategory,
+  onSearch,
 }: ThreadListingHeaderProps) {
   const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,6 +50,13 @@ function ThreadListingHeader({
 
     loadCategories();
   }, []);
+
+  const handleSearch = () => {
+    onSearch({
+      category_id: selectedCategory || undefined,
+      query: searchQuery || undefined
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -75,6 +84,7 @@ function ThreadListingHeader({
           <SearchField
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            onSearch={handleSearch}
           />
 
           <div className="w-48">
@@ -84,13 +94,17 @@ function ThreadListingHeader({
               </div>
             ) : (
               <Select
-                value={selectedCategory || ""}
-                onChange={(e) => setSelectedCategory(e.target.value || null)}
+                value={selectedCategory?.toString() || ""}
+                onChange={(e) => {
+                  const value = e.target.value ? parseInt(e.target.value) : null;
+                  setSelectedCategory(value);
+                  handleSearch();
+                }}
                 placeholder="جميع التصنيفات"
                 options={[
                   { value: "", label: "جميع التصنيفات" },
                   ...categories.map(cat => ({
-                    value: cat.name,
+                    value: cat.category_id.toString(),
                     label: cat.name
                   }))
                 ]}
