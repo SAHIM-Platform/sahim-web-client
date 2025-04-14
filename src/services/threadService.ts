@@ -1,9 +1,8 @@
 import axiosInstance from '@/api/axios';
-import { ThreadResult, ThreadResponse, SingleThreadResult, Thread, ApiSearchResult } from '@/types/thread';
+import { ThreadResult, ThreadResponse, SingleThreadResult, Thread } from '@/types/thread';
 import { AxiosError, isAxiosError } from 'axios';
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
-import { ValidationErrorResponse } from '@/types';
-import { SearchResult } from '@/types/thread';
+import { ValidationErrorResponse, PaginationMeta } from '@/types';
 
 interface VoteResponse {
   success: boolean;
@@ -747,8 +746,10 @@ export interface BookmarkedThreadsResult {
 
 export const fetchBookmarkedThreads = async (): Promise<BookmarkedThreadsResult> => {
   try {
-    const response = await axiosInstance.get<{ data: Thread[], meta: any }>('/users/me/bookmarks');
-
+    const response = await axiosInstance.get<{ 
+      data: Thread[], 
+      meta: PaginationMeta 
+    }>('/users/me/bookmarks');
 
     if (response.data && response.data.data) {
       return {

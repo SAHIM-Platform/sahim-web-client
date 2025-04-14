@@ -40,7 +40,7 @@ const BookmarkToggle: React.FC<BookmarkToggleProps> = ({
           toast.error(res.message);
         }
       }
-    } catch (err) {
+    } catch {
       toast.error("فشل في تحديث الحفظ");
     } finally {
       setLoading(false);

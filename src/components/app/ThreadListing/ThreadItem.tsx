@@ -9,7 +9,6 @@ import Excerpt from "@/components/Excerpt";
 import Button from "@/components/Button";
 import { ArrowUp, ArrowDown, MessageSquare, Share2, Loader2, Ellipsis, Edit, Trash2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
-import { CommentItemProps } from "../Comment/CommentItem";
 import BookmarkToggle from "@/components/BookmarkToggle";
 import { voteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
@@ -31,6 +30,7 @@ export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
   comments?: Thread['comments'];
   hideTitle?: boolean;
   thumbnail_url?: string;
+  isDeleting?: boolean;
 }
 
 const ThreadItem = ({
@@ -53,6 +53,7 @@ const ThreadItem = ({
   className,
   showFullContent = false,
   hideTitle = false,
+  isDeleting = false,
 }: ThreadItemProps) => {
   const { auth } = useAuth();
   const isOwner = auth.user?.id?.toString() === author.id.toString();
@@ -246,9 +247,10 @@ const ThreadItem = ({
                         variant="ghost"
                         size="sm"
                         className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-gray-100 justify-start"
-                        icon={<Trash2 className="w-4 h-4" />}
+                        icon={isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                        disabled={isDeleting}
                       >
-                        حذف المناقشة
+                        {isDeleting ? 'جاري الحذف...' : 'حذف المناقشة'}
                       </Button>
                     </div>
                   )}
@@ -268,7 +270,6 @@ const ThreadItem = ({
                 <div className="text-xs sm:text-sm text-gray-600 leading-[2] sm:leading-[2] ">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
-                    children={content}
                     components={{
                       a: ({ href, children }) => (
                         <a
@@ -310,7 +311,9 @@ const ThreadItem = ({
                         </div>
                       ),
                     }}
-                  />
+                  >
+                    {content}
+                  </ReactMarkdown>
                 </div>
               ) : (
                 <Excerpt content={content} className="text-gray-600" />

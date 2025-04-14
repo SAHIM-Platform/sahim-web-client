@@ -9,7 +9,6 @@ import Textarea from "@/components/Textarea";
 import { X } from "lucide-react";
 import ThumbnailPreview from "@/app/ThumbnailPreview";
 import { useImageValidation } from "@/hooks/useImageValidation";
-import useAxios from "@/hooks/useAxios";
 import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import { fetchCategories, createThread } from "@/services/threadService";
@@ -20,7 +19,6 @@ import validateThreadForm from "@/utils/api/thread/validateThreadForm";
 
 export default function NewDiscussionPage() {
   const router = useRouter();
-  const axios = useAxios();
   const { auth } = useAuth();
   useAuthRedirect();
   
@@ -37,10 +35,6 @@ export default function NewDiscussionPage() {
   });
   const { isImageValid, isImageLoading } = useImageValidation(formData.thumbnail_url);
 
-  if (auth.loading) {
-    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
-  }
-
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -51,7 +45,7 @@ export default function NewDiscussionPage() {
           setError(ERROR_MESSAGES.thread.DEFAULT);
           setCategories([]);
         }
-      } catch (error) {
+      } catch {
         setError(ERROR_MESSAGES.thread.DEFAULT);
         setCategories([]);
       } finally {
@@ -61,6 +55,10 @@ export default function NewDiscussionPage() {
 
     loadCategories();
   }, []);
+
+  if (auth.loading) {
+    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
+  }
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({
@@ -117,9 +115,9 @@ export default function NewDiscussionPage() {
       } else {
         setError(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating thread:", error);
-      setError(error.message || ERROR_MESSAGES.thread.DEFAULT);
+      setError(error instanceof Error ? error.message : ERROR_MESSAGES.thread.DEFAULT);
     } finally {
       setIsSubmitting(false);
     }

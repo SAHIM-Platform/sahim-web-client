@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 import useAuthRedirect from '@/hooks/UseAuthRedirect';
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 import Divider from '@/components/Divider';
-import { Edit2, Save, X, Trash2, User, Mail, Hash, Shield, Building2, GraduationCap } from 'lucide-react';
+import { Edit2, Save, X, Trash2, User, Mail, Hash, Shield, Building2, GraduationCap, LucideIcon } from 'lucide-react';
 import { Profile, userRoleLabels, UserRole } from '@/types';
 
 export default function ProfilePage() {
@@ -59,7 +59,7 @@ export default function ProfilePage() {
 
       toast.success('تم تحديث الملف الشخصي بنجاح');
       setIsEditing(false);
-    } catch (err) {
+    } catch {
       setError(ERROR_MESSAGES.profile.UPDATE_FAILED);
       toast.error(ERROR_MESSAGES.profile.UPDATE_FAILED);
     } finally {
@@ -82,7 +82,7 @@ export default function ProfilePage() {
       });
       router.push('/');
       toast.success('تم حذف الحساب بنجاح');
-    } catch (err) {
+    } catch {
       setError(ERROR_MESSAGES.profile.DELETE_FAILED);
       toast.error(ERROR_MESSAGES.profile.DELETE_FAILED);
     }
@@ -97,7 +97,7 @@ export default function ProfilePage() {
 
   const isFormValid = formData.name.trim() !== '' && formData.username.trim() !== '';
 
-  const ReadOnlyField = ({ label, value, icon: Icon }: { label: string; value: string | number; icon: any }) => (
+  const ReadOnlyField = ({ label, value, icon: Icon }: { label: string; value: string | number; icon: LucideIcon }) => (
     <div className="flex items-center gap-4">
       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
         <Icon className="w-5 h-5 text-primary" />

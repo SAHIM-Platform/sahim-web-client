@@ -7,7 +7,8 @@ import useAuth from "@/hooks/useAuth";
 import useAuthRedirect from "@/hooks/UseAuthRedirect";
 
 export default function SignupPage() {
-  const { isAuthenticated, auth } = useAuth();
+  const { auth } = useAuth();
+  
   useAuthRedirect();
 
   if (auth.loading) {

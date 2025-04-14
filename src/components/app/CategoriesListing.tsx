@@ -50,7 +50,7 @@ function CategoriesListing({
       } else {
         toast.error(result.error?.message || "Failed to update category");
       }
-    } catch (error) {
+    } catch {
       toast.error("An error occurred while updating the category");
     } finally {
       setEditingCategory(null);
@@ -77,7 +77,7 @@ function CategoriesListing({
       } else {
         toast.error(result.error?.message || "Failed to delete category");
       }
-    } catch (error) {
+    } catch {
       toast.error("An error occurred while deleting the category");
     } finally {
       setIsDeleting(null);

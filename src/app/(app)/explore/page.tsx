@@ -5,8 +5,8 @@ import useAuth from "@/hooks/useAuth";
 import useAuthRedirect from "@/hooks/UseAuthRedirect";
 
 export default function ExplorePage() {
-  const { isAuthenticated, auth } = useAuth();
-  useAuthRedirect(isAuthenticated);
+  const { auth } = useAuth();
+  useAuthRedirect();
 
   if (auth.loading) {
     return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;

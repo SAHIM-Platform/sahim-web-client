@@ -232,6 +232,7 @@ export default function BookmarkedDiscussionsPage() {
               onShare={() => handleShare(thread.thread_id)}
               onEdit={handleEdit}
               onDelete={() => handleDelete(thread.thread_id)}
+              isDeleting={deletingThreadId === thread.thread_id}
             />
           ))}
         </div>

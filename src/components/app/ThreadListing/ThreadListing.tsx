@@ -4,9 +4,8 @@ import ThreadItem from "./ThreadItem";
 import ThreadListingHeader from "./ThreadListingHeader";
 import { useState, useEffect } from "react";
 import { fetchThreads, deleteThread, searchThreads } from "@/services/threadService";
-import Loader from "@/components/Loader";
 import toast from "react-hot-toast";
-import { Thread, ThreadResult } from "@/types/thread";
+import { Thread } from "@/types/thread";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import Button from "@/components/Button";
 import { RefreshCw } from "lucide-react";
@@ -158,6 +157,7 @@ const ThreadListing = ({
                 onReply={() => onReply?.(thread.thread_id)}
                 onShare={() => onShare?.(thread.thread_id)}
                 onDelete={() => handleDeleteThread(thread.thread_id)}
+                isDeleting={deletingThreadId === thread.thread_id}
               />
             ))}
         </div>

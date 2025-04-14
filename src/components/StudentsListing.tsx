@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorAlert from "./Form/ErrorAlert";
@@ -30,7 +30,7 @@ const StudentsListing = ({
   const [selectedStatus, setSelectedStatus] = useState<ApprovalStatus | null>(null);
   const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
 
-  const loadStudents = async () => {
+  const loadStudents = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -43,17 +43,17 @@ const StudentsListing = ({
         setError(result.error?.message || "فشل تحميل بيانات الطلاب");
         toast.error(result.error?.message || "فشل تحميل بيانات الطلاب");
       }
-    } catch (err) {
+    } catch {
       setError("فشل تحميل بيانات الطلاب");
       toast.error("فشل تحميل بيانات الطلاب");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedStatus]);
 
   useEffect(() => {
     loadStudents();
-  }, [selectedStatus]);
+  }, [loadStudents]);
 
   const handleRetry = () => {
     loadStudents();

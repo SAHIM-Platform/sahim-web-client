@@ -36,7 +36,7 @@ export default function AdminsListing() {
       }
 
       setAdmins(result.data || []);
-    } catch (err) {
+    } catch {
       setError(ERROR_MESSAGES.adminListing.LOAD_FAILED);
       toast.error(ERROR_MESSAGES.adminListing.LOAD_FAILED);
     } finally {
@@ -58,7 +58,7 @@ export default function AdminsListing() {
 
       toast.success("تم حذف المشرف بنجاح");
       setAdmins(admins.filter(admin => admin.id !== id));
-    } catch (err) {
+    } catch {
       toast.error(ERROR_MESSAGES.adminListing.DELETE_FAILED);
     } finally {
       setIsDeleting(false);

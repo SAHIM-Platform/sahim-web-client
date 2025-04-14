@@ -6,8 +6,9 @@ import { Thread } from "@/types/thread"
 import Select from "@/components/Select"
 import SearchField from "@/components/SearchField"
 import { useEffect, useState } from "react"
-import { fetchCategories, searchThreads } from "@/services/threadService"
+import { fetchCategories } from "@/services/threadService"
 import LoadingSpinner from "@/components/LoadingSpinner"
+
 interface ThreadListingHeaderProps {
   searchQuery: string
   setSearchQuery: (value: string) => void

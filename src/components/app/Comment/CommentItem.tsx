@@ -23,10 +23,10 @@ export interface CommentItemProps {
   onDelete?: () => Promise<void>;
 }
 
-function CommentItem({ 
-  content, 
-  timestamp, 
-  votes, 
+function CommentItem({
+  content,
+  timestamp,
+  votes,
   onEdit,
   onDelete
 }: CommentItemProps) {
@@ -89,7 +89,7 @@ function CommentItem({
           prev + (voteType === "UP" ? 1 : -1) + (previousVote ? (previousVote === "UP" ? -1 : 1) : 0)
         );
       }
-    } catch (error) {
+    } catch {
       setLocalUserVote(previousVote);
       setLocalVoteCount(previousCount);
       toast.error(ERROR_MESSAGES.comment.DEFAULT);
@@ -120,12 +120,12 @@ function CommentItem({
       return;
     }
     setIsDropdownOpen(false);
-    
+
     try {
       if (onDelete) {
         await onDelete();
       }
-    } catch (error) {
+    } catch {
       toast.error(ERROR_MESSAGES.comment.DELETE_FAILED);
     }
   };
@@ -137,7 +137,7 @@ function CommentItem({
         await onEdit(editedContent);
         setIsEditing(false);
       }
-    } catch (error) {
+    } catch {
       toast.error(ERROR_MESSAGES.comment.UPDATE_FAILED);
     } finally {
       setIsSubmitting(false);
@@ -154,7 +154,7 @@ function CommentItem({
       <div className="bg-white rounded-xl border border-gray-200 px-6 pt-6 pb-3 w-full relative">
         <div className="flex justify-between items-start">
           <UserInfo name={auth.user?.name} date={timestamp} />
-          
+
           {isOwner && (
             <div className="relative" ref={dropdownRef}>
               <button
@@ -163,7 +163,7 @@ function CommentItem({
               >
                 <Ellipsis className="w-6 h-6 text-gray-500" />
               </button>
-              
+
               {isDropdownOpen && (
                 <div className="absolute top-full left-0 w-40 bg-white border border-gray-200 shadow-lg rounded-md z-10">
                   <Button
@@ -219,51 +219,52 @@ function CommentItem({
           </div>
         ) : (
           <div className="mt-4 text-xs text-gray-600 leading-relaxed">
-          <ReactMarkdown 
-          remarkPlugins={[remarkGfm]}
-          children={content}
-          components={{
-            a: ({ href, children }) => (
-              <a
-                href={href}
-                className='text-blue-400 hover:text-blue-300 underline'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                {children}
-              </a>
-            ),
-            h1: ({ children }) => (
-              <p className='text-2xl font-bold mb-4'>{children}</p>
-            ),
-            h2: ({ children }) => (
-              <p className='text-xl font-bold mb-4 mt-4'>{children}</p>
-            ),
-            h3: ({ children }) => (
-              <p className='text-lg font-semibold mb-2 mt-2'>{children}</p>
-            ),
-            ul: ({ children }) => (
-              <ul className='list-disc pl-2 mb-4 space-y-1'>{children}</ul>
-            ),
-            ol: ({ children }) => (
-              <ol className='list-decimal pl-6 mb-4 space-y-1'>{children}</ol>
-            ),
-            p: ({ children }) => (
-              <p className='leading-8 mb-2 font-light'>{children}</p>
-            ),
-            li: ({ children }) => (
-              <li className='leading-7 pl-2 marker:text-gray-400 [&>strong]:mt-0 [&>strong]:inline'>{children}</li>
-            ),
-            strong: ({ children }) => (
-              <strong className='font-semibold '>{children}</strong>
-            ),
-            code: ({ children }) => (
-              <div className="bg-gray-100 text-xs p-2 rounded-lg font-semibold" dir="ltr">
-              <code>{children}</code>
-              </div>
-            ),
-          }}
-          />
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                a: ({ href, children }) => (
+                  <a
+                    href={href}
+                    className='text-blue-400 hover:text-blue-300 underline'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    {children}
+                  </a>
+                ),
+                h1: ({ children }) => (
+                  <p className='text-2xl font-bold mb-4'>{children}</p>
+                ),
+                h2: ({ children }) => (
+                  <p className='text-xl font-bold mb-4 mt-4'>{children}</p>
+                ),
+                h3: ({ children }) => (
+                  <p className='text-lg font-semibold mb-2 mt-2'>{children}</p>
+                ),
+                ul: ({ children }) => (
+                  <ul className='list-disc pl-2 mb-4 space-y-1'>{children}</ul>
+                ),
+                ol: ({ children }) => (
+                  <ol className='list-decimal pl-6 mb-4 space-y-1'>{children}</ol>
+                ),
+                p: ({ children }) => (
+                  <p className='leading-8 mb-2 font-light'>{children}</p>
+                ),
+                li: ({ children }) => (
+                  <li className='leading-7 pl-2 marker:text-gray-400 [&>strong]:mt-0 [&>strong]:inline'>{children}</li>
+                ),
+                strong: ({ children }) => (
+                  <strong className='font-semibold '>{children}</strong>
+                ),
+                code: ({ children }) => (
+                  <div className="bg-gray-100 text-xs p-2 rounded-lg font-semibold" dir="ltr">
+                    <code>{children}</code>
+                  </div>
+                ),
+              }}
+            >
+              {content}
+            </ReactMarkdown>
           </div>
         )}
 

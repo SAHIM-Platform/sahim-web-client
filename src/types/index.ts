@@ -51,6 +51,13 @@ export interface Profile {
   level?: Level;
 }
 
+export interface PaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 export const userRoleLabels: Record<UserRole, string> = {
   [UserRole.SUPER_ADMIN]: "مدير النظام",
   [UserRole.ADMIN]: "مُشرف",

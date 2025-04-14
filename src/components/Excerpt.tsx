@@ -8,11 +8,7 @@ type ExcerptProps = {
   className?: string;
 };
 
-function Excerpt({ content, wordLimit = 100, className }: ExcerptProps) {
-  const words = content.trim().split(/\s+/);
-  const isTruncated = words.length > wordLimit;
-  const excerpt = words.slice(0, wordLimit).join(' ');
-
+function Excerpt({ content, className }: ExcerptProps) {
   return (
     <div  className={cn(
       className,
@@ -20,7 +16,6 @@ function Excerpt({ content, wordLimit = 100, className }: ExcerptProps) {
     )}>
     <ReactMarkdown 
     remarkPlugins={[remarkGfm]}
-    children={content}
     components={{
       a: ({ href, children }) => (
         <a
@@ -62,7 +57,9 @@ function Excerpt({ content, wordLimit = 100, className }: ExcerptProps) {
         </div>
       ),
     }}
-    />
+    >
+      {content}
+    </ReactMarkdown>
   </div>
   );
 }

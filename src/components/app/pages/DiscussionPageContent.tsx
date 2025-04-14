@@ -1,11 +1,11 @@
 'use client';
 
 import ThreadItem from "@/components/app/ThreadListing/ThreadItem";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import SimilarThreads from "@/components/app/SimilarThreads";
 import Textarea from "@/components/Textarea";
 import Button from "@/components/Button";
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, ChangeEvent, useEffect, useCallback } from "react";
 import { Thread } from "@/types/thread";
 import { toast } from "react-hot-toast";
 import { createComment, fetchThreadById, fetchThreads, deleteThread } from "@/services/threadService";
@@ -28,11 +28,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  if (auth.loading) {
-    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
-  }
-
-  const loadThread = async () => {
+  const loadThread = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -66,13 +62,15 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [discussionId]);
 
   useEffect(() => {
-    
-    
     loadThread();
-  }, [discussionId]);
+  }, [discussionId, loadThread]);
+
+  if (auth.loading) {
+    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
+  }
 
   const refreshThread = async () => {
     if (!thread) return;
@@ -171,6 +169,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
           hideTitle
           onEdit={handleThreadUpdate}
           onDelete={handleThreadDelete}
+          isDeleting={isDeleting}
         />
 
         <div className="bg-white rounded-xl border border-gray-200 p-4">

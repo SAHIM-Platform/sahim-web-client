@@ -46,10 +46,6 @@ const UserCardItem = ({
     }
   };
 
-  const handleEdit = () => {
-    return;
-  };
-
   const getStatusText = (status: ApprovalStatus) => {
     switch (status) {
       case ApprovalStatus.PENDING:

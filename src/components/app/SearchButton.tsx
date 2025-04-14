@@ -42,7 +42,7 @@ function SearchButton({
       try {
         const result = await searchThreads(filters);
         setSearchResults(result.data);
-      } catch (err) {
+      } catch {
         setError("فشل تحميل نتائج البحث");
         setSearchResults([]);
         toast.error("فشل تحميل نتائج البحث");

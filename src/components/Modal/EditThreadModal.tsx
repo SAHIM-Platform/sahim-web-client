@@ -60,7 +60,7 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
             setError(ERROR_MESSAGES.thread.DEFAULT);
             setCategories([]);
           }
-        } catch (error) {
+        } catch {
           setError(ERROR_MESSAGES.thread.DEFAULT);
           setCategories([]);
         } finally {
@@ -128,9 +128,9 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
       } else {
         setError(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating thread:", error);
-      setError(error.message || ERROR_MESSAGES.thread.DEFAULT);
+      setError(error instanceof Error ? error.message : ERROR_MESSAGES.thread.DEFAULT);
     } finally {
       setIsSubmitting(false);
     }

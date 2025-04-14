@@ -14,7 +14,6 @@ interface UserInfoProps {
 
 function UserInfo({
   name,
-  photo,
   photoAlt,
   date,
   children,

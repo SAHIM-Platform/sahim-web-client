@@ -23,7 +23,7 @@ const useAdminRoleGuard = (): void => {
         router.replace("/"); 
       }
     }
-  }, [router, isMounted]);
+  }, [router, isMounted, auth.user]);
 };
 
 export default useAdminRoleGuard;
