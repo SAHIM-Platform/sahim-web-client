@@ -336,9 +336,22 @@ export const fetchThreadById = async (threadId: number): Promise<SingleThreadRes
   }
 };
 
-export const searchThreads = async (query: string): Promise<ApiSearchResult[]> => {
+export interface SearchFilters {
+  category_id?: number;
+  query?: string;
+}
+
+export const searchThreads = async (filters: SearchFilters): Promise<ThreadResponse> => {
   try {
-    const response = await axiosInstance.get<ApiSearchResult[]>(`/threads/search?query=${encodeURIComponent(query)}`);
+    const params = new URLSearchParams();
+    if (filters.category_id) {
+      params.append('category_id', filters.category_id.toString());
+    }
+    if (filters.query) {
+      params.append('query', filters.query);
+    }
+
+    const response = await axiosInstance.get<ThreadResponse>(`/threads/search?${params.toString()}`);
     return response.data;
   } catch (error) {
     console.error('Search failed:', error);

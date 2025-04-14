@@ -1,9 +1,11 @@
+"use client";
+
+import { Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/utils/utils";
-import { Search } from "lucide-react";
 import SearchModal from "../Modal/SearchModal";
 import { searchThreads } from "@/services/threadService";
-import { ApiSearchResult, SearchResult } from "@/types/thread";
+import { Thread } from "@/types/thread";
 import toast from "react-hot-toast";
 
 interface SearchButtonProps {
@@ -14,27 +16,19 @@ interface SearchButtonProps {
   fullWidth?: boolean;
 }
 
-const mapApiToSearchResult = (apiResult: ApiSearchResult): SearchResult => ({
-  id: apiResult.id.toString(),
-  title: apiResult.title,
-  timestamp: apiResult.createdAt,
-  authorName: apiResult.author.name,
-  repliesCount: apiResult.commentsCount,
-});
-
 function SearchButton({
   isSearchFocused,
   setIsSearchFocused,
   placeholder = "ابحث في المناقشات ...",
   fullWidth,
 }: SearchButtonProps) {
+  const [searchResults, setSearchResults] = useState<Thread[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [error, setError] = useState<string | null>(null);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const handleSearch = async (query: string) => {
-    if (!query.trim()) {
+  const handleSearch = async (filters: { category_id?: number; query?: string }) => {
+    if (!filters.query?.trim()) {
       setSearchResults([]);
       return;
     }
@@ -46,8 +40,8 @@ function SearchButton({
 
     debounceTimeout.current = setTimeout(async () => {
       try {
-        const apiResults = await searchThreads(query);
-        setSearchResults(apiResults.map(mapApiToSearchResult));
+        const result = await searchThreads(filters);
+        setSearchResults(result.data);
       } catch (err) {
         setError("فشل تحميل نتائج البحث");
         setSearchResults([]);

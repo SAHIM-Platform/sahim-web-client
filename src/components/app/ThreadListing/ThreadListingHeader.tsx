@@ -4,23 +4,60 @@ import Button from "@/components/Button"
 import { ArrowUpDown, MessageSquare } from "lucide-react"
 import { CategoryBadgeProps } from "../Badge/CategoryBadge"
 import { Thread } from "@/types/thread"
+import Select from "@/components/Select"
+import SearchField from "../SearchField"
+import { useEffect, useState } from "react"
+import { fetchCategories, searchThreads } from "@/services/threadService"
+import LoadingSpinner from "@/components/LoadingSpinner"
 
 interface ThreadListingHeaderProps {
   searchQuery: string
   setSearchQuery: (value: string) => void
   processedThreads: Thread[];
-  categories: CategoryBadgeProps[];
-  selectedCategory: string | null;
-  setSelectedCategory: (category: string | null) => void;
+  selectedCategory: number | null;
+  setSelectedCategory: (category: number | null) => void;
   sortOrder: "recent" | "oldest";
   setSortOrder: (sortOrder: "recent" | "oldest") => void;
+  onSearch: (filters: { category_id?: number; query?: string }) => void;
 }
 
 function ThreadListingHeader({
   processedThreads,
   sortOrder,
-  setSortOrder
+  setSortOrder,
+  searchQuery,
+  setSearchQuery,
+  selectedCategory,
+  setSelectedCategory,
+  onSearch,
 }: ThreadListingHeaderProps) {
+  const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const categoriesResponse = await fetchCategories();
+        if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
+          setCategories(categoriesResponse.data);
+        }
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCategories();
+  }, []);
+
+  const handleSearch = () => {
+    onSearch({
+      category_id: selectedCategory || undefined,
+      query: searchQuery || undefined
+    });
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
@@ -43,26 +80,38 @@ function ThreadListingHeader({
         </Button>
       </div>
       <div className="flex flex-col gap-3">
-        {/* <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <SearchField
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            onSearch={handleSearch}
           />
 
           <div className="w-48">
-            <Select
-              value={selectedCategory || ""}
-              onChange={(e) => setSelectedCategory(e.target.value || null)}
-              placeholder="جميع التصنيفات"
-              options={[
-                ...categories.map(cat => ({
-                  value: cat.name,
-                  label: cat.name
-                }))
-              ]}
-            />
+            {isLoading ? (
+              <div className="flex items-center justify-center h-10">
+                <LoadingSpinner size="sm" />
+              </div>
+            ) : (
+              <Select
+                value={selectedCategory?.toString() || ""}
+                onChange={(e) => {
+                  const value = e.target.value ? parseInt(e.target.value) : null;
+                  setSelectedCategory(value);
+                  handleSearch();
+                }}
+                placeholder="جميع التصنيفات"
+                options={[
+                  { value: "", label: "جميع التصنيفات" },
+                  ...categories.map(cat => ({
+                    value: cat.category_id.toString(),
+                    label: cat.name
+                  }))
+                ]}
+              />
+            )}
           </div>
-        </div> */}
+        </div>
 
         <Divider className="mt-6 border-gray-100" label="" borderColor="gray-200" />
 
