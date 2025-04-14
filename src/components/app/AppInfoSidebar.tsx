@@ -108,11 +108,11 @@ function SidebarContent() {
         />
 
         <div className="mt-2 text-center">
-          <link
+          <Link
             href="/categories"
             className="text-blue-500 text-sm font-semibold hover:underline">
             عرض الكل
-          </link>
+          </Link>
         </div>
       </div>
   
