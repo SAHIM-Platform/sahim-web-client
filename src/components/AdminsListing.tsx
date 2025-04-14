@@ -11,23 +11,8 @@ import UsersBadge from "./app/Badge/UsersBadge";
 import UserCardItem from "./app/UserCardItem";
 import { ArrowUpDown, RefreshCw, UserPlus } from "lucide-react";
 import { Admin } from "@/types";
-
-const mockAdmins: Admin[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    username: "johndoe",
-    email: "john@example.com",
-    created_at: "2024-01-01",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    username: "janesmith",
-    email: "jane@example.com",
-    created_at: "2024-01-02",
-  }
-];
+import { adminService } from "@/services/admin/adminService";
+import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 
 export default function AdminsListing() {
   const [isLoading, setIsLoading] = useState(true);
@@ -35,20 +20,48 @@ export default function AdminsListing() {
   const [admins, setAdmins] = useState<Admin[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const loadAdmins = async () => {
     try {
       setIsLoading(true);
       setError(null);
+      const result = await adminService.getAdmins();
+      
+      if (!result.success) {
+        const errorMessage = result.error?.message || ERROR_MESSAGES.adminListing.DEFAULT;
+        setError(errorMessage);
+        toast.error(errorMessage);
+        return;
+      }
 
-      await new Promise((res) => setTimeout(res, 500));
-
-      setAdmins(mockAdmins);
+      setAdmins(result.data || []);
     } catch (err) {
-      setError("فشل تحميل بيانات المشرفين");
-      toast.error("فشل تحميل بيانات المشرفين");
+      setError(ERROR_MESSAGES.adminListing.LOAD_FAILED);
+      toast.error(ERROR_MESSAGES.adminListing.LOAD_FAILED);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteAdmin = async (id: string) => {
+    if (isDeleting) return;
+
+    try {
+      setIsDeleting(true);
+      const result = await adminService.deleteAdmin(id);
+
+      if (!result.success) {
+        toast.error(result.error?.message || ERROR_MESSAGES.adminListing.DELETE_FAILED);
+        return;
+      }
+
+      toast.success("تم حذف المشرف بنجاح");
+      setAdmins(admins.filter(admin => admin.id !== id));
+    } catch (err) {
+      toast.error(ERROR_MESSAGES.adminListing.DELETE_FAILED);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -152,14 +165,18 @@ export default function AdminsListing() {
         <div className="flex flex-col gap-5">
           {processedAdmins
             .sort((a, b) => {
+              const dateA = new Date(a.created_at || 0);
+              const dateB = new Date(b.created_at || 0);
               return sortOrder === "recent"
-                ? b.created_at.localeCompare(a.created_at)
-                : a.created_at.localeCompare(b.created_at);
+                ? dateB.getTime() - dateA.getTime()
+                : dateA.getTime() - dateB.getTime();
             })
             .map((admin) => (
               <UserCardItem
                 key={admin.id}
                 admin={admin}
+                onDelete={() => handleDeleteAdmin(admin.id)}
+                isDeleting={isDeleting}
               />
             ))}
         </div>
