@@ -4,13 +4,14 @@ import Button from "../Button";
 import { Check, X, Trash2 } from "lucide-react";
 import { Admin, Student, ApprovalStatus } from "@/types";
 import DateBadge from "./Badge/DateBadge";
-import Divider from "../Divider";
 
 interface UserCardItemProps {
   student?: Student;
   admin?: Admin;
   onApprove?: (id: string) => void;
   onReject?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  isDeleting?: boolean;
 }
 
 const UserCardItem = ({
@@ -18,6 +19,8 @@ const UserCardItem = ({
   admin,
   onApprove,
   onReject,
+  onDelete,
+  isDeleting,
 }: UserCardItemProps) => {
   const handleApprove = () => {
     if (student && onApprove) {
@@ -34,11 +37,16 @@ const UserCardItem = ({
     }
   };
 
-  const handleEdit = () => {
-    return;
+  const handleDelete = () => {
+    if (admin && onDelete) {
+      const confirmed = window.confirm("هل أنت متأكد من حذف المشرف؟");
+      if (confirmed) {
+        onDelete(admin.id);
+      }
+    }
   };
 
-  const handleDelete = () => {
+  const handleEdit = () => {
     return;
   };
 
@@ -129,8 +137,9 @@ const UserCardItem = ({
             color="secondary"
             icon={<Trash2 className="w-4 h-4" />}
             className="text-red-600 hover:border-red-100 hover:bg-red-50 border border-red-50 hover:shadow-none"
+            disabled={isDeleting}
           >
-            حذف
+            {isDeleting ? "جاري الحذف..." : "حذف"}
           </Button>
         </div>
       </div>

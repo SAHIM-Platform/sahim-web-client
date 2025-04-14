@@ -20,6 +20,14 @@ interface AdminsResult {
   };
 }
 
+interface DeleteResult {
+  success: boolean;
+  error?: {
+    message: string;
+    code: string;
+  };
+}
+
 export const adminService = {
   async getAdmins(): Promise<AdminsResult> {
     try {
@@ -66,6 +74,55 @@ export const adminService = {
         success: false,
         error: {
           message: ERROR_MESSAGES.thread.SERVER_ERROR,
+          code: 'SERVER_ERROR'
+        }
+      };
+    }
+  },
+
+  async deleteAdmin(id: string): Promise<DeleteResult> {
+    try {
+      await axiosInstance.delete(`/admins/${id}`);
+      return { success: true };
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        
+        if (axiosError.response?.status === 401) {
+          return {
+            success: false,
+            error: {
+              message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+              code: 'UNAUTHORIZED'
+            }
+          };
+        }
+        
+        if (axiosError.response?.status === 403) {
+          return {
+            success: false,
+            error: {
+              message: ERROR_MESSAGES.auth.FORBIDDEN,
+              code: 'FORBIDDEN'
+            }
+          };
+        }
+
+        if (axiosError.response?.status === 404) {
+          return {
+            success: false,
+            error: {
+              message: ERROR_MESSAGES.adminListing.NOT_FOUND,
+              code: 'NOT_FOUND'
+            }
+          };
+        }
+      }
+      
+      return {
+        success: false,
+        error: {
+          message: ERROR_MESSAGES.adminListing.DELETE_FAILED,
           code: 'SERVER_ERROR'
         }
       };

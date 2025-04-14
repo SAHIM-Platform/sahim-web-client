@@ -20,6 +20,7 @@ export default function AdminsListing() {
   const [admins, setAdmins] = useState<Admin[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const loadAdmins = async () => {
     try {
@@ -40,6 +41,27 @@ export default function AdminsListing() {
       toast.error(ERROR_MESSAGES.adminListing.LOAD_FAILED);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteAdmin = async (id: string) => {
+    if (isDeleting) return;
+
+    try {
+      setIsDeleting(true);
+      const result = await adminService.deleteAdmin(id);
+
+      if (!result.success) {
+        toast.error(result.error?.message || ERROR_MESSAGES.adminListing.DELETE_FAILED);
+        return;
+      }
+
+      toast.success("تم حذف المشرف بنجاح");
+      setAdmins(admins.filter(admin => admin.id !== id));
+    } catch (err) {
+      toast.error(ERROR_MESSAGES.adminListing.DELETE_FAILED);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -153,6 +175,8 @@ export default function AdminsListing() {
               <UserCardItem
                 key={admin.id}
                 admin={admin}
+                onDelete={() => handleDeleteAdmin(admin.id)}
+                isDeleting={isDeleting}
               />
             ))}
         </div>
