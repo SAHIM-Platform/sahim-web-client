@@ -2,7 +2,7 @@
 
 import ThreadItem from "./ThreadItem";
 import ThreadListingHeader from "./ThreadListingHeader";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchThreads, deleteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
 import { Thread } from "@/types/thread";
@@ -24,10 +24,8 @@ const ThreadListing = ({
   emptyMessage = "لا توجد مناقشات حالياً"
 }: ThreadListingProps) => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"latest" | "oldest">("latest");
   const [isLoading, setIsLoading] = useState(true);
-  const [isFiltering, setIsFiltering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [threads, setThreads] = useState<Thread[]>([]);
   const [deletingThreadId, setDeletingThreadId] = useState<number | null>(null);
@@ -35,7 +33,7 @@ const ThreadListing = ({
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-  const fetchInitialThreads = async () => {
+  const fetchInitialThreads = useCallback(async () => {
     setPage(1);
     setHasMore(true);
     setIsLoading(true);
@@ -45,7 +43,7 @@ const ThreadListing = ({
       const result = await fetchThreads({
         sort: sortOrder,
         page: 1,
-        category_id: selectedCategory ? Number(selectedCategory) : undefined,
+        category_id: selectedCategory ?? undefined,
       });
 
       if (result.success && result.data) {
@@ -63,19 +61,18 @@ const ThreadListing = ({
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
-      setIsFiltering(false);
     }
-  };
+  }, [sortOrder, selectedCategory]);
 
-  const fetchMoreThreads = async () => {
+  const fetchMoreThreads = useCallback(async () => {
     if (isFetchingMore || !hasMore) return;
-    
+
     setIsFetchingMore(true);
     try {
       const result = await fetchThreads({
         sort: sortOrder,
         page,
-        category_id: selectedCategory ? Number(selectedCategory) : undefined,
+        category_id: selectedCategory ?? undefined,
       });
 
       if (result.success && result.data) {
@@ -91,11 +88,15 @@ const ThreadListing = ({
     } finally {
       setIsFetchingMore(false);
     }
-  };
+  }, [isFetchingMore, hasMore, sortOrder, selectedCategory, page]);
 
-  const handleRetry = () => {
+  useEffect(() => {
     fetchInitialThreads();
-  };
+  }, [sortOrder, selectedCategory, fetchInitialThreads]);
+
+  const handleRetry = useCallback(() => {
+    fetchInitialThreads();
+  }, [fetchInitialThreads]);
 
   const handleDeleteThread = async (threadId: number) => {
     if (window.confirm('هل أنت متأكد من حذف هذه المناقشة؟')) {
@@ -117,21 +118,11 @@ const ThreadListing = ({
     }
   };
 
-  const processedThreads = threads.filter(
-    (thread) =>
-      (!selectedCategory || thread.category.category_id === Number(selectedCategory)) &&
-      (!searchQuery || (thread.title && thread.title.includes(searchQuery)))
-  );
-
   const loadMoreRef = useInfiniteScroll({
     hasMore,
     isLoading: isFetchingMore,
     onLoadMore: fetchMoreThreads,
   });
-
-  useEffect(() => {
-    fetchInitialThreads();
-  }, [sortOrder, selectedCategory]);
 
   if (isLoading) {
     return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
@@ -156,17 +147,14 @@ const ThreadListing = ({
   return (
     <div className="space-y-5">
       <ThreadListingHeader
-        categories={categories}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
-        processedThreads={processedThreads}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        processedThreads={threads}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
       />
 
-      {processedThreads.length === 0 ? (
+      {threads.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 text-[14px] sm:text-[15px]">
             {emptyMessage}
@@ -175,7 +163,7 @@ const ThreadListing = ({
       ) : (
         <>
           <div className="flex flex-col gap-5">
-            {processedThreads
+            {threads
               .sort((a, b) => {
                 const dateA = new Date(a.created_at).getTime();
                 const dateB = new Date(b.created_at).getTime();
@@ -200,7 +188,6 @@ const ThreadListing = ({
         </>
       )}
 
-      {/* Used by the hook to detect when to load more */}
       <div ref={loadMoreRef} className="h-1" />
     </div>
   );

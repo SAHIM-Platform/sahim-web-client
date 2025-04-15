@@ -357,16 +357,93 @@ export const fetchThreadById = async (threadId: number): Promise<SingleThreadRes
   }
 };
 
-export const searchThreads = async (query: string): Promise<ApiSearchResult[]> => {
+export const searchThreads = async ({
+  query,
+  sort = "latest",
+  page = 0,
+  limit = THREADS_LIMIT,
+  category_id,
+}: {
+  query?: string;
+  sort?: string;
+  page?: number;
+  limit?: number;
+  category_id?: number;
+}): Promise<ThreadResult> => {
   try {
-    const response = await axiosInstance.get<ApiSearchResult[]>(`/threads/search?query=${encodeURIComponent(query)}`);
-    return response.data;
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+      sort,
+      query: encodeURIComponent(query ?? ''),
+    });
+
+    if (category_id !== undefined) {
+      params.append("category_id", String(category_id));
+    }
+
+    const response = await axiosInstance.get<ThreadResponse>(`/threads/search?${params.toString()}`);
+
+    if (response.data) {
+      return {
+        success: true,
+        data: response.data
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
   } catch (error) {
     console.error('Search failed:', error);
-    throw error;
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      const status = axiosError.response?.status;
+
+      if (status === 400) {
+        const errorData = axiosError.response?.data as ValidationErrorResponse;
+        return {
+          success: false,
+          error: {
+            message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            code: errorData.code || 'VALIDATION_ERROR'
+          }
+        };
+      }
+
+      if (status === 404) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            code: 'NOT_FOUND'
+          }
+        };
+      }
+
+      return {
+        success: false,
+        error: {
+          message: ERROR_MESSAGES.thread.SERVER_ERROR,
+          code: 'SERVER_ERROR'
+        }
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
   }
 };
-
 export const updateThread = async (
   threadId: number, 
   threadData: {
