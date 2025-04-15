@@ -29,51 +29,70 @@ const StudentsListing = ({
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<ApprovalStatus | null>(null);
   const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
+  const [isFiltering, setIsFiltering] = useState(false);
 
-  const loadStudents = async (query?: string) => {
+  const loadStudents = async (filters?: { status?: ApprovalStatus; query?: string }) => {
     try {
       setIsLoading(true);
+      setIsFiltering(!!filters);
       setError(null);
 
       let result;
-      if (query) {
-        result = await searchStudents(query, selectedStatus || undefined);
+      if (filters?.status || filters?.query) {
+        result = await searchStudents({
+          status: filters.status,
+          query: filters.query
+        });
+        setStudents(result);
       } else {
-        result = await fetchStudents(selectedStatus || undefined);
-      }
-
-      if (result.success && result.data) {
-        setStudents(result.data);
-      } else {
-        setError(result.error?.message || "فشل تحميل بيانات الطلاب");
-        toast.error(result.error?.message || "فشل تحميل بيانات الطلاب");
+        result = await fetchStudents();
+        if (result.success && result.data) {
+          setStudents(result.data.data);
+        } else {
+          throw new Error(result.error?.message || 'Failed to fetch students');
+        }
       }
     } catch (err) {
-      setError("فشل تحميل بيانات الطلاب");
-      toast.error("فشل تحميل بيانات الطلاب");
+      console.error('Student loading error:', {
+        error: err,
+        message: err instanceof Error ? err.message : 'Unknown error',
+        stack: err instanceof Error ? err.stack : undefined,
+        timestamp: new Date().toISOString(),
+      });
+
+      const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل الطلاب';
+      setError(`${errorMessage}. حاول مرة أخرى.`);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
+      setIsFiltering(false);
     }
   };
 
   useEffect(() => {
     loadStudents();
-  }, [selectedStatus]);
+  }, []);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
-      if (searchQuery) {
-        loadStudents(searchQuery);
+      if (searchQuery || selectedStatus) {
+        loadStudents({
+          status: selectedStatus || undefined,
+          query: searchQuery || undefined
+        });
       } else {
         loadStudents();
       }
-    }, 500);
+    }, 300);
 
     return () => clearTimeout(debounceTimer);
-  }, [searchQuery]);
+  }, [searchQuery, selectedStatus]);
 
   const handleRetry = () => {
-    loadStudents(searchQuery);
+    loadStudents({
+      status: selectedStatus || undefined,
+      query: searchQuery || undefined
+    });
   };
 
   const statusOptions = [
@@ -149,22 +168,22 @@ const StudentsListing = ({
             إعادة المحاولة
           </Button>
         </div>
-      ) : isLoading ? (
+      ) : isLoading || isFiltering ? (
         <div className="min-h-[200px] flex items-center justify-center">
           <LoadingSpinner size="lg" color="primary" />
         </div>
       ) : students.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 text-[14px] sm:text-[15px]">
-            لا يوجد حسابات لطلاب حالياً.
+            {searchQuery || selectedStatus ? "لا توجد نتائج للبحث" : "لا يوجد حسابات لطلاب حالياً."}
           </p>
         </div>
       ) : (
         <div className="flex flex-col gap-5">
           {students
             .sort((a, b) => {
-              const aNumber = a.academicNumber || '';
-              const bNumber = b.academicNumber || '';
+              const aNumber = a.student?.academicNumber || '';
+              const bNumber = b.student?.academicNumber || '';
               return sortOrder === "recent"
                 ? bNumber.localeCompare(aNumber)
                 : aNumber.localeCompare(bNumber);

@@ -12,8 +12,19 @@ export interface User {
   password: string;
 }
 
-export type Student = Pick<User, "id" | "name" | "academicNumber" | "department" | "level"> & {
-  approvalStatus: ApprovalStatus;
+export type Student = {
+  id: string;
+  name: string;
+  email: string;
+  student?: {
+    id: string;
+    userId: string;
+    academicNumber: string;
+    department: string;
+    studyLevel: number;
+    approvalStatus: ApprovalStatus;
+    approvalUpdatedByUserId: string;
+  };
 };
 
 export type Admin = Pick<User, "id" | "name" | "email" | "username"> & {
