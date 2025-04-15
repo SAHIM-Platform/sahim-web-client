@@ -1,88 +1,144 @@
 import axiosInstance from '@/api/axios';
-import { Student, ApprovalStatus } from '@/types';
+import { Student, ApprovalStatus, APIError, ValidationErrorResponse } from '@/types';
 import { Department } from '@/types';
 import { AxiosError, isAxiosError } from 'axios';
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 
-interface StudentResponse {
-  id: number;
-  name: string;
-  email: string;
-  student: {
-    id: number;
-    userId: number;
-    academicNumber: string;
-    department: Department;
-    studyLevel: number;
-    approvalStatus: ApprovalStatus;
-    approvalUpdatedByUserId: number | null;
+export interface StudentsResponse {
+  data: Student[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
   };
 }
 
-interface StudentsResult {
+export interface StudentError {
+  message: string;
+  code: string;
+}
+
+export interface StudentResult {
   success: boolean;
-  data?: Student[];
-  error?: {
-    message: string;
-    code: string;
-  };
+  data?: StudentsResponse;
+  error?: StudentError;
 }
 
-export const fetchStudents = async (
-  status?: ApprovalStatus
-): Promise<StudentsResult> => {
+export const fetchStudents = async (status?: ApprovalStatus): Promise<StudentResult> => {
   try {
-    const response = await axiosInstance.get<StudentResponse[]>(
-      `/admins/users/students${status ? `?status=${status}` : ""}`
-    );
+    console.log('Fetching students with status:', status);
 
-    const students: Student[] = response.data.map((user: StudentResponse) => ({
-      id: user.id.toString(),
-      name: user.name,
-      email: user.email,
-      academicNumber: user.student.academicNumber,
-      department: user.student.department,
-      level: user.student.studyLevel,
-      approvalStatus: user.student.approvalStatus,
-      createdAt: new Date().toISOString(), // These fields are not in the API response
-      updatedAt: new Date().toISOString(), // These fields are not in the API response
-    }));
+    const url = status ? `/admins/users/students?status=${status}` : '/admins/users/students';
+    console.log('Fetch URL:', url);
+
+    const response = await axiosInstance.get<StudentsResponse>(url);
+
+    console.log('stedents fetch response:', {
+      status: response.status,
+      data: response.data
+    });
+
+    if (response.data) {
+      return {
+        success: true,
+        data: response.data
+      };
+    }
 
     return {
-      success: true,
-      data: students,
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.student.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
     };
   } catch (error) {
+    console.error('students fetching error:', error);
+
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError;
-      
-      if (axiosError.response?.status === 401) {
+
+      if (axiosError.response?.status === 400) {
+        const errorData = axiosError.response.data as ValidationErrorResponse;
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
-            code: 'UNAUTHORIZED'
+            message: errorData.message || ERROR_MESSAGES.student.VALIDATION_ERROR,
+            code: errorData.code || 'VALIDATION_ERROR'
           }
         };
       }
-      
-      if (axiosError.response?.status === 403) {
+
+      if (axiosError.response?.status === 404) {
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.FORBIDDEN,
-            code: 'FORBIDDEN'
+            message: ERROR_MESSAGES.student.NOT_FOUND,
+            code: 'NOT_FOUND'
           }
         };
       }
     }
-    
+
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.SERVER_ERROR,
-        code: 'SERVER_ERROR'
+        message: ERROR_MESSAGES.student.DEFAULT,
+        code: 'UNKNOWN_ERROR'
       }
     };
+  }
+};
+
+export interface SearchFilters {
+  status?: ApprovalStatus;
+  query?: string;
+}
+
+export const searchStudents = async (filters: SearchFilters): Promise<Student[]> => {
+  try {
+    console.log('Searching students with filters:', filters);
+
+    // If only status is provided, use fetchStudents instead
+    if (filters.status && !filters.query) {
+      const result = await fetchStudents(filters.status);
+      if (!result.success || !result.data) {
+        throw new Error(result.error?.message || ERROR_MESSAGES.search.DEFAULT);
+      }
+      return result.data.data;
+    }
+
+    // If search query is provided, use the search endpoint
+    const params = new URLSearchParams();
+    if (filters.status) {
+      params.append('status', filters.status);
+    }
+    if (filters.query) {
+      params.append('query', filters.query);
+    }
+
+    const url = `/admins/users/students/search?${params.toString()}`;
+    console.log('Search URL:', url);
+
+    const response = await axiosInstance.get<Student[]>(url);
+
+    console.log('Search response:', {
+      status: response.status,
+      data: response.data,
+      filtersApplied: filters
+    });
+
+    if (!response.data) {
+      throw new Error(ERROR_MESSAGES.search.DEFAULT);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error('Search failed:', {
+      error,
+      filters,
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+    throw error;
   }
 }; 
