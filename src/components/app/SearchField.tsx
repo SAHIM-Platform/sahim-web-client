@@ -1,10 +1,12 @@
 import { Search } from "lucide-react";
 import Input from "../Input";
 import { cn } from "@/utils/utils";
+import { useEffect, useRef } from "react";
 
 interface SearchFieldProps {
   searchQuery: string;
   setSearchQuery: (value: string) => void;
+  onSearch?: () => void;
   placeholder?: string;
   shortcut?: string;
   shortcutLabel?: string;
@@ -17,6 +19,7 @@ interface SearchFieldProps {
 function SearchField({
   searchQuery,
   setSearchQuery,
+  onSearch,
   placeholder = "ابحث في المناقشات ...",
   shortcut,
   shortcutLabel,
@@ -25,6 +28,24 @@ function SearchField({
   className,
   variant = "default"
 }: SearchFieldProps) {
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+    };
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    if (onSearch) {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+      debounceTimeout.current = setTimeout(() => {
+        onSearch();
+      }, 500);
+    }
+  };
+
   const shortcutElement = shortcut ? (
     <div className="flex items-center gap-1 text-xs text-gray-400 mx-3">
       <kbd className={cn(
@@ -45,7 +66,7 @@ function SearchField({
       inputSize='default'
       placeholder={placeholder}
       value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
+      onChange={handleChange}
       onKeyDown={onKeyDown}
       autoFocus={autoFocus}
       className={cn(

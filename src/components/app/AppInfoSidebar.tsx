@@ -9,6 +9,7 @@ import { fetchThreads, fetchCategories } from "@/services/threadService";
 import { Thread } from "@/types/thread";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CategoriesListing from "./CategoriesListing";
+import Link from "next/link";
 
 interface AppInfoSidebarProps {
   isOpen: boolean;
@@ -101,14 +102,22 @@ function SidebarContent() {
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">التصنيفات</span>
         <CategoriesListing 
-          categories={categories}
+          categories={categories.slice(0, 5)}
           isLoading={isLoadingCategories}
           onCategoriesChange={handleCategoriesChange}
         />
+
+        <div className="mt-2 text-center">
+          <Link
+            href="/categories"
+            className="text-blue-500 text-sm font-semibold hover:underline">
+            عرض الكل
+          </Link>
+        </div>
       </div>
-
+  
       <Divider label="" />
-
+  
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">آخر المناقشات</span>
         {isLoading ? (

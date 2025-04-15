@@ -1,69 +1,120 @@
-import { AuthResult } from "@/types/auth";
+import axiosInstance from '@/api/axios';
 import { AdminFormData } from '@/utils/api/admin/validateCreateAdminForm';
+import { AxiosError, isAxiosError } from "axios";
+import { APIError } from '@/types/auth';
+import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 
-async function createAdminService(data: AdminFormData): Promise<AuthResult> {
-  // This is a placeholder for the actual API integration
-  // In a real implementation, this would make an API call to create an admin
-  
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Simulate successful response
-  return {
-    success: true,
-    data: {
-      message: "تم إنشاء حساب المشرف بنجاح",
-      user: {
-        id: "1",
-        name: data.name,
-        username: data.username,
-        email: data.email,
-        role: "admin"
-      }
-    }
+interface AdminCreationResponse {
+  message: string;
+}
+
+interface AdminCreationResult {
+  success: boolean;
+  data?: AdminCreationResponse;
+  error?: {
+    message: string;
+    code: string;
   };
-  
-  // In a real implementation, this would look something like:
-  /*
+}
+
+async function createAdminService(data: AdminFormData): Promise<AdminCreationResult> {
   try {
     const adminData = {
-      email: data.email.trim(),
-      username: data.username.trim(),
-      password: data.password,
-      name: data.name.trim(),
-      role: "admin"
+      email: data.email,
+      username: data.username,
+      name: data.name,
+      password: data.password
     };
 
-    const response = await axiosInstance.post('/admin/users', adminData);
+    console.log('Sending admin creation request with:', adminData);
+    const response = await axiosInstance.post('/admins', adminData);
+    console.log('Admin creation response:', response.data);
 
-    if (response.data) {
-      return {
-        success: true,
-        data: {
-          message: response.data.message,
-          user: response.data.user
-        }
-      };
-    } else {
+    return {
+      success: true,
+      data: {
+        message: response.data.message
+      }
+    };
+
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      const errorData = axiosError.response?.data as APIError;
+      const statusCode = axiosError.response?.status;
+
+      // Handle specific error cases
+      if (statusCode === 400) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.admin.VALIDATION_ERROR,
+            code: 'VALIDATION_ERROR'
+          }
+        };
+      }
+
+      if (statusCode === 409) {
+        const isEmailConflict = errorData.message?.toLowerCase().includes('email');
+        return {
+          success: false,
+          error: {
+            message: isEmailConflict ? ERROR_MESSAGES.admin.DUPLICATE_EMAIL : ERROR_MESSAGES.admin.DUPLICATE_USERNAME,
+            code: 'DUPLICATE_USER'
+          }
+        };
+      }
+
+      if (statusCode === 403) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.FORBIDDEN,
+            code: 'FORBIDDEN'
+          }
+        };
+      }
+
+      if (statusCode === 401) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            code: 'UNAUTHORIZED'
+          }
+        };
+      }
+
+      // Handle server errors
+      if (statusCode && statusCode >= 500) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.admin.SERVER_ERROR,
+            code: 'SERVER_ERROR'
+          }
+        };
+      }
+
+      // Handle other API errors
       return {
         success: false,
         error: {
-          message: 'فشل في إنشاء حساب المشرف.',
-          code: 'ADMIN_CREATION_FAILED'
+          message: errorData?.message || ERROR_MESSAGES.admin.DEFAULT,
+          code: errorData?.error || 'ADMIN_CREATION_ERROR'
         }
       };
     }
-  } catch (error) {
-    // Error handling would go here
+
+    // Handle unexpected errors
     return {
       success: false,
       error: {
-        message: 'حدث خطأ أثناء إنشاء حساب المشرف.',
-        code: 'ADMIN_CREATION_ERROR'
+        message: ERROR_MESSAGES.admin.DEFAULT,
+        code: 'UNKNOWN_ERROR'
       }
     };
   }
-  */
 }
 
 export default createAdminService; 
