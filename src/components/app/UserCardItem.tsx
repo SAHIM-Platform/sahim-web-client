@@ -46,7 +46,7 @@ const UserCardItem = ({
     }
   };
 
-  const getStatusText = (status: ApprovalStatus) => {
+  const getStatusText = (status?: ApprovalStatus) => {
     switch (status) {
       case ApprovalStatus.PENDING:
         return "قيد الانتظار";
@@ -59,7 +59,7 @@ const UserCardItem = ({
     }
   };
 
-  const getStatusColor = (status: ApprovalStatus) => {
+  const getStatusColor = (status?: ApprovalStatus) => {
     switch (status) {
       case ApprovalStatus.PENDING:
         return "text-amber-500";
@@ -78,13 +78,13 @@ const UserCardItem = ({
       <div className="bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200 p-6 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
         <div className="flex flex-col gap-1 text-sm text-gray-700">
           <h3 className="text-base font-semibold text-gray-900">{student.name}</h3>
-          <p className="font-light">الرقم الأكاديمي: <span className="font-normal">{student.academicNumber}</span></p>
-          <p className="font-light">المستوى الدراسي: <span className="font-normal">{student.level}</span></p>
-          <p className="font-light">القسم: <span className="font-normal">{student.department}</span></p>
-          <p className="font-light">حالة الموافقة: <span className={`font-normal ${getStatusColor(student.approvalStatus)}`}>{getStatusText(student.approvalStatus)}</span></p>
+          <p className="font-light">الرقم الأكاديمي: <span className="font-normal">{student.student?.academicNumber}</span></p>
+          <p className="font-light">المستوى الدراسي: <span className="font-normal">{student.student?.studyLevel}</span></p>
+          <p className="font-light">القسم: <span className="font-normal">{student.student?.department}</span></p>
+          <p className="font-light">حالة الموافقة: <span className={`font-normal ${getStatusColor(student.student?.approvalStatus)}`}>{getStatusText(student.student?.approvalStatus)}</span></p>
         </div>
 
-        {student.approvalStatus === ApprovalStatus.PENDING && (
+        {student.student?.approvalStatus === ApprovalStatus.PENDING && (
           <div className="flex items-center gap-2 sm:mt-0 mt-3">
             <Button
               onClick={handleApprove}
