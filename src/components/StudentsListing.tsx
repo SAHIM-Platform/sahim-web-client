@@ -12,7 +12,7 @@ import UsersBadge from "./app/Badge/UsersBadge";
 import UserCardItem from "./app/UserCardItem";
 import { ArrowUpDown, RefreshCw } from "lucide-react";
 import { Student, ApprovalStatus } from "@/types";
-import { fetchStudents } from "@/services/admin/studentService";
+import { fetchStudents, searchStudents } from "@/services/admin/studentService";
 
 interface StudentsListingProps {
   onApprove: (id: string) => void;
@@ -29,34 +29,70 @@ const StudentsListing = ({
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<ApprovalStatus | null>(null);
   const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
+  const [isFiltering, setIsFiltering] = useState(false);
 
-  const loadStudents = async () => {
+  const loadStudents = async (filters?: { status?: ApprovalStatus; query?: string }) => {
     try {
       setIsLoading(true);
+      setIsFiltering(!!filters);
       setError(null);
 
-      const result = await fetchStudents(selectedStatus || undefined);
-
-      if (result.success && result.data) {
-        setStudents(result.data);
+      let result;
+      if (filters?.status || filters?.query) {
+        result = await searchStudents({
+          status: filters.status,
+          query: filters.query
+        });
+        setStudents(result);
       } else {
-        setError(result.error?.message || "فشل تحميل بيانات الطلاب");
-        toast.error(result.error?.message || "فشل تحميل بيانات الطلاب");
+        result = await fetchStudents();
+        if (result.success && result.data) {
+          setStudents(result.data.data);
+        } else {
+          throw new Error(result.error?.message || 'Failed to fetch students');
+        }
       }
     } catch (err) {
-      setError("فشل تحميل بيانات الطلاب");
-      toast.error("فشل تحميل بيانات الطلاب");
+      console.error('Student loading error:', {
+        error: err,
+        message: err instanceof Error ? err.message : 'Unknown error',
+        stack: err instanceof Error ? err.stack : undefined,
+        timestamp: new Date().toISOString(),
+      });
+
+      const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل الطلاب';
+      setError(`${errorMessage}. حاول مرة أخرى.`);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
+      setIsFiltering(false);
     }
   };
 
   useEffect(() => {
     loadStudents();
-  }, [selectedStatus]);
+  }, []);
+
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      if (searchQuery || selectedStatus) {
+        loadStudents({
+          status: selectedStatus || undefined,
+          query: searchQuery || undefined
+        });
+      } else {
+        loadStudents();
+      }
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery, selectedStatus]);
 
   const handleRetry = () => {
-    loadStudents();
+    loadStudents({
+      status: selectedStatus || undefined,
+      query: searchQuery || undefined
+    });
   };
 
   const statusOptions = [
@@ -65,35 +101,6 @@ const StudentsListing = ({
     { value: ApprovalStatus.APPROVED, label: "تمت الموافقة" },
     { value: ApprovalStatus.REJECTED, label: "مرفوض" },
   ];
-
-  const processedStudents = students.filter((student) => {
-    const matchesSearch = searchQuery
-      ? student.name.includes(searchQuery) ||
-        student.academicNumber.includes(searchQuery)
-      : true;
-
-    return matchesSearch;
-  });
-
-  if (isLoading) {
-    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-4">
-        <ErrorAlert message={error} />
-        <Button
-          onClick={handleRetry}
-          variant="outline"
-          icon={<RefreshCw className="w-4" />}
-          color="secondary"
-        >
-          إعادة المحاولة
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-5">
@@ -132,8 +139,8 @@ const StudentsListing = ({
           <div className="flex items-center justify-between pt-3 mt-3">
             <UsersBadge>
               <span>
-                {processedStudents.length}
-                {processedStudents.length === 1 ? " طالب" : " طلاب"}
+                {students.length}
+                {students.length === 1 ? " طالب" : " طلاب"}
               </span>
             </UsersBadge>
             <Button
@@ -149,18 +156,34 @@ const StudentsListing = ({
         </div>
       </div>
 
-      {processedStudents.length === 0 ? (
+      {error ? (
+        <div className="space-y-4">
+          <ErrorAlert message={error} />
+          <Button
+            onClick={handleRetry}
+            variant="outline"
+            icon={<RefreshCw className="w-4" />}
+            color="secondary"
+          >
+            إعادة المحاولة
+          </Button>
+        </div>
+      ) : isLoading || isFiltering ? (
+        <div className="min-h-[200px] flex items-center justify-center">
+          <LoadingSpinner size="lg" color="primary" />
+        </div>
+      ) : students.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 text-[14px] sm:text-[15px]">
-            لا يوجد حسابات لطلاب حالياً.
+            {searchQuery || selectedStatus ? "لا توجد نتائج للبحث" : "لا يوجد حسابات لطلاب حالياً."}
           </p>
         </div>
       ) : (
         <div className="flex flex-col gap-5">
-          {processedStudents
+          {students
             .sort((a, b) => {
-              const aNumber = a.academicNumber || '';
-              const bNumber = b.academicNumber || '';
+              const aNumber = a.student?.academicNumber || '';
+              const bNumber = b.student?.academicNumber || '';
               return sortOrder === "recent"
                 ? bNumber.localeCompare(aNumber)
                 : aNumber.localeCompare(bNumber);
