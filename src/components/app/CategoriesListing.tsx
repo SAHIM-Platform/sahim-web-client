@@ -45,7 +45,7 @@ function CategoriesListing({
       const result = await updateCategory(categoryId, editValue.trim());
       
       if (result.success) {
-        await onCategoriesChange();
+        await onCategoriesChange(); 
         toast.success("Category updated successfully");
       } else {
         toast.error(result.error?.message || "Failed to update category");

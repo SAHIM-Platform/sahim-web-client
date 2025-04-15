@@ -1,6 +1,5 @@
 'use client';
 
-import { categories } from "@/data/mock-api";
 import ThreadItem from "./ThreadItem";
 import ThreadListingHeader from "./ThreadListingHeader";
 import { useState, useEffect } from "react";
@@ -24,10 +23,11 @@ const ThreadListing = ({
   onShare,
   emptyMessage = "لا توجد مناقشات حالياً"
 }: ThreadListingProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"latest" | "oldest">("latest");
   const [isLoading, setIsLoading] = useState(true);
+  const [isFiltering, setIsFiltering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [threads, setThreads] = useState<Thread[]>([]);
   const [deletingThreadId, setDeletingThreadId] = useState<number | null>(null);
@@ -63,6 +63,7 @@ const ThreadListing = ({
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
+      setIsFiltering(false);
     }
   };
 

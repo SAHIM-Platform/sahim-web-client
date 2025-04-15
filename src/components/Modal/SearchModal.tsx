@@ -7,12 +7,12 @@ import SearchField from "../app/SearchField";
 import Loader from "../Loader";
 import ThreadItemMinimal from "../app/ThreadListing/ThreadItemMinimal";
 import Divider from "../Divider";
-import { SearchResult } from "@/types/thread";
+import { Thread } from "@/types/thread";
 
 interface SearchModalProps {
   onClose: () => void;
-  onSearch: (query: string) => void;
-  searchResults?: SearchResult[];
+  onSearch: (filters: { category_id?: number; query?: string }) => void;
+  searchResults?: Thread[];
   isLoading?: boolean;
   error?: string | null;
 }
@@ -37,6 +37,13 @@ function SearchModal({
     onClose(); 
   };
 
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    onSearch({
+      query: value || undefined
+    });
+  };
+
   return (
     <Modal
       onClose={onClose}
@@ -46,10 +53,7 @@ function SearchModal({
       <div className="mb-4">
         <SearchField
           searchQuery={searchQuery}
-          setSearchQuery={(value) => {
-            setSearchQuery(value);
-            onSearch(value);
-          }}
+          setSearchQuery={handleSearch}
           placeholder="ابحث في المناقشات..."
           shortcut="ESC"
           autoFocus
@@ -75,13 +79,13 @@ function SearchModal({
           ) : (
             <div className="flex flex-col gap-1">
               {searchResults.map((result, index) => (
-                <Fragment key={result.id}>
+                <Fragment key={result.thread_id}>
                 <ThreadItemMinimal
-                  thread_id={parseInt(result.id)}
+                  thread_id={result.thread_id}
                   title={result.title}
-                  authorName={result.authorName}
-                  commentsCount={result.repliesCount}
-                  created_at={result.timestamp}
+                  authorName={result.author.name}
+                  commentsCount={result._count.comments}
+                  created_at={result.created_at}
                   onNavigate={handleThreadClick}
                 />
                   {index < searchResults.length - 1 && (
