@@ -10,6 +10,7 @@ import { Thread } from "@/types/thread";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CategoriesListing from "./CategoriesListing";
 import Link from "next/link";
+import { LATEST_THREADS_LIMIT } from "@/utils/constant";
 
 interface AppInfoSidebarProps {
   isOpen: boolean;
@@ -58,13 +59,10 @@ function SidebarContent() {
     const loadData = async () => {
       try {
         // Load latest discussions
-        const result = await fetchThreads();
+        const result = await fetchThreads({ page: 1, limit: LATEST_THREADS_LIMIT});
         if (result.success && result.data) {
           const threads = result.data.data;
-          const sortedThreads = threads
-            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-            .slice(0, 3);
-          setLatestDiscussions(sortedThreads);
+          setLatestDiscussions(threads);
         }
 
         // Load categories
@@ -102,11 +100,10 @@ function SidebarContent() {
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">التصنيفات</span>
         <CategoriesListing 
-          categories={categories.slice(0, 5)}
+          categories={categories}
           isLoading={isLoadingCategories}
           onCategoriesChange={handleCategoriesChange}
         />
-
         <div className="mt-2 text-center">
           <Link
             href="/categories"
@@ -114,10 +111,11 @@ function SidebarContent() {
             عرض الكل
           </Link>
         </div>
+        
       </div>
-  
+
       <Divider label="" />
-  
+
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">آخر المناقشات</span>
         {isLoading ? (

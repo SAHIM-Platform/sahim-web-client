@@ -58,6 +58,7 @@ export interface ThreadResponse {
     total: number;
     page: number;
     limit: number;
+    totalPages: number;
   };
 }
 
@@ -92,4 +93,10 @@ export interface SearchResult {
   timestamp: string;
   authorName: string;
   repliesCount: number;
+}
+
+export interface BookmarkedThreadsResult {
+  success: boolean;
+  data?: ThreadResponse;
+  error?: ThreadError;
 }
