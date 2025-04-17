@@ -132,6 +132,7 @@ function SidebarContent() {
                   commentsCount={thread._count.comments}
                   created_at={thread.created_at}
                   authorName={thread.author?.name ?? "مستخدم"}
+                  authorPhotoPath={thread.author?.photoPath}
                 />
                 {index < latestDiscussions.length - 1 && (
                   <Divider label="" className="my-1" borderColor="gray-100" />

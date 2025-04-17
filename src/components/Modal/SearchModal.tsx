@@ -94,6 +94,7 @@ function SearchModal({
                     commentsCount={result._count.comments}
                     created_at={result.created_at}
                     onNavigate={handleThreadClick}
+                    authorPhotoPath={result.author.photoPath}
                   />
                   {index < searchResults.length - 1 && (
                     <Divider label="" className="my-1" borderColor="gray-100" />

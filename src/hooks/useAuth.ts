@@ -33,7 +33,8 @@ const useAuth = () => {
             id: authData.data.user.id,
             name: authData.data.user.name,
             username: authData.data.user.username,
-            role: authData.data.user.role as UserRole
+            role: authData.data.user.role as UserRole,
+            photoPath: authData.data.user.photoPath,
           },
           loading: false,
         });
@@ -69,7 +70,8 @@ const useAuth = () => {
             id: authData.data.user.id,
             name: authData.data.user.name,
             username: authData.data.user.username,
-            role: authData.data.user.role as UserRole
+            role: authData.data.user.role as UserRole,
+            photoPath: authData.data.user.photoPath,
           },
           loading: false,
         });

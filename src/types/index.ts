@@ -49,6 +49,7 @@ export interface Profile {
   academicNumber?: string;
   department?: Department;
   level?: Level;
+  photoPath?: string;
 }
 
 export const userRoleLabels: Record<UserRole, string> = {

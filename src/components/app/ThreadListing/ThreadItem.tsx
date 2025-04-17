@@ -216,6 +216,7 @@ const ThreadItem = ({
           <div className="flex items-center justify-between gap-4">
             <UserInfo
               name={author.name}
+              photoPath={author.photoPath}
               date={created_at}
             />
             <div className="flex items-center gap-2">

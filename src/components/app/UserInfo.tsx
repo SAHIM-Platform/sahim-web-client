@@ -4,7 +4,7 @@ import { getDisplayName } from "@/utils/getDisplayName";
 
 interface UserInfoProps {
   name?: string;
-  photo?: string;
+  photoPath?: string;
   photoAlt?: string;
   date?: string;
   children?: React.ReactNode;
@@ -14,7 +14,7 @@ interface UserInfoProps {
 
 function UserInfo({
   name,
-  photo,
+  photoPath,
   photoAlt,
   date,
   children,
@@ -31,6 +31,7 @@ function UserInfo({
             name={name || photoAlt || ''}
             size={isSmall ? 24 : 32}
             className="ring-2 ring-white"
+            photoPath={photoPath}
           />
         )}
         {(name || photoAlt) && (

@@ -39,6 +39,7 @@ function UserDropdownMenu() {
         className="flex items-center gap-2 focus:outline-none"
       >
         <UserInfo
+          photoPath={auth.user?.photoPath}
           name={userName}
           hideDetailsOnSmallScreens={true}
         >

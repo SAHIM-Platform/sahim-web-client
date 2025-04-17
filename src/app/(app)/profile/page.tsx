@@ -13,6 +13,7 @@ import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 import Divider from '@/components/Divider';
 import { Edit2, Save, X, Trash2, User, Mail, Hash, Shield, Building2, GraduationCap } from 'lucide-react';
 import { Profile, userRoleLabels, UserRole } from '@/types';
+import UserPhoto from '@/components/UserPhoto';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -120,9 +121,7 @@ export default function ProfilePage() {
         {!isEditing ? (
           <div className="flex flex-col gap-10 bg-white rounded-xl border border-gray-200 p-8">
             <div className="flex items-center gap-6">
-              <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center">
-                <User className="w-10 h-10 text-primary" />
-              </div>
+              <UserPhoto photoPath={profile.photoPath} name={profile.name} size={80} />
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900">{profile.name}</h2>
                 <p className="text-sm text-gray-500 mt-1">@{profile.username}</p>

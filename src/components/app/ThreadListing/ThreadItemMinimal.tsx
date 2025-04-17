@@ -5,7 +5,6 @@ import UserInfo from "../UserInfo";
 
 interface ThreadItemMinimalProps extends ThreadMinimal {
   onNavigate?: () => void;
-  authorPhoto?: string;
 }
 
 function ThreadItemMinimal({
@@ -15,7 +14,7 @@ function ThreadItemMinimal({
   commentsCount,
   created_at,
   onNavigate,
-  authorPhoto
+  authorPhotoPath
 }: ThreadItemMinimalProps) {
   return (
     <Link
@@ -29,7 +28,7 @@ function ThreadItemMinimal({
       <div className="flex items-center gap-2 text-xs text-gray-500">
         <UserInfo
           name={authorName}
-          photo={authorPhoto}
+          photoPath={authorPhotoPath}
           photoAlt={authorName}
           hideDetailsOnSmallScreens={true}
           date={created_at}

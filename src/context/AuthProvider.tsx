@@ -20,25 +20,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log('Checking authentication state...');
         const response = await axios.post<AuthResponse>('/auth/refresh');
         const { accessToken, user } = response.data;
-        
+
         console.log('Refresh token successful:', {
           isAuthenticated: true,
-          user: {
-            id: user.id,
-            name: user.name,
-            username: user.username,
-            role: user.role as UserRole
-          }
+          user: { ...user }
         });
-        
+
         setAuth({
           accessToken,
-          user: {
-            id: user.id,
-            name: user.name,
-            username: user.username,
-            role: user.role as UserRole
-          },
+          user: { ...user },
           loading: false
         });
       } catch (error) {
@@ -61,7 +51,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           id: auth.user.id,
           name: auth.user.name,
           username: auth.user.username,
-          role: auth.user.role
+          role: auth.user.role,
+          photoPath: auth.user.photoPath
         } : 'none'
       });
     }
