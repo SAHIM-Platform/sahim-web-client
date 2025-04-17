@@ -153,7 +153,7 @@ function CommentItem({
     <div className="flex gap-1 items-start">
       <div className="bg-white rounded-xl border border-gray-200 px-6 pt-6 pb-3 w-full relative">
         <div className="flex justify-between items-start">
-          <UserInfo name={auth.user?.name} date={timestamp} />
+          <UserInfo name={auth.user?.name} date={timestamp} photoPath={auth.user?.photoPath} />
           
           {isOwner && (
             <div className="relative" ref={dropdownRef}>

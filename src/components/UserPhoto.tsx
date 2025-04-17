@@ -5,9 +5,10 @@ interface UserPhotoProps {
   name: string;
   size?: number;
   className?: string;
+  photoPath?: string;
 }
 
-function UserPhoto({ name, size = 40, className }: UserPhotoProps) {
+function UserPhoto({ name, size = 40, className, photoPath }: UserPhotoProps) {
   // Get first letters of first two words
   const getInitials = (name: string) => {
     const words = name.trim().split(/\s+/);
@@ -16,8 +17,12 @@ function UserPhoto({ name, size = 40, className }: UserPhotoProps) {
     return `${words[0][0]}${words[1][0]}`.toUpperCase();
   };
 
-  // Generate avatar URL
   const getAvatarUrl = (name: string) => {
+    if (photoPath) {
+      return process.env.NEXT_PUBLIC_API_URL + photoPath;
+    }
+
+    // Generate avatar URL
     const initials = getInitials(name);
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=random&size=${size}&color=fff`;
   };

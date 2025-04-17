@@ -21,7 +21,10 @@ const useAxios = () => {
         error => Promise.reject(error)
       ),
       response: axiosInstance.interceptors.response.use(
-        response => response,
+        response => {
+          console.log('API Response:', response);
+          return response;
+        },
         async error => {
           const prevRequest = error?.config;
           if (error?.response?.status === 401 && !prevRequest?.sent) {

@@ -11,6 +11,7 @@ export interface Thread {
     id: number;
     username: string;
     name: string;
+    photoPath: string;
   };
   category: {
     category_id: number;
@@ -50,6 +51,7 @@ export type ThreadMinimal = {
   created_at: Thread['created_at'];
   commentsCount: Thread['_count']['comments'];
   authorName: Thread['author']['name']; 
+  authorPhotoPath: Thread['author']['photoPath']; 
 };
 
 export interface ThreadResponse {

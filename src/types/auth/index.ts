@@ -44,6 +44,7 @@ export interface AuthState {
     name: string;
     username: string;
     role: UserRole;
+    photoPath: string;
   };
   loading: boolean;
 }
@@ -66,6 +67,7 @@ export interface AuthResponse {
     name: string;
     username: string;
     role: UserRole;
+    photoPath: string;
   };
 }
 
