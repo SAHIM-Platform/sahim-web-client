@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import Input from '@/components/Input';
@@ -14,6 +14,9 @@ import Divider from '@/components/Divider';
 import { Edit2, Save, X, Trash2, User, Mail, Hash, Shield, Building2, GraduationCap } from 'lucide-react';
 import { Profile, userRoleLabels, UserRole } from '@/types';
 import UserPhoto from '@/components/UserPhoto';
+import { userService } from '@/services/userService';
+import validateProfileForm from '@/utils/api/profile/validateProfileForm';
+import Modal from '@/components/Modal/Modal';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -24,22 +27,51 @@ export default function ProfilePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>('');
   const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteError, setDeleteError] = useState('');
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [formData, setFormData] = useState({
-    name: auth.user?.name || '',
-    username: auth.user?.username || '',
+    name: '',
+    username: '',
+    photoPath: '',
   });
 
-  if (auth.loading) {
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const result = await userService.getProfile();
+        if (result.success && result.data?.user) {
+          setProfile(result.data.user);
+          setFormData({
+            name: result.data.user.name || '',
+            username: result.data.user.username || '',
+            photoPath: result.data.user.photoPath || '',
+          });
+        } else {
+          setError(result.error?.message || ERROR_MESSAGES.profile.DEFAULT);
+          toast.error(result.error?.message || ERROR_MESSAGES.profile.DEFAULT);
+        }
+      } catch (err) {
+        setError(ERROR_MESSAGES.profile.DEFAULT);
+        toast.error(ERROR_MESSAGES.profile.DEFAULT);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (isLoading) {
     return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
   }
 
-  if (!auth.user) {
+  if (!profile) {
     return null;
   }
-
-  // Cast auth.user to Profile type
-  const profile = auth.user as Profile;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,20 +79,34 @@ export default function ProfilePage() {
     setIsSubmitting(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Validate form data
+      const validationErrors = validateProfileForm(formData);
+      if (Object.keys(validationErrors).length > 0) {
+        setError(Object.values(validationErrors)[0]);
+        toast.error(Object.values(validationErrors)[0]);
+        setIsSubmitting(false);
+        return;
+      }
 
-      setAuth((prev) => ({
-        ...prev,
-        user: {
-          ...prev.user!,
-          name: formData.name,
-          username: formData.username,
-        },
-      }));
+      const result = await userService.updateProfile(formData);
 
-      toast.success('تم تحديث الملف الشخصي بنجاح');
-      setIsEditing(false);
-    } catch {
+      if (result.success && result.data?.user) {
+        setProfile(result.data.user);
+        setAuth((prev) => ({
+          ...prev,
+          user: {
+            ...prev.user!,
+            ...(result.data?.user || {}),
+          },
+        }));
+
+        toast.success(result.data.message || ERROR_MESSAGES.profile.UPDATE_SUCCESS);
+        setIsEditing(false);
+      } else {
+        setError(result.error?.message || ERROR_MESSAGES.profile.UPDATE_FAILED);
+        toast.error(result.error?.message || ERROR_MESSAGES.profile.UPDATE_FAILED);
+      }
+    } catch (err) {
       setError(ERROR_MESSAGES.profile.UPDATE_FAILED);
       toast.error(ERROR_MESSAGES.profile.UPDATE_FAILED);
     } finally {
@@ -69,22 +115,28 @@ export default function ProfilePage() {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('هل أنت متأكد من حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.')) {
+    if (!deletePassword) {
+      setDeleteError('الرجاء إدخال كلمة المرور');
       return;
     }
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const result = await userService.deleteProfile({ password: deletePassword });
 
-      setAuth({
-        accessToken: undefined,
-        user: undefined,
-        loading: false,
-      });
-      router.push('/');
-      toast.success('تم حذف الحساب بنجاح');
-    } catch {
-      setError(ERROR_MESSAGES.profile.DELETE_FAILED);
+      if (result.success) {
+        setAuth({
+          accessToken: undefined,
+          user: undefined,
+          loading: false,
+        });
+        router.push('/');
+        toast.success('تم حذف الحساب بنجاح');
+      } else {
+        setDeleteError(result.error?.message || ERROR_MESSAGES.profile.DELETE_FAILED);
+        toast.error(result.error?.message || ERROR_MESSAGES.profile.DELETE_FAILED);
+      }
+    } catch (err) {
+      setDeleteError(ERROR_MESSAGES.profile.DELETE_FAILED);
       toast.error(ERROR_MESSAGES.profile.DELETE_FAILED);
     }
   };
@@ -98,7 +150,7 @@ export default function ProfilePage() {
 
   const isFormValid = formData.name.trim() !== '' && formData.username.trim() !== '';
 
-  const ReadOnlyField = ({ label, value, icon: Icon }: { label: string; value: string | number; icon: unknown }) => (
+  const ReadOnlyField = ({ label, value, icon: Icon }: { label: string; value: string | number; icon: any }) => (
     <div className="flex items-center gap-4">
       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
         <Icon className="w-5 h-5 text-primary" />
@@ -121,7 +173,7 @@ export default function ProfilePage() {
         {!isEditing ? (
           <div className="flex flex-col gap-10 bg-white rounded-xl border border-gray-200 p-8">
             <div className="flex items-center gap-6">
-              <UserPhoto photoPath={profile.photoPath} name={profile.name} size={80} />
+              <UserPhoto photoPath={profile.photoPath || ''} name={profile.name} size={80} />
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900">{profile.name}</h2>
                 <p className="text-sm text-gray-500 mt-1">@{profile.username}</p>
@@ -133,7 +185,7 @@ export default function ProfilePage() {
             <div className="space-y-8">
               <ReadOnlyField 
                 label="البريد الإلكتروني" 
-                value={profile.email} 
+                value={profile.email}
                 icon={Mail}
               />
               {profile.role === 'STUDENT' && (
@@ -198,6 +250,14 @@ export default function ProfilePage() {
                   required
                   fullWidth
                 />
+
+                <Input
+                  label="رابط الصورة الشخصية"
+                  placeholder="أدخل رابط الصورة الشخصية"
+                  value={formData.photoPath}
+                  onChange={(e) => handleChange('photoPath', e.target.value)}
+                  fullWidth
+                />
               </div>
 
               <div className="space-y-4">
@@ -206,7 +266,7 @@ export default function ProfilePage() {
                   value={profile.email} 
                   icon={Mail}
                 />
-                {profile.role === UserRole.STUDENT && (
+                {profile.role === 'STUDENT' && (
                   <>
                     <ReadOnlyField 
                       label="الرقم الأكاديمي" 
@@ -255,9 +315,11 @@ export default function ProfilePage() {
                 variant="outline"
                 onClick={() => {
                   setIsEditing(false);
+                  setError('');
                   setFormData({
                     name: profile.name || '',
                     username: profile.username || '',
+                    photoPath: profile.photoPath || '',
                   });
                 }}
                 icon={<X className="w-4 h-4" />}
@@ -272,24 +334,80 @@ export default function ProfilePage() {
 
       <Divider label="" />
 
-      <div className="space-y-6 bg-red-50/50 border-2 border-red-200/60 rounded-xl p-8">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-gray-900">حذف الحساب</h1>
-          <p className="text-gray-500">لا يمكنك استرجاع حسابك لاحقاً.</p>
-        </div>
+      {profile.role !== UserRole.SUPER_ADMIN && (
+        <div className="space-y-6 bg-red-50/50 border-2 border-red-200/60 rounded-xl p-8">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold text-gray-900">حذف الحساب</h1>
+            <p className="text-gray-500">لا يمكنك استرجاع حسابك لاحقاً.</p>
+          </div>
 
-        <Button
-          type="button"
-          variant="outline"
-          color="secondary"
-          onClick={handleDelete}
-          className="text-red-600 hover:border-red-700 hover:text-red-600 hover:shadow-none"
-          icon={<Trash2 className="w-4 h-4" />}
-          iconPosition="start"
-        >
-          حذف الحساب
-        </Button>
-      </div>
+          <Button
+            type="button"
+            variant="outline"
+            color="secondary"
+            onClick={() => setShowDeleteModal(true)}
+            className="text-red-600 hover:border-red-700 hover:text-red-600 hover:shadow-none"
+            icon={<Trash2 className="w-4 h-4" />}
+            iconPosition="start"
+          >
+            حذف الحساب
+          </Button>
+        </div>
+      )}
+
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setDeletePassword('');
+          setDeleteError('');
+        }}
+        title="حذف الحساب"
+        size="md"
+      >
+        <div className="space-y-6">
+          <p className="text-gray-600">
+            هل أنت متأكد من حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء. الرجاء إدخال كلمة المرور للتأكيد.
+          </p>
+
+          <Input
+            type="password"
+            label="كلمة المرور"
+            placeholder="أدخل كلمة المرور"
+            value={deletePassword}
+            onChange={(e) => setDeletePassword(e.target.value)}
+            fullWidth
+            required
+          />
+
+          {deleteError && <ErrorAlert message={deleteError} />}
+
+          <div className="flex gap-4">
+            <Button
+              type="button"
+              onClick={handleDelete}
+              className="bg-red-600 hover:bg-red-700 hover:shadow-none"
+              icon={<Trash2 className="w-4 h-4" />}
+              iconPosition="start"
+            >
+              حذف الحساب
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setShowDeleteModal(false);
+                setDeletePassword('');
+                setDeleteError('');
+              }}
+              icon={<X className="w-4 h-4" />}
+              iconPosition="start"
+            >
+              إلغاء
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
