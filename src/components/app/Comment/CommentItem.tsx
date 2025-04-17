@@ -11,6 +11,7 @@ import useAuth from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
+import { voteComment } from "@/services/threadService";
 
 export interface CommentItemProps {
   id: string;
@@ -22,6 +23,7 @@ export interface CommentItemProps {
   };
   onEdit?: (newContent: string) => Promise<void>;
   onDelete?: () => Promise<void>;
+  threadId: number;
 }
 
 function CommentItem({ 
@@ -30,7 +32,8 @@ function CommentItem({
   timestamp, 
   votes, 
   onEdit,
-  onDelete
+  onDelete,
+  threadId
 }: CommentItemProps) {
   const { auth } = useAuth();
   const isOwner = auth.user?.id?.toString() === auth.user?.id?.toString();
@@ -84,19 +87,18 @@ function CommentItem({
 
     try {
       setIsVoting(true);
-      if (localUserVote === voteType) {
-        setLocalUserVote(null);
-        setLocalVoteCount(prev => prev + (voteType === "UP" ? -1 : 1));
+      const result = await voteComment(threadId, parseInt(id), voteType);
+      
+      if (result.success) {
+        setLocalVoteCount(result.votesCount);
+        setLocalUserVote(result.userVote);
       } else {
-        setLocalUserVote(voteType);
-        setLocalVoteCount(prev =>
-          prev + (voteType === "UP" ? 1 : -1) + (previousVote ? (previousVote === "UP" ? -1 : 1) : 0)
-        );
+        throw new Error(ERROR_MESSAGES.comment.DEFAULT);
       }
     } catch (error) {
       setLocalUserVote(previousVote);
       setLocalVoteCount(previousCount);
-      toast.error(ERROR_MESSAGES.comment.DEFAULT);
+      toast.error(error instanceof Error ? error.message : ERROR_MESSAGES.comment.DEFAULT);
     } finally {
       setIsVoting(false);
     }
