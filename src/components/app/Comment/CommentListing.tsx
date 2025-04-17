@@ -1,4 +1,4 @@
-import { Reply, MessageSquare } from "lucide-react";
+import { Reply } from "lucide-react";
 import { Thread } from "@/types/thread";
 import CommentItem from "./CommentItem";
 import { updateComment, deleteComment } from "@/services/threadService";
@@ -42,10 +42,8 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
   if (!thread.comments || thread.comments.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center mb-4">
-          <MessageSquare className="w-8 h-8 text-gray-400" />
-        </div>
-        <p className="text-gray-500">كن أول من يشارك في النقاش</p>
+        <Reply className="w-12 h-12 text-gray-300 mb-3" />
+        <p className="text-gray-500">لا توجد ردود</p>
       </div>
     );
   }
@@ -65,6 +63,5 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
       ))}
     </div>
   );
-}
+}export default CommentListing;
 
-export default CommentListing;

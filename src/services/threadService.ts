@@ -797,3 +797,74 @@ export const fetchBookmarkedThreads = async ({
     };
   }
 };
+
+export interface CreateThreadResult {
+  success: boolean;
+  data?: {
+    thread_id: number;
+  };
+  error?: {
+    message: string;
+    code: string;
+  };
+}
+
+export const createThread = async (threadData: {
+  title: string;
+  content: string;
+  category_id: number;
+  thumbnail_url?: string | null;
+}): Promise<CreateThreadResult> => {
+  try {
+    const response = await axiosInstance.post<{ thread_id: number }>('/threads', threadData);
+
+    if (response.data) {
+      return {
+        success: true,
+        data: response.data
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  } catch (error) {
+    console.error('Error creating thread:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      
+      if (axiosError.response?.status === 400) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            code: 'VALIDATION_ERROR'
+          }
+        };
+      }
+
+      if (axiosError.response?.status === 401) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            code: 'UNAUTHORIZED'
+          }
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  }
+};
