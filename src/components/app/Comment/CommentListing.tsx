@@ -59,6 +59,7 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
           votes={comment.votes}
           onEdit={(newContent) => handleEditComment(comment.comment_id, newContent)}
           onDelete={() => handleDeleteComment(comment.comment_id)}
+          threadId={thread.thread_id}
         />
       ))}
     </div>
@@ -66,3 +67,4 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
 }
 
 export default CommentListing;
+

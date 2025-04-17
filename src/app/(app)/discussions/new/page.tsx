@@ -177,7 +177,6 @@ export default function NewDiscussionPage() {
           onChange={(e) => handleChange("category_id", e.target.value)}
           required
           options={[
-            { value: "", label: "اختر تصنيفاً" },
             ...categories.map((category) => ({
               value: category.category_id.toString(),
               label: category.name,

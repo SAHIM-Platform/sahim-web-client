@@ -139,7 +139,7 @@ export async function updateComment(
   content: string
 ): Promise<CommentResponse> {
   try {
-    const response = await axiosInstance.put<CommentResponse>(
+    const response = await axiosInstance.patch<CommentResponse>(
       `/threads/${threadId}/comments/${commentId}`,
       { content }
     );
@@ -201,6 +201,56 @@ export async function deleteComment(
   }
 }
 
+export async function voteComment(
+  threadId: number,
+  commentId: number,
+  voteType: "UP" | "DOWN"
+): Promise<VoteResponse> {
+  try {
+    const response = await axiosInstance.post<APIVoteResponse>(`/threads/${threadId}/comments/${commentId}/vote`, {
+      vote_type: voteType
+    });
+
+    // Validate response data structure
+    if (!response.data || typeof response.data !== 'object') {
+      throw new Error(ERROR_MESSAGES.comment.VALIDATION_ERROR);
+    }
+
+    const { success, updatedVotes } = response.data;
+
+    // Validate required fields
+    if (typeof success !== 'boolean' || !updatedVotes) {
+      throw new Error(ERROR_MESSAGES.comment.VALIDATION_ERROR);
+    }
+
+    // Return transformed data
+    return {
+      success,
+      votesCount: updatedVotes.score ?? 0,
+      userVote: updatedVotes.user_vote ?? null
+    };
+  } catch (error) {
+    console.error('Error voting on comment:', error);
+    
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      
+      if (axiosError.response?.status === 401) {
+        throw new Error(ERROR_MESSAGES.auth.UNAUTHORIZED);
+      }
+      
+      if (axiosError.response?.status === 404) {
+        throw new Error(ERROR_MESSAGES.comment.NOT_FOUND);
+      }
+      
+      if (axiosError.response?.status === 400) {
+        throw new Error(ERROR_MESSAGES.comment.VALIDATION_ERROR);
+      }
+    }
+    
+    throw new Error(ERROR_MESSAGES.comment.DEFAULT);
+  }
+}
 
 export const fetchThreads = async ({
   sort = "latest",
@@ -454,7 +504,7 @@ export const updateThread = async (
   }
 ): Promise<SingleThreadResult> => {
   try {
-    const response = await axiosInstance.put<Thread>(`/threads/${threadId}`, threadData);
+    const response = await axiosInstance.patch<Thread>(`/threads/${threadId}`, threadData);
 
     if (response.data) {
       return {
@@ -794,6 +844,77 @@ export const fetchBookmarkedThreads = async ({
         message: ERROR_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR',
       },
+    };
+  }
+};
+
+export interface CreateThreadResult {
+  success: boolean;
+  data?: {
+    thread_id: number;
+  };
+  error?: {
+    message: string;
+    code: string;
+  };
+}
+
+export const createThread = async (threadData: {
+  title: string;
+  content: string;
+  category_id: number;
+  thumbnail_url?: string | null;
+}): Promise<CreateThreadResult> => {
+  try {
+    const response = await axiosInstance.post<{ thread_id: number }>('/threads', threadData);
+
+    if (response.data) {
+      return {
+        success: true,
+        data: response.data
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  } catch (error) {
+    console.error('Error creating thread:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      
+      if (axiosError.response?.status === 400) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            code: 'VALIDATION_ERROR'
+          }
+        };
+      }
+
+      if (axiosError.response?.status === 401) {
+        return {
+          success: false,
+          error: {
+            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            code: 'UNAUTHORIZED'
+          }
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
     };
   }
 };

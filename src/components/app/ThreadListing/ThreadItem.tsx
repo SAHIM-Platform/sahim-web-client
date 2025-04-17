@@ -17,6 +17,7 @@ import { Thread } from "@/types/thread";
 import Divider from "@/components/Divider";
 import EditThreadModal from "../../Modal/EditThreadModal";
 import useAuth from "@/hooks/useAuth";
+import ConfirmModal from "@/components/Modal/ConfirmModal";
 
 export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
   title: string;
@@ -67,6 +68,8 @@ const ThreadItem = ({
   const [isVoting, setIsVoting] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const lastVoteTime = useRef<number>(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -178,7 +181,7 @@ const ThreadItem = ({
   const handleDelete = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsDropdownOpen(false);
-    onDelete?.();
+    setIsDeleteModalOpen(true);
   };
 
   const handleEditSuccess = (updatedThread: Thread) => {
@@ -201,6 +204,16 @@ const ThreadItem = ({
     // Call the parent handler
     onEdit?.(updatedThread);
     toast.success('تم تحديث المناقشة بنجاح');
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      setIsDeleting(true);
+      onDelete?.();
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteModalOpen(false);
+    }
   };
 
   return (
@@ -412,6 +425,17 @@ const ThreadItem = ({
           _count,
         }}
         onSuccess={handleEditSuccess}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        title="حذف المناقشة"
+        message="هل أنت متأكد من حذف هذه المناقشة؟ لا يمكن التراجع عن هذا الإجراء."
+        confirmText="حذف"
+        confirmButtonVariant="danger"
+        isLoading={isDeleting}
       />
     </>
   );

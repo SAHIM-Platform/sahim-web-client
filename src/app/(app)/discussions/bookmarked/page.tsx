@@ -8,7 +8,7 @@ import ErrorAlert from '@/components/Form/ErrorAlert';
 import Button from '@/components/Button';
 import { RefreshCw } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { fetchBookmarkedThreads } from '@/services/threadService';
+import { fetchBookmarkedThreads, deleteThread } from '@/services/threadService';
 import ThreadItem from '@/components/app/ThreadListing/ThreadItem';
 
 const BookmarksPageContent = () => {
@@ -80,6 +80,22 @@ const BookmarksPageContent = () => {
     onLoadMore: fetchMoreBookmarks,
   });
 
+  const handleDeleteThread = async (threadId: number) => {
+    try {
+      const result = await deleteThread(threadId);
+
+      if (result.success) {
+        toast.success('تم حذف المناقشة بنجاح');
+        // Remove the deleted thread from the list
+        setBookmarkedThreads(prev => prev.filter(thread => thread.thread_id !== threadId));
+      } else {
+        toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
+      }
+    } catch (err) {
+      toast.error('حدث خطأ أثناء حذف المناقشة');
+    }
+  };
+
   useEffect(() => {
     fetchInitialBookmarks();
   }, []);
@@ -116,7 +132,11 @@ const BookmarksPageContent = () => {
         <>
           <div className="flex flex-col gap-5">
             {bookmarkedThreads.map((thread) => (
-              <ThreadItem key={thread.thread_id} {...thread} />
+              <ThreadItem
+                key={thread.thread_id}
+                {...thread}
+                onDelete={() => handleDeleteThread(thread.thread_id)}
+              />
             ))}
           </div>
 

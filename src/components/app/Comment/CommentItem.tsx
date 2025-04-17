@@ -10,6 +10,8 @@ import ReactMarkdown from "react-markdown";
 import useAuth from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ConfirmModal from "@/components/Modal/ConfirmModal";
+import { voteComment } from "@/services/threadService";
 
 export interface CommentItemProps {
   id: string;
@@ -21,14 +23,17 @@ export interface CommentItemProps {
   };
   onEdit?: (newContent: string) => Promise<void>;
   onDelete?: () => Promise<void>;
+  threadId: number;
 }
 
 function CommentItem({ 
+  id, 
   content, 
   timestamp, 
   votes, 
   onEdit,
-  onDelete
+  onDelete,
+  threadId
 }: CommentItemProps) {
   const { auth } = useAuth();
   const isOwner = auth.user?.id?.toString() === auth.user?.id?.toString();
@@ -46,6 +51,8 @@ function CommentItem({
   const [editedContent, setEditedContent] = useState(content);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Update initial values when props change
@@ -80,19 +87,18 @@ function CommentItem({
 
     try {
       setIsVoting(true);
-      if (localUserVote === voteType) {
-        setLocalUserVote(null);
-        setLocalVoteCount(prev => prev + (voteType === "UP" ? -1 : 1));
+      const result = await voteComment(threadId, parseInt(id), voteType);
+      
+      if (result.success) {
+        setLocalVoteCount(result.votesCount);
+        setLocalUserVote(result.userVote);
       } else {
-        setLocalUserVote(voteType);
-        setLocalVoteCount(prev =>
-          prev + (voteType === "UP" ? 1 : -1) + (previousVote ? (previousVote === "UP" ? -1 : 1) : 0)
-        );
+        throw new Error(ERROR_MESSAGES.comment.DEFAULT);
       }
     } catch (error) {
       setLocalUserVote(previousVote);
       setLocalVoteCount(previousCount);
-      toast.error(ERROR_MESSAGES.comment.DEFAULT);
+      toast.error(error instanceof Error ? error.message : ERROR_MESSAGES.comment.DEFAULT);
     } finally {
       setIsVoting(false);
     }
@@ -120,13 +126,20 @@ function CommentItem({
       return;
     }
     setIsDropdownOpen(false);
-    
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
     try {
+      setIsDeleting(true);
       if (onDelete) {
         await onDelete();
       }
     } catch (error) {
       toast.error(ERROR_MESSAGES.comment.DELETE_FAILED);
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteModalOpen(false);
     }
   };
 
@@ -150,8 +163,8 @@ function CommentItem({
   };
 
   return (
-    <div className="flex gap-1 items-start">
-      <div className="bg-white rounded-xl border border-gray-200 px-6 pt-6 pb-3 w-full relative">
+    <div className="flex gap-1 items-start" data-comment-id={id}>
+      <div className="bg-white rounded-xl border border-gray-200 px-6 pt-6 pb-3 w-full relative transition-all duration-200">
         <div className="flex justify-between items-start">
           <UserInfo name={auth.user?.name} date={timestamp} photoPath={auth.user?.photoPath} />
           
@@ -219,55 +232,55 @@ function CommentItem({
           </div>
         ) : (
           <div className="mt-4 text-xs text-gray-600 leading-relaxed">
-          <ReactMarkdown 
-          remarkPlugins={[remarkGfm]}
-          children={content}
-          components={{
-            a: ({ href, children }) => (
-              <a
-                href={href}
-                className='text-blue-400 hover:text-blue-300 underline'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                {children}
-              </a>
-            ),
-            h1: ({ children }) => (
-              <p className='text-2xl font-bold mb-4'>{children}</p>
-            ),
-            h2: ({ children }) => (
-              <p className='text-xl font-bold mb-4 mt-4'>{children}</p>
-            ),
-            h3: ({ children }) => (
-              <p className='text-lg font-semibold mb-2 mt-2'>{children}</p>
-            ),
-            ul: ({ children }) => (
-              <ul className='list-disc pl-2 mb-4 space-y-1'>{children}</ul>
-            ),
-            ol: ({ children }) => (
-              <ol className='list-decimal pl-6 mb-4 space-y-1'>{children}</ol>
-            ),
-            p: ({ children }) => (
-              <p className='leading-8 mb-2 font-light'>{children}</p>
-            ),
-            li: ({ children }) => (
-              <li className='leading-7 pl-2 marker:text-gray-400 [&>strong]:mt-0 [&>strong]:inline'>{children}</li>
-            ),
-            strong: ({ children }) => (
-              <strong className='font-semibold '>{children}</strong>
-            ),
-            code: ({ children }) => (
-              <div className="bg-gray-100 text-xs p-2 rounded-lg font-semibold" dir="ltr">
-              <code>{children}</code>
-              </div>
-            ),
-          }}
-          />
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+              children={content}
+              components={{
+                a: ({ href, children }) => (
+                  <a
+                    href={href}
+                    className='text-blue-400 hover:text-blue-300 underline'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    {children}
+                  </a>
+                ),
+                h1: ({ children }) => (
+                  <p className='text-2xl font-bold mb-4'>{children}</p>
+                ),
+                h2: ({ children }) => (
+                  <p className='text-xl font-bold mb-4 mt-4'>{children}</p>
+                ),
+                h3: ({ children }) => (
+                  <p className='text-lg font-semibold mb-2 mt-2'>{children}</p>
+                ),
+                ul: ({ children }) => (
+                  <ul className='list-disc pl-2 mb-4 space-y-1'>{children}</ul>
+                ),
+                ol: ({ children }) => (
+                  <ol className='list-decimal pl-6 mb-4 space-y-1'>{children}</ol>
+                ),
+                p: ({ children }) => (
+                  <p className='leading-8 mb-2 font-light'>{children}</p>
+                ),
+                li: ({ children }) => (
+                  <li className='leading-7 pl-2 marker:text-gray-400 [&>strong]:mt-0 [&>strong]:inline'>{children}</li>
+                ),
+                strong: ({ children }) => (
+                  <strong className='font-semibold '>{children}</strong>
+                ),
+                code: ({ children }) => (
+                  <div className="bg-gray-100 text-xs p-2 rounded-lg font-semibold" dir="ltr">
+                    <code>{children}</code>
+                  </div>
+                ),
+              }}
+            />
           </div>
         )}
 
-        <div className="mt-4">
+        <div className="flex items-center gap-1 mt-4">
           <Button
             onClick={(e) => handleVote("UP", e)}
             variant='ghost'
@@ -302,6 +315,17 @@ function CommentItem({
           />
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        title="حذف التعليق"
+        message="هل أنت متأكد من حذف هذا التعليق؟ لا يمكن التراجع عن هذا الإجراء."
+        confirmText="حذف"
+        confirmButtonVariant="danger"
+        isLoading={isDeleting}
+      />
     </div>
   );
 }
