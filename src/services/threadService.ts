@@ -139,7 +139,7 @@ export async function updateComment(
   content: string
 ): Promise<CommentResponse> {
   try {
-    const response = await axiosInstance.put<CommentResponse>(
+    const response = await axiosInstance.patch<CommentResponse>(
       `/threads/${threadId}/comments/${commentId}`,
       { content }
     );
