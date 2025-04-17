@@ -1,7 +1,7 @@
 'use client';
 
 import ThreadItem from "@/components/app/ThreadListing/ThreadItem";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import SimilarThreads from "@/components/app/SimilarThreads";
 import Textarea from "@/components/Textarea";
 import Button from "@/components/Button";
@@ -134,8 +134,26 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
 
     try {
       setIsSubmittingComment(true);
-      await createComment(thread.thread_id, comment);
-      await loadThread();
+      const newComment = await createComment(thread.thread_id, comment);
+      
+      // Instead of loadThread(), just refresh the comments
+      const result = await fetchThreadById(thread.thread_id);
+      if (result.success && result.data) {
+        setThread(prev => ({
+          ...prev!,
+          comments: result.data!.comments
+        }));
+        
+        // Add highlight class to the new comment
+        const newCommentElement = document.querySelector(`[data-comment-id="${newComment.id}"]`);
+        if (newCommentElement) {
+          newCommentElement.classList.add('border-primary', 'shadow-lg');
+          setTimeout(() => {
+            newCommentElement.classList.remove('border-primary', 'shadow-lg');
+          }, 2000);
+        }
+      }
+      
       toast.success("تم إضافة تعليقك بنجاح");
       setComment("");
     } catch (error) {
@@ -239,16 +257,16 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
             onChange={handleCommentChange}
             placeholder="شارك في النقاش... (يدعم تنسيق Markdown)"
             helperText="يدعم تنسيق Markdown"
+            disabled={isSubmittingComment}
           />
           <div className="-mt-6 flex justify-end">
             <Button
               onClick={handleSubmitComment}
               variant="primary"
               size="sm"
-              isLoading={isSubmittingComment}
-              loadingText="جاري الإرسال..."
+              disabled={isSubmittingComment}
             >
-              إضافة تعليق
+              {isSubmittingComment ? 'جاري الإرسال...' : 'إضافة تعليق'}
             </Button>
           </div>
         </div>
