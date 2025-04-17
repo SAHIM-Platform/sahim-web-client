@@ -454,7 +454,7 @@ export const updateThread = async (
   }
 ): Promise<SingleThreadResult> => {
   try {
-    const response = await axiosInstance.put<Thread>(`/threads/${threadId}`, threadData);
+    const response = await axiosInstance.patch<Thread>(`/threads/${threadId}`, threadData);
 
     if (response.data) {
       return {
