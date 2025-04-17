@@ -15,6 +15,7 @@ interface ThreadListingHeaderProps {
   setSortOrder: (sortOrder: "latest" | "oldest") => void;
   selectedCategory: number | null;
   setSelectedCategory: (category: number | null) => void;
+  isFiltering?: boolean;
 }
 
 function ThreadListingHeader({
@@ -23,6 +24,7 @@ function ThreadListingHeader({
   setSortOrder,
   selectedCategory,
   setSelectedCategory,
+  isFiltering = false,
 }: ThreadListingHeaderProps) {
   const [categories, setCategories] = useState<{ category_id: number; name: string }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -96,6 +98,7 @@ function ThreadListingHeader({
                     label: cat.name,
                   })),
                 ]}
+                disabled={isFiltering}
               />
             )}
           </div>
@@ -116,6 +119,7 @@ function ThreadListingHeader({
             onClick={() => setSortOrder(sortOrder === "latest" ? "oldest" : "latest")}
             className="text-[13px] text-gray-600"
             icon={<ArrowUpDown className="w-4 h-4" />}
+            disabled={isFiltering}
           >
             {sortOrder === "latest" ? "الأحدث أولاً" : "الأقدم أولاً"}
           </Button>

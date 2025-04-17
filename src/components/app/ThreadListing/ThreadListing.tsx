@@ -31,11 +31,14 @@ const ThreadListing = ({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const fetchInitialThreads = useCallback(async () => {
-    setPage(1);
-    setHasMore(true);
-    setIsLoading(true);
+  const fetchThreadsData = useCallback(async (isInitialLoad: boolean = false) => {
+    if (isInitialLoad) {
+      setIsLoading(true);
+    } else {
+      setIsUpdating(true);
+    }
     setError(null);
 
     try {
@@ -59,7 +62,11 @@ const ThreadListing = ({
       setError(`${errorMessage}. حاول مرة أخرى.`);
       toast.error(errorMessage);
     } finally {
-      setIsLoading(false);
+      if (isInitialLoad) {
+        setIsLoading(false);
+      } else {
+        setIsUpdating(false);
+      }
     }
   }, [sortOrder, selectedCategory]);
 
@@ -89,13 +96,21 @@ const ThreadListing = ({
     }
   }, [isFetchingMore, hasMore, sortOrder, selectedCategory, page]);
 
+  // Initial load
   useEffect(() => {
-    fetchInitialThreads();
-  }, [sortOrder, selectedCategory, fetchInitialThreads]);
+    fetchThreadsData(true);
+  }, []);
+
+  // Filter/sort updates
+  useEffect(() => {
+    if (!isLoading) { // Only run when not in initial load
+      fetchThreadsData(false);
+    }
+  }, [sortOrder, selectedCategory, fetchThreadsData, isLoading]);
 
   const handleRetry = useCallback(() => {
-    fetchInitialThreads();
-  }, [fetchInitialThreads]);
+    fetchThreadsData(true);
+  }, [fetchThreadsData]);
 
   const handleDeleteThread = async (threadId: number) => {
     try {
@@ -103,7 +118,7 @@ const ThreadListing = ({
 
       if (result.success) {
         toast.success('تم حذف المناقشة بنجاح');
-        fetchInitialThreads();
+        fetchThreadsData(false);
       } else {
         toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
       }
@@ -146,43 +161,52 @@ const ThreadListing = ({
         processedThreads={threads}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
+        isFiltering={isUpdating}
       />
 
-      {threads.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-[14px] sm:text-[15px]">
-            {emptyMessage}
-          </p>
-        </div>
-      ) : (
-        <>
-          <div className="flex flex-col gap-5">
-            {threads
-              .sort((a, b) => {
-                const dateA = new Date(a.created_at).getTime();
-                const dateB = new Date(b.created_at).getTime();
-                return sortOrder === "latest" ? dateB - dateA : dateA - dateB;
-              })
-              .map((thread) => (
-                <ThreadItem
-                  key={thread.thread_id}
-                  {...thread}
-                  onReply={() => onReply?.(thread.thread_id)}
-                  onShare={() => onShare?.(thread.thread_id)}
-                  onDelete={() => handleDeleteThread(thread.thread_id)}
-                />
-              ))}
+      <div className="relative min-h-[200px]">
+        {isUpdating && (
+          <div className="flex justify-center py-12">
+            <LoadingSpinner size="md" />
           </div>
+        )}
 
-          {isFetchingMore && (
-            <div className="flex justify-center py-4">
-              <LoadingSpinner size="md" />
+        {!isUpdating && threads.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-[14px] sm:text-[15px]">
+              {emptyMessage}
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-col gap-5">
+              {threads
+                .sort((a, b) => {
+                  const dateA = new Date(a.created_at).getTime();
+                  const dateB = new Date(b.created_at).getTime();
+                  return sortOrder === "latest" ? dateB - dateA : dateA - dateB;
+                })
+                .map((thread) => (
+                  <ThreadItem
+                    key={thread.thread_id}
+                    {...thread}
+                    onReply={() => onReply?.(thread.thread_id)}
+                    onShare={() => onShare?.(thread.thread_id)}
+                    onDelete={() => handleDeleteThread(thread.thread_id)}
+                  />
+                ))}
             </div>
-          )}
-        </>
-      )}
 
-      <div ref={loadMoreRef} className="h-1" />
+            {isFetchingMore && (
+              <div className="flex justify-center py-4">
+                <LoadingSpinner size="md" />
+              </div>
+            )}
+          </>
+        )}
+
+        <div ref={loadMoreRef} className="h-1" />
+      </div>
     </div>
   );
 };
