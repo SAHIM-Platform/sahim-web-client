@@ -176,8 +176,8 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   };
 
   const handleThreadDelete = async () => {
-    if (!thread || !window.confirm('هل أنت متأكد من حذف هذه المناقشة؟')) return;
-
+    if (!thread) return;
+    
     try {
       setIsDeleting(true);
       const result = await deleteThread(thread.thread_id);

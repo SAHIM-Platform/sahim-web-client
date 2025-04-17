@@ -28,7 +28,6 @@ const ThreadListing = ({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [threads, setThreads] = useState<Thread[]>([]);
-  const [deletingThreadId, setDeletingThreadId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -99,22 +98,17 @@ const ThreadListing = ({
   }, [fetchInitialThreads]);
 
   const handleDeleteThread = async (threadId: number) => {
-    if (window.confirm('هل أنت متأكد من حذف هذه المناقشة؟')) {
-      try {
-        setDeletingThreadId(threadId);
-        const result = await deleteThread(threadId);
+    try {
+      const result = await deleteThread(threadId);
 
-        if (result.success) {
-          toast.success('تم حذف المناقشة بنجاح');
-          fetchInitialThreads();
-        } else {
-          toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
-        }
-      } catch (err) {
-        toast.error('حدث خطأ أثناء حذف المناقشة');
-      } finally {
-        setDeletingThreadId(null);
+      if (result.success) {
+        toast.success('تم حذف المناقشة بنجاح');
+        fetchInitialThreads();
+      } else {
+        toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
       }
+    } catch (err) {
+      toast.error('حدث خطأ أثناء حذف المناقشة');
     }
   };
 
