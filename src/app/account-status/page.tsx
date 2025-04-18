@@ -1,35 +1,126 @@
+"use client";
+
 import Button from "@/components/Button";
 import Logo from "@/components/Logo";
-import { ArrowLeft, Info, PartyPopper } from "lucide-react";
+import { ArrowLeft, Info, PartyPopper, Clock, AlertCircle, RefreshCw, MessageCircle } from "lucide-react";
 import Link from "next/link";
+import useStudentGuard from "@/hooks/useStudentGuard";
+import useAuth from "@/hooks/useAuth";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { useRouter } from "next/navigation";
+import Container from "@/components/Container";
+import { ApprovalStatus } from "@/types";
 
 export default function AccountStatusPage() {
+  const isLoading = useStudentGuard();
+  const { auth } = useAuth();
+  const router = useRouter();
+
+  if (isLoading) {
+    return (
+      <LoadingSpinner size="xl" color="primary" fullScreen={true} />
+    );
+  }
+
+  const isApproved = auth.user?.approvalStatus === ApprovalStatus.APPROVED;
+  const isPending = auth.user?.approvalStatus === ApprovalStatus.PENDING;
+  const isRejected = auth.user?.approvalStatus === ApprovalStatus.REJECTED;
+
+  const handleRefresh = () => {
+    router.refresh();
+  };
+
   return (
     <div className="min-h-screen bg-white px-4 py-8 text-center flex flex-col items-center justify-center">
       <div className="flex items-center justify-center mb-auto">
         <Logo />
       </div>
 
-      <div className="flex flex-col gap-8 items-center justify-center w-full">
-        <div className="rounded-xl border border-blue-200 bg-blue-50 p-8 min-w-[800px] max-w-full shadow-sm">
-          <div className="flex flex-col items-center space-y-4">
-            <Info className="text-primary w-10 h-10" />
-            <p className="text-gray-500 text-md">حالة الحساب</p>
-            <div className="flex gap-2">
-              <h1 className="text-xl font-semibold text-gray-800">تم قبول طلب تسجيل حسابك</h1>
-              <PartyPopper />
+      <Container narrow>
+        <div className="flex flex-col gap-8 items-center justify-center w-full">
+          <div className={`rounded-xl border p-8 w-full shadow-sm ${
+            isApproved ? "border-blue-200 bg-blue-50" :
+            isPending ? "border-amber-200 bg-amber-50" :
+            "border-red-200 bg-red-50"
+          }`}>
+            <div className="flex flex-col items-center space-y-4">
+              {isApproved ? (
+                <>
+                  <Info className="text-primary w-10 h-10" />
+                  <p className="text-gray-500 text-md">حالة الحساب</p>
+                  <div className="flex gap-2">
+                    <h1 className="text-xl font-semibold text-gray-800">تم قبول طلب تسجيل حسابك</h1>
+                    <PartyPopper />
+                  </div>
+                </>
+              ) : isPending ? (
+                <>
+                  <Clock className="text-amber-500 w-10 h-10" />
+                  <p className="text-gray-500 text-md">حالة الحساب</p>
+                  <div className="flex gap-2">
+                    <h1 className="text-xl font-semibold text-gray-800">طلب تسجيل حسابك قيد المراجعة</h1>
+                  </div>
+                  <p className="text-gray-500 text-sm">
+                    قد تستغرق عملية التحقق بعض الوقت. يمكنك الضغط على زر التحديث للتحقق من حالة طلبك، أو العودة لاحقاً.
+                    <br />
+                    للاستفسار عن تفاصيل عملية التحقق، يرجى التواصل مع الدعم الفني.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <AlertCircle className="text-red-500 w-10 h-10" />
+                  <p className="text-gray-500 text-md">حالة الحساب</p>
+                  <div className="flex gap-2">
+                    <h1 className="text-xl font-semibold text-gray-800">تم رفض طلب تسجيل حسابك</h1>
+                  </div>
+                  <p className="text-gray-500 text-sm">
+                    يمكنك الضغط على زر التحديث للتحقق من حالة طلبك، أو العودة لاحقاً.
+                    <br />
+                    للاستفسار عن أسباب الرفض وتفاصيل عملية التحقق، يرجى التواصل مع الدعم الفني.
+                  </p>
+                </>
+              )}
             </div>
           </div>
+
+          <div className="flex flex-col md:flex-row gap-4 w-full justify-center">
+            {!isApproved && (
+              <Button
+                size="lg"
+                variant="outline"
+                icon={<RefreshCw className="w-5 h-5" />}
+                iconPosition="end"
+                onClick={handleRefresh}
+                className="w-full md:w-auto"
+              >
+                تحديث حالة الحساب
+              </Button>
+            )}
+            
+            {isApproved ? (
+              <Button
+                size="lg"
+                icon={<ArrowLeft className="w-5 h-5" />}
+                iconPosition="end"
+                href="/explore"
+                className="w-full md:w-auto"
+              >
+                المتابعة إلى الصفحة الرئيسية
+              </Button>
+            ) : (
+              <Button
+                size="lg"
+                icon={<MessageCircle className="w-5 h-5" />}
+                iconPosition="end"
+                href="/support"
+                className="w-full md:w-auto"
+              >
+                التواصل مع الدعم الفني
+              </Button>
+            )}
+          </div>
         </div>
-        <Button
-          size="lg"
-          icon={<ArrowLeft className="w-5 h-5" />}
-          iconPosition="end"
-          href="/explore"
-        >
-          المتابعة إلى الصفحة الرئيسية
-        </Button>
-      </div>
+      </Container>
 
       <div className="flex flex-col items-center space-y-2 mt-auto">
         <p className="text-sm text-gray-600">
