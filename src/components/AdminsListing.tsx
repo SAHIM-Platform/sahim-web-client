@@ -29,7 +29,7 @@ export default function AdminsListing() {
       const result = await adminService.getAdmins();
       
       if (!result.success) {
-        const errorMessage = result.error?.message || ERROR_MESSAGES.adminListing.DEFAULT;
+        const errorMessage = ERROR_MESSAGES.adminListing.DEFAULT;
         setError(errorMessage);
         toast.error(errorMessage);
         return;
@@ -52,7 +52,7 @@ export default function AdminsListing() {
       const result = await adminService.deleteAdmin(id);
 
       if (!result.success) {
-        toast.error(result.error?.message || ERROR_MESSAGES.adminListing.DELETE_FAILED);
+        toast.error(ERROR_MESSAGES.adminListing.DELETE_FAILED);
         return;
       }
 

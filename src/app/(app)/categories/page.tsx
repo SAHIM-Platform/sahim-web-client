@@ -8,6 +8,7 @@ import useAuth from "@/hooks/useAuth";
 import useAuthRedirect from "@/hooks/UseAuthRedirect";
 import Button from "@/components/Button";
 import { PlusCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function CategoriesPage() {
   const { auth } = useAuth();
@@ -21,9 +22,11 @@ export default function CategoriesPage() {
       const categoriesResponse = await fetchCategories();
       if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
         setCategories(categoriesResponse.data);
+      } else {
+        toast.error('حدث خطأ أثناء تحميل التصنيفات. يرجى المحاولة مرة أخرى');
       }
-    } catch (error) {
-      console.error('Error loading categories:', error);
+    } catch {
+      toast.error('حدث خطأ أثناء تحميل التصنيفات. يرجى المحاولة مرة أخرى');
     } finally {
       setIsLoading(false);
     }

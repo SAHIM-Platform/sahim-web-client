@@ -27,21 +27,21 @@ const BookmarkToggle: React.FC<BookmarkToggleProps> = ({
         const res = await unbookmarkThread(threadId);
         if (res.success) {
           setIsBookmarked(false);
-          toast.success(res.message);
+          toast.success("تم إزالة الموضوع من المحفوظات بنجاح");
         } else {
-          toast.error(res.message);
+          toast.error("فشل في إزالة الموضوع من المحفوظات");
         }
       } else {
         const res = await bookmarkThread(threadId);
         if (res.success) {
           setIsBookmarked(true);
-          toast.success(res.message);
+          toast.success("تم إضافة الموضوع إلى المحفوظات بنجاح");
         } else {
-          toast.error(res.message);
+          toast.error("فشل في إضافة الموضوع إلى المحفوظات");
         }
       }
     } catch (err) {
-      toast.error("فشل في تحديث الحفظ");
+      toast.error("حدث خطأ أثناء تحديث المحفوظات");
     } finally {
       setLoading(false);
     }

@@ -42,19 +42,19 @@ const StudentsListing = () => {
         if (result.success && result.data) {
           setStudents(result.data.data);
         } else {
-          throw new Error(result.error?.message || 'Failed to fetch students');
+          throw new Error(result.error?.message || 'فشل في تحميل بيانات الطلاب');
         }
       }
     } catch (err) {
       console.error('Student loading error:', {
         error: err,
-        message: err instanceof Error ? err.message : 'Unknown error',
+        message: err instanceof Error ? err.message : 'خطأ غير معروف',
         stack: err instanceof Error ? err.stack : undefined,
         timestamp: new Date().toISOString(),
       });
 
       const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل الطلاب';
-      setError(`${errorMessage}. حاول مرة أخرى.`);
+      setError(`${errorMessage}. يرجى المحاولة مرة أخرى.`);
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -74,7 +74,7 @@ const StudentsListing = () => {
           query: searchQuery || undefined
         });
       } else if (result.error) {
-        toast.error(result.error.message);
+        toast.error(result.error.message || 'فشل في الموافقة على الطالب');
       }
     } catch (error) {
       console.error('Approve error:', error);
@@ -97,7 +97,7 @@ const StudentsListing = () => {
           query: searchQuery || undefined
         });
       } else if (result.error) {
-        toast.error(result.error.message);
+        toast.error(result.error.message || 'فشل في رفض الطالب');
       }
     } catch (error) {
       console.error('Reject error:', error);
