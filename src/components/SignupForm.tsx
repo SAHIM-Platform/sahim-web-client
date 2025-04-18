@@ -14,10 +14,9 @@ import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import validateSignupForm, { SignupFormData } from "@/utils/api/signup/validateSignupForm";
 import ErrorAlert from "./Form/ErrorAlert";
-import signupService from "@/services/auth/signupService";
 
 const SignupForm = () => {
-  const { setAuth } = useAuth();
+  const { signup } = useAuth();
   const router = useRouter();
   
   const [formData, setFormData] = useState<Partial<SignupFormData>>({});
@@ -53,18 +52,11 @@ const SignupForm = () => {
 
     try {
       console.log('Starting signup submission...');
-      const result = await signupService(formData as SignupFormData);
+      const result = await signup(formData as SignupFormData);
 
       console.log('Signup result:', result);
 
-      if (result.success && result.data?.accessToken) {
-        console.log('Signup successful, setting auth and redirecting...');
-        setAuth({
-          accessToken: result.data.accessToken,
-          loading: false
-        });
-        router.push('/explore');
-      } else {
+      if (!result.success) {
         console.log('Signup failed:', result.error);
         if (result.error?.fields) {
           setErrors(result.error.fields.reduce<Record<string, string>>((acc, field) => ({
