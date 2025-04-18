@@ -99,15 +99,17 @@ export default function ProfilePage() {
           },
         }));
 
-        toast.success(result.data.message || ERROR_MESSAGES.profile.UPDATE_SUCCESS);
+        toast.success('تم تحديث الملف الشخصي بنجاح');
         setIsEditing(false);
       } else {
-        setError(result.error?.message || ERROR_MESSAGES.profile.UPDATE_FAILED);
-        toast.error(result.error?.message || ERROR_MESSAGES.profile.UPDATE_FAILED);
+        const errorMessage = 'حدث خطأ أثناء تحديث الملف الشخصي. يرجى المحاولة مرة أخرى';
+        setError(errorMessage);
+        toast.error(errorMessage);
       }
-    } catch (err) {
-      setError(ERROR_MESSAGES.profile.UPDATE_FAILED);
-      toast.error(ERROR_MESSAGES.profile.UPDATE_FAILED);
+    } catch {
+      const errorMessage = 'حدث خطأ أثناء تحديث الملف الشخصي. يرجى المحاولة مرة أخرى';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -131,12 +133,14 @@ export default function ProfilePage() {
         router.push('/');
         toast.success('تم حذف الحساب بنجاح');
       } else {
-        setDeleteError(result.error?.message || ERROR_MESSAGES.profile.DELETE_FAILED);
-        toast.error(result.error?.message || ERROR_MESSAGES.profile.DELETE_FAILED);
+        const errorMessage = 'حدث خطأ أثناء حذف الحساب. يرجى المحاولة مرة أخرى';
+        setDeleteError(errorMessage);
+        toast.error(errorMessage);
       }
-    } catch (err) {
-      setDeleteError(ERROR_MESSAGES.profile.DELETE_FAILED);
-      toast.error(ERROR_MESSAGES.profile.DELETE_FAILED);
+    } catch {
+      const errorMessage = 'حدث خطأ أثناء حذف الحساب. يرجى المحاولة مرة أخرى';
+      setDeleteError(errorMessage);
+      toast.error(errorMessage);
     }
   };
 

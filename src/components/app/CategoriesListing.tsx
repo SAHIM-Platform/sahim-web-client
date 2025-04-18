@@ -40,7 +40,7 @@ function CategoriesListing({
 
   const handleSaveEdit = async (categoryId: number) => {
     if (!editValue.trim()) {
-      toast.error("لا يمكن أن يكون اسم الفئة فارغاً");
+      toast.error("لا يمكن أن يكون اسم التصنيف فارغاً");
       return;
     }
 
@@ -49,12 +49,12 @@ function CategoriesListing({
       
       if (result.success) {
         await onCategoriesChange(); 
-        toast.success("تم تحديث الفئة بنجاح");
+        toast.success("تم تحديث التصنيف بنجاح");
       } else {
-        toast.error(result.error?.message || "فشل تحديث الفئة");
+        toast.error(result.error?.message || "فشل في تحديث التصنيف");
       }
     } catch (error) {
-      toast.error("حدث خطأ أثناء تحديث الفئة");
+      toast.error("حدث خطأ أثناء تحديث التصنيف");
     } finally {
       setEditingCategory(null);
     }
@@ -79,12 +79,12 @@ function CategoriesListing({
       
       if (result.success) {
         await onCategoriesChange();
-        toast.success("تم حذف الفئة بنجاح");
+        toast.success("تم حذف التصنيف بنجاح");
       } else {
-        toast.error(result.error?.message || "فشل حذف الفئة");
+        toast.error(result.error?.message || "فشل في حذف التصنيف");
       }
     } catch (error) {
-      toast.error("حدث خطأ أثناء حذف الفئة");
+      toast.error("حدث خطأ أثناء حذف التصنيف");
     } finally {
       setIsDeleting(null);
       setCategoryToDelete(null);
@@ -114,6 +114,7 @@ function CategoriesListing({
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
                   className="flex-1"
+                  placeholder="أدخل اسم التصنيف"
                   autoFocus
                 />
                 <Button

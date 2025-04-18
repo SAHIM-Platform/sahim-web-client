@@ -139,7 +139,7 @@ const ThreadItem = ({
 
       // Verify the response is valid
       if (!response.success) {
-        throw new Error('Vote update failed');
+        throw new Error('فشل في تحديث التصويت');
       }
 
       // Update with server response
@@ -162,7 +162,7 @@ const ThreadItem = ({
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
-        toast.error('حدث خطأ أثناء التصويت. حاول مرة أخرى.');
+        toast.error('حدث خطأ أثناء التصويت. يرجى المحاولة مرة أخرى.');
       }
     } finally {
       setIsVoting(false);
@@ -212,6 +212,9 @@ const ThreadItem = ({
     try {
       setIsDeleting(true);
       onDelete?.();
+      toast.success('تم حذف المناقشة بنجاح');
+    } catch (error) {
+      toast.error('فشل في حذف المناقشة');
     } finally {
       setIsDeleting(false);
       setIsDeleteModalOpen(false);
@@ -241,6 +244,7 @@ const ThreadItem = ({
                   <button
                     onClick={handleDropdownToggle}
                     className="p-0.5 hover:bg-gray-100 rounded-full transition-colors"
+                    aria-label="خيارات المناقشة"
                   >
                     <Ellipsis className="w-6 h-6 text-gray-500" />
                   </button>
@@ -253,6 +257,7 @@ const ThreadItem = ({
                         size="sm"
                         className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 justify-start"
                         icon={<Edit className="w-4 h-4" />}
+                        aria-label="تعديل المناقشة"
                       >
                         تعديل المناقشة
                       </Button>
@@ -263,6 +268,7 @@ const ThreadItem = ({
                         size="sm"
                         className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-gray-100 justify-start"
                         icon={<Trash2 className="w-4 h-4" />}
+                        aria-label="حذف المناقشة"
                       >
                         حذف المناقشة
                       </Button>
@@ -337,7 +343,7 @@ const ThreadItem = ({
               <div className="relative w-full aspect-[6/4] rounded-lg overflow-hidden bg-gray-50">
                 <Image
                   src={thumbnail_url}
-                  alt={title || 'Discussion thumbnail'}
+                  alt={title || 'صورة المناقشة'}
                   fill
                   className="object-cover"
                   loading="lazy"
@@ -359,6 +365,7 @@ const ThreadItem = ({
                   localUserVote === "UP" && "text-primary",
                   isVoting && "opacity-50"
                 )} />}
+              aria-label="تصويت إيجابي"
             />
 
             <span className={cn(
@@ -378,6 +385,7 @@ const ThreadItem = ({
                   localUserVote === "DOWN" && "text-primary",
                   isVoting && "opacity-50"
                 )} />}
+              aria-label="تصويت سلبي"
             />
 
             <Button
@@ -389,6 +397,7 @@ const ThreadItem = ({
               size="sm"
               color="secondary"
               icon={<MessageSquare className="w-[18px] h-[18px]" />}
+              aria-label="عدد التعليقات"
             >
               {_count?.comments ?? 0}
             </Button>
@@ -402,6 +411,7 @@ const ThreadItem = ({
               color="secondary"
               className="mr-auto"
               icon={<Share2 className="w-[18px] h-[18px]" />}
+              aria-label="مشاركة المناقشة"
             >
               مشاركة
             </Button>

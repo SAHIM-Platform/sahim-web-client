@@ -40,14 +40,13 @@ const BookmarksPageContent = () => {
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage(2);
       } else {
-        const errorMessage = result.error?.message || 'حدث خطأ أثناء تحميل المحفوظات';
+        const errorMessage = 'حدث خطأ أثناء تحميل المحفوظات. يرجى المحاولة مرة أخرى';
         setError(errorMessage);
         toast.error(errorMessage);
       }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المحفوظات';
-      setError(`${errorMessage}. حاول مرة أخرى.`);
+    } catch {
+      const errorMessage = 'حدث خطأ أثناء تحميل المحفوظات. يرجى المحاولة مرة أخرى';
+      setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setIsInitialLoading(false);
@@ -67,10 +66,10 @@ const BookmarksPageContent = () => {
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage((prev) => prev + 1);
       } else {
-        toast.error(result.error?.message || 'فشل تحميل المزيد من المحفوظات');
+        toast.error('حدث خطأ أثناء تحميل المزيد من المحفوظات. يرجى المحاولة مرة أخرى');
       }
-    } catch (err) {
-      toast.error('حدث خطأ أثناء تحميل المزيد من المحفوظات');
+    } catch {
+      toast.error('حدث خطأ أثناء تحميل المزيد من المحفوظات. يرجى المحاولة مرة أخرى');
     } finally {
       setIsFetchingMore(false);
     }
@@ -92,13 +91,12 @@ const BookmarksPageContent = () => {
 
       if (result.success) {
         toast.success('تم حذف المناقشة بنجاح');
-        // Remove the deleted thread from the list
         setBookmarkedThreads(prev => prev.filter(thread => thread.thread_id !== threadId));
       } else {
-        toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
+        toast.error('حدث خطأ أثناء حذف المناقشة. يرجى المحاولة مرة أخرى');
       }
-    } catch (err) {
-      toast.error('حدث خطأ أثناء حذف المناقشة');
+    } catch {
+      toast.error('حدث خطأ أثناء حذف المناقشة. يرجى المحاولة مرة أخرى');
     }
   };
 
