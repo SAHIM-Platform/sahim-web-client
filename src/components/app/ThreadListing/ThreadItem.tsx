@@ -18,6 +18,7 @@ import Divider from "@/components/Divider";
 import EditThreadModal from "../../Modal/EditThreadModal";
 import useAuth from "@/hooks/useAuth";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
+import ShareModal from "@/components/Modal/ShareModal";
 
 export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
   title: string;
@@ -72,6 +73,7 @@ const ThreadItem = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const lastVoteTime = useRef<number>(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // State for thread data that can be updated
   const [title, setTitle] = useState(initialTitle || "");
@@ -393,7 +395,7 @@ const ThreadItem = ({
             <Button
               onClick={(e) => {
                 e.preventDefault();
-                onShare?.();
+                setIsShareModalOpen(true);
               }}
               variant='ghost'
               size="sm"
@@ -436,6 +438,13 @@ const ThreadItem = ({
         confirmText="حذف"
         confirmButtonVariant="danger"
         isLoading={isDeleting}
+      />
+
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        threadId={thread_id.toString()}
+        title={title}
       />
     </>
   );
