@@ -3,8 +3,13 @@
 import { useState, useEffect } from "react";
 import CategoriesListing from "@/components/app/CategoriesListing";
 import { fetchCategories } from "@/services/threadService";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import useAuth from "@/hooks/useAuth";
+import useAuthRedirect from "@/hooks/UseAuthRedirect";
 
 export default function CategoriesPage() {
+  const { auth } = useAuth();
+  const isLoadingAuth = useAuthRedirect();
   const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,6 +30,10 @@ export default function CategoriesPage() {
   useEffect(() => {
     loadCategories();
   }, []);
+
+  if (auth.loading || isLoadingAuth) {
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
+  }
 
   return (
     <div className="flex flex-col gap-4">

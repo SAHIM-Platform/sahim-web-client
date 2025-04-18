@@ -8,13 +8,11 @@ import useAuthRedirect from '@/hooks/UseAuthRedirect';
 
 export default function Home() {
   const { auth } = useAuth();
+  const isLoading = useAuthRedirect();
 
-
-  if (auth.loading) {
-    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
+  if (auth.loading || isLoading) {
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
-
-  useAuthRedirect();
 
   return (
     <main className="bg-[url('/login-bg.jpg')] bg-no-repeat bg-fixed bg-cover bg-center min-h-screen overflow-x-hidden">

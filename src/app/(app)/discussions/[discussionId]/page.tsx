@@ -1,11 +1,21 @@
+"use client";
+
 import DiscussionPageContent from "@/components/app/pages/DiscussionPageContent";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import useAuthRedirect from "@/hooks/UseAuthRedirect";
+import { use } from "react";
 
 interface DiscussionPageProps {
-  params: Promise<{ discussionId?: string }>;
+  params: Promise<{ discussionId: string }>;
 }
 
-export default async function DiscussionPage({ params }: DiscussionPageProps) {
-  const { discussionId } = await params;
+export default function DiscussionPage({ params }: DiscussionPageProps) {
+  const { discussionId } = use(params);
+  const isLoading = useAuthRedirect();
+
+  if (isLoading) {
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
+  }
 
   if (!discussionId) {
     return (

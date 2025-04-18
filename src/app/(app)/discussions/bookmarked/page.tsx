@@ -10,6 +10,7 @@ import { RefreshCw } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { fetchBookmarkedThreads, deleteThread } from '@/services/threadService';
 import ThreadItem from '@/components/app/ThreadListing/ThreadItem';
+import useAuthRedirect from '@/hooks/UseAuthRedirect';
 
 const BookmarksPageContent = () => {
   const [bookmarkedThreads, setBookmarkedThreads] = useState<Thread[]>([]);
@@ -19,6 +20,11 @@ const BookmarksPageContent = () => {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isLoading = useAuthRedirect();
+
+  if (isLoading) {
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
+  }
 
   const fetchInitialBookmarks = async () => {
     setPage(1);
@@ -101,7 +107,7 @@ const BookmarksPageContent = () => {
   }, []);
 
   if (isInitialLoading) {
-    return <LoadingSpinner size="lg" color="primary" fullScreen />;
+    return <LoadingSpinner size="xl" color="primary" fullScreen />;
   }
 
   if (error) {

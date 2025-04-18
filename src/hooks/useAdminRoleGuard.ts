@@ -5,25 +5,23 @@ import { useRouter } from "next/navigation";
 import useAuthRedirect from "./UseAuthRedirect";
 import useAuth from "./useAuth";
 
-const useAdminRoleGuard = (): void => {
+const useAdminRoleGuard = (): boolean => {
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
   const { auth } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
   // If user is not authenticated, redirect to login page
   useAuthRedirect();
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (isMounted) {
-      if (!auth.user || !['ADMIN', 'SUPER_ADMIN'].includes(auth?.user?.role)) {
-        router.replace("/"); 
-      }
+    if (!auth.user || !['ADMIN', 'SUPER_ADMIN'].includes(auth?.user?.role)) {
+      router.replace("/");
+      return;
     }
-  }, [router, isMounted]);
+    setIsLoading(false);
+  }, [auth.user, router]);
+
+  return isLoading;
 };
 
 export default useAdminRoleGuard;

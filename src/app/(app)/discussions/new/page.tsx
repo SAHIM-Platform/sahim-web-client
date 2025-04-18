@@ -22,7 +22,7 @@ export default function NewDiscussionPage() {
   const router = useRouter();
   const axios = useAxios();
   const { auth } = useAuth();
-  useAuthRedirect();
+  const isLoading = useAuthRedirect();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
@@ -37,8 +37,8 @@ export default function NewDiscussionPage() {
   });
   const { isImageValid, isImageLoading } = useImageValidation(formData.thumbnail_url);
 
-  if (auth.loading) {
-    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
+  if (auth.loading || isLoading) {
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
   useEffect(() => {
@@ -132,7 +132,7 @@ export default function NewDiscussionPage() {
   const areAllRequiredFieldsFilled = formData.title && formData.category_id && formData.content;
 
   if (isLoadingCategories) {
-    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
   if (error && !isSubmitting) {
