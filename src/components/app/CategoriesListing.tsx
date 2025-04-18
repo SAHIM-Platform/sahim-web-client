@@ -37,7 +37,7 @@ function CategoriesListing({
 
   const handleSaveEdit = async (categoryId: number) => {
     if (!editValue.trim()) {
-      toast.error("Category name cannot be empty");
+      toast.error("لا يمكن أن يكون اسم الفئة فارغاً");
       return;
     }
 
@@ -46,12 +46,12 @@ function CategoriesListing({
       
       if (result.success) {
         await onCategoriesChange(); 
-        toast.success("Category updated successfully");
+        toast.success("تم تحديث الفئة بنجاح");
       } else {
-        toast.error(result.error?.message || "Failed to update category");
+        toast.error(result.error?.message || "فشل تحديث الفئة");
       }
     } catch (error) {
-      toast.error("An error occurred while updating the category");
+      toast.error("حدث خطأ أثناء تحديث الفئة");
     } finally {
       setEditingCategory(null);
     }
@@ -63,7 +63,7 @@ function CategoriesListing({
   };
 
   const handleDeleteClick = async (categoryId: number) => {
-    if (!window.confirm("Are you sure you want to delete this category?")) {
+    if (!window.confirm("هل أنت متأكد من أنك تريد حذف هذه الفئة؟")) {
       return;
     }
 
@@ -73,12 +73,12 @@ function CategoriesListing({
       
       if (result.success) {
         await onCategoriesChange();
-        toast.success("Category deleted successfully");
+        toast.success("تم حذف الفئة بنجاح");
       } else {
-        toast.error(result.error?.message || "Failed to delete category");
+        toast.error(result.error?.message || "فشل حذف الفئة");
       }
     } catch (error) {
-      toast.error("An error occurred while deleting the category");
+      toast.error("حدث خطأ أثناء حذف الفئة");
     } finally {
       setIsDeleting(null);
     }
