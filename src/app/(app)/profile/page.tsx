@@ -21,8 +21,7 @@ import Modal from '@/components/Modal/Modal';
 export default function ProfilePage() {
   const router = useRouter();
   const { auth, setAuth } = useAuth();
-
-  useAuthRedirect();
+  const isLoading = useAuthRedirect();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>('');
@@ -31,7 +30,7 @@ export default function ProfilePage() {
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState('');
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -58,15 +57,15 @@ export default function ProfilePage() {
         setError(ERROR_MESSAGES.profile.DEFAULT);
         toast.error(ERROR_MESSAGES.profile.DEFAULT);
       } finally {
-        setIsLoading(false);
+        setIsLoadingProfile(false);
       }
     };
 
     fetchProfile();
   }, []);
 
-  if (isLoading) {
-    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
+  if (auth.loading || isLoading || isLoadingProfile) {
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
   if (!profile) {

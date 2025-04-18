@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import useAuth from "./useAuth";
 import { UserRole } from "@/types/auth";
@@ -14,11 +14,15 @@ import { UserRole } from "@/types/auth";
  * - Redirects unauthenticated users from protected routes to login
  * - Redirects unapproved students to account-status page
  * - Allows access to account-status page only for unapproved students
+ * - Returns loading state to prevent content flash
+ * 
+ * @returns {boolean} isLoading - true while checking authentication and redirects
  */
-const useAuthRedirect = (): void => {
+const useAuthRedirect = (): boolean => {
   const router = useRouter();
   const pathName = usePathname();
   const { isAuthenticated, auth } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -28,17 +32,23 @@ const useAuthRedirect = (): void => {
 
       if (pathName === "/login" || pathName === "/signup") {
         router.push("/explore");
+        return;
       } else if (isStudent && !isApproved && !isAccountStatusPage) {
         router.push("/account-status");
+        return;
       }
     } else {
       if (pathName.startsWith("/explore") || 
           pathName.startsWith("/discussion") || 
           pathName === "/account-status") {
         router.push("/login");
+        return;
       }
     }
+    setIsLoading(false);
   }, [isAuthenticated, pathName, router, auth.user]);
+
+  return isLoading;
 };
 
 export default useAuthRedirect;

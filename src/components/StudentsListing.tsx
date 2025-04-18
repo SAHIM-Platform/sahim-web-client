@@ -209,7 +209,7 @@ const StudentsListing = () => {
         </div>
       ) : isLoading || isFiltering ? (
         <div className="min-h-[200px] flex items-center justify-center">
-          <LoadingSpinner size="lg" color="primary" />
+          <LoadingSpinner size="xl" color="primary" />
         </div>
       ) : students.length === 0 ? (
         <div className="text-center py-12">

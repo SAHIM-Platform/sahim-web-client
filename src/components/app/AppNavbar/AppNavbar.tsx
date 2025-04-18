@@ -2,7 +2,7 @@ import { Menu, MessageSquare } from "lucide-react";
 import Logo from "../../Logo";
 import Button from "../../Button";
 import UserDropdownMenu from "./UserDropdownMenu";
-import NotificationsBadge from "../Badge/NotificationsBadge";
+// import NotificationsBadge from "../Badge/NotificationsBadge";
 import SearchButton from "../SearchButton";
 import { routesData } from "@/data/routes";
 import Link from "next/link";
@@ -43,7 +43,7 @@ function AppNavbar({
         </div>
 
         <div className="flex items-center gap-4">
-          <NotificationsBadge />
+          {/* <NotificationsBadge /> */}
 
           <UserDropdownMenu />
 

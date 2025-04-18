@@ -33,7 +33,7 @@ export default function NewAdminPage() {
 
 
   if (auth.loading) {
-    return <LoadingSpinner size="lg" color="primary" fullScreen={true} />;
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
