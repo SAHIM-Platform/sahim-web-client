@@ -9,7 +9,7 @@ import Logo from './Logo';
 import Divider from './Divider';
 import Button from './Button';
 import Image from 'next/image';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ChevronLeft } from 'lucide-react';
 import Input from './Input';
 import Link from 'next/link';
 import { FormData } from '@/types';
@@ -66,9 +66,20 @@ const LoginForm = () => {
       const newValues = { ...prev, [id]: value };
       return newValues;
     });
-    if (touched[id] && errors[id]) {
-      const validationErrors = validateLoginForm({ ...values, [id]: value });
-      setErrors(validationErrors);
+
+    // Clear error for the changed field
+    if (errors[id]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[id];
+        return newErrors;
+      });
+    }
+
+    // Validate the field
+    const validationErrors = validateLoginForm({ ...values, [id]: value });
+    if (validationErrors[id]) {
+      setErrors(prev => ({ ...prev, [id]: validationErrors[id] }));
     }
   };
 
@@ -85,42 +96,36 @@ const LoginForm = () => {
     setFormError(null);
     setIsLoading(true);
 
-    const allTouched = formData.fields.reduce((acc, field) => ({
-      ...acc,
-      [field.id]: true
-    }), {});
-    setTouched(allTouched);
-
     const validationErrors = validateLoginForm(values);
-    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setIsLoading(false);
+      return;
+    }
 
-    if (Object.keys(validationErrors).length === 0) {
-      try {
-        console.log('Starting login submission...');
-        const result = await login({
-          email: values.email,
-          password: values.password
-        });
+    try {
+      console.log('Starting login submission...');
+      const result = await login({
+        email: values.email,
+        password: values.password
+      });
 
-        console.log('Login result:', result);
+      console.log('Login result:', result);
 
-        if (!result.success) {
-          console.log('Login failed:', result.error);
-          if (result.error?.fields) {
-            setErrors(result.error.fields.reduce<Record<string, string>>((acc, field) => ({
-              ...acc,
-              [field]: result.error?.message || ''
-            }), {}));
-          }
-          setFormError(result.error?.message || "حدث خطأ أثناء تسجيل الدخول");
+      if (!result.success) {
+        console.log('Login failed:', result.error);
+        if (result.error?.fields) {
+          setErrors(result.error.fields.reduce<Record<string, string>>((acc, field) => ({
+            ...acc,
+            [field]: result.error?.message || ''
+          }), {}));
         }
-      } catch (error) {
-        console.error("Login error:", error);
-        setFormError("حدث خطأ غير متوقع أثناء تسجيل الدخول");
-      } finally {
-        setIsLoading(false);
+        setFormError(result.error?.message || "حدث خطأ أثناء تسجيل الدخول");
       }
-    } else {
+    } catch (error) {
+      console.error("Login error:", error);
+      setFormError("حدث خطأ غير متوقع أثناء تسجيل الدخول");
+    } finally {
       setIsLoading(false);
     }
   };
@@ -190,8 +195,10 @@ const LoginForm = () => {
               <Button
                 type="submit"
                 isLoading={isLoading}
-                disabled={Object.keys(errors).length > 0}
+                disabled={isLoading || Object.keys(errors).length > 0}
                 fullWidth
+                icon={<ChevronLeft className="w-4 h-4" />}
+                iconPosition="end"
               >
                 {formData.submitButton.text}
               </Button>
