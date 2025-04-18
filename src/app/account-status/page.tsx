@@ -1,9 +1,21 @@
+"use client";
+
 import Button from "@/components/Button";
 import Logo from "@/components/Logo";
 import { ArrowLeft, Info, PartyPopper } from "lucide-react";
 import Link from "next/link";
+import useStudentGuard from "@/hooks/useStudentGuard";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function AccountStatusPage() {
+  const isLoading = useStudentGuard();
+
+  if (isLoading) {
+    return (
+      <LoadingSpinner size="xl" color="primary" fullScreen={true} />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white px-4 py-8 text-center flex flex-col items-center justify-center">
       <div className="flex items-center justify-center mb-auto">
