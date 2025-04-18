@@ -1,6 +1,6 @@
 import Modal from "./Modal";
 import Button from "../Button";
-import { Trash2 } from "lucide-react";
+import { Trash2, Check } from "lucide-react";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -10,7 +10,7 @@ interface ConfirmModalProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
-  confirmButtonVariant?: "primary" | "danger" | "secondary";
+  confirmButtonVariant?: "primary" | "danger" | "secondary" | "success";
   isLoading?: boolean;
 }
 
@@ -25,6 +25,28 @@ export default function ConfirmModal({
   confirmButtonVariant = "danger",
   isLoading = false,
 }: ConfirmModalProps) {
+  const getButtonIcon = () => {
+    switch (confirmButtonVariant) {
+      case "danger":
+        return <Trash2 className="w-4 h-4" />;
+      case "success":
+        return <Check className="w-4 h-4" />;
+      default:
+        return null;
+    }
+  };
+
+  const getButtonClassName = () => {
+    switch (confirmButtonVariant) {
+      case "danger":
+        return "bg-red-600 hover:bg-red-700 hover:shadow-none";
+      case "success":
+        return "";
+      default:
+        return "";
+    }
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -44,8 +66,8 @@ export default function ConfirmModal({
             {cancelText}
           </Button>
           <Button
-            className="bg-red-600 hover:bg-red-700 hover:shadow-none"
-            icon={<Trash2 className="w-4 h-4" />}
+            className={getButtonClassName()}
+            icon={getButtonIcon()}
             onClick={onConfirm}
             isLoading={isLoading}
             loadingText="جاري التنفيذ..."

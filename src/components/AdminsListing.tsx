@@ -177,6 +177,7 @@ export default function AdminsListing() {
                 admin={admin}
                 onDelete={() => handleDeleteAdmin(admin.id)}
                 isDeleting={isDeleting}
+                isProcessing={isDeleting}
               />
             ))}
         </div>
