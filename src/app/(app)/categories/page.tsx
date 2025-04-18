@@ -6,6 +6,8 @@ import { fetchCategories } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import useAuth from "@/hooks/useAuth";
 import useAuthRedirect from "@/hooks/UseAuthRedirect";
+import Button from "@/components/Button";
+import { PlusCircle } from "lucide-react";
 
 export default function CategoriesPage() {
   const { auth } = useAuth();
@@ -35,18 +37,33 @@ export default function CategoriesPage() {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
+  const isSuperAdmin = auth.user?.role === 'SUPER_ADMIN';
+
   return (
     <div className="flex flex-col gap-4">
-      <div>
-        <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold">
-          جميع التصنيفات
-        </h1>
-        <p className="mt-2 text-xs sm:text-sm lg:text-base text-gray-500">
-          تصفّح جميع تصنيفات المناقشات المتاحة
-        </p>
+
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold">جميع المناقشات</h1>
+          <p className="mt-2 text-xs sm:text-sm lg:text-base text-gray-500">
+            تصفح جميع المناقشات المطروحة
+          </p>
+        </div>
+        {isSuperAdmin && (
+          <Button
+            href="admin/categories/new"
+            variant="primary"
+            size="sm"
+            icon={<PlusCircle className="w-5 h-5" />}
+            className="shadow-sm"
+          >
+            أضف تصنيف
+          </Button>
+        )}
       </div>
-      <CategoriesListing 
-        allowManagement 
+
+      <CategoriesListing
+        allowManagement
         categories={categories}
         isLoading={isLoading}
         onCategoriesChange={loadCategories}

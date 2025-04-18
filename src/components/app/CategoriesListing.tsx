@@ -8,6 +8,7 @@ import Button from "../Button";
 import Input from "../Input";
 import { updateCategory, deleteCategory } from "@/services/admin/categoryService";
 import { toast } from "react-hot-toast";
+import ConfirmModal from "../Modal/ConfirmModal";
 
 interface CategoriesListingProps {
   allowManagement?: boolean;
@@ -26,6 +27,8 @@ function CategoriesListing({
   const [editingCategory, setEditingCategory] = useState<number | null>(null);
   const [editValue, setEditValue] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState<number | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<number | null>(null);
 
   const isSuperAdmin = auth.user?.role === 'SUPER_ADMIN';
   const showManagementIcons = allowManagement && isSuperAdmin;
@@ -62,14 +65,17 @@ function CategoriesListing({
     setEditValue("");
   };
 
-  const handleDeleteClick = async (categoryId: number) => {
-    if (!window.confirm("Are you sure you want to delete this category?")) {
-      return;
-    }
+  const handleDeleteClick = (categoryId: number) => {
+    setCategoryToDelete(categoryId);
+    setDeleteModalOpen(true);
+  };
 
-    setIsDeleting(categoryId);
+  const handleConfirmDelete = async () => {
+    if (!categoryToDelete) return;
+
+    setIsDeleting(categoryToDelete);
     try {
-      const result = await deleteCategory(categoryId);
+      const result = await deleteCategory(categoryToDelete);
       
       if (result.success) {
         await onCategoriesChange();
@@ -81,11 +87,13 @@ function CategoriesListing({
       toast.error("An error occurred while deleting the category");
     } finally {
       setIsDeleting(null);
+      setCategoryToDelete(null);
+      setDeleteModalOpen(false);
     }
   };
 
   return (
-    <div className="space-y-1">
+    <div className="flex flex-col">
       {isLoading ? (
         <div className="flex justify-center py-4">
           <LoadingSpinner size="sm" color="primary" />
@@ -150,6 +158,18 @@ function CategoriesListing({
           </div>
         ))
       )}
+
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="حذف التصنيف"
+        message="هل أنت متأكد من رغبتك في حذف هذا التصنيف؟"
+        confirmText="حذف"
+        cancelText="إلغاء"
+        confirmButtonVariant="danger"
+        isLoading={isDeleting !== null}
+      />
     </div>
   );
 }
