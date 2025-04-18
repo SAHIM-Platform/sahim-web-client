@@ -45,6 +45,7 @@ export interface AuthState {
     username: string;
     role: UserRole;
     photoPath: string;
+    approvalStatus?: ApprovalStatus;
   };
   loading: boolean;
 }
@@ -68,6 +69,7 @@ export interface AuthResponse {
     username: string;
     role: UserRole;
     photoPath: string;
+    approvalStatus?: ApprovalStatus;
   };
 }
 

@@ -28,7 +28,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         setAuth({
           accessToken,
-          user: { ...user },
+          user: {
+            ...user,
+            approvalStatus: user.role === 'STUDENT' ? user.approvalStatus : undefined
+          },
           loading: false
         });
       } catch (error) {
@@ -52,7 +55,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           name: auth.user.name,
           username: auth.user.username,
           role: auth.user.role,
-          photoPath: auth.user.photoPath
+          photoPath: auth.user.photoPath,
+          approvalStatus: auth.user.approvalStatus
         } : 'none'
       });
     }

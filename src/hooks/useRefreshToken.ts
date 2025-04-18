@@ -15,9 +15,18 @@ const useRefreshToken = () => {
       setAuth({
         accessToken,
         user: {
-          ...user
+          ...user,
+          approvalStatus: user.role === 'STUDENT' ? user.approvalStatus : undefined
         },
         loading: false,
+      });
+
+      console.log('Refresh token successful:', {
+        accessToken: !!accessToken,
+        user: {
+          ...user,
+          approvalStatus: user.role === 'STUDENT' ? user.approvalStatus : undefined
+        }
       });
 
       return { accessToken, user };

@@ -35,11 +35,17 @@ const useAuth = () => {
             username: authData.data.user.username,
             role: authData.data.user.role as UserRole,
             photoPath: authData.data.user.photoPath,
+            approvalStatus: authData.data.user.role === 'STUDENT' ? authData.data.user.approvalStatus : undefined
           },
           loading: false,
         });
 
-        router.push('/explore');
+        // Redirect based on role and approval status
+        if (authData.data.user.role === 'STUDENT' && authData.data.user.approvalStatus !== 'APPROVED') {
+          router.push('/account-status');
+        } else {
+          router.push('/explore');
+        }
         return authData;
       }
 
@@ -72,10 +78,17 @@ const useAuth = () => {
             username: authData.data.user.username,
             role: authData.data.user.role as UserRole,
             photoPath: authData.data.user.photoPath,
+            approvalStatus: authData.data.user.role === 'STUDENT' ? authData.data.user.approvalStatus : undefined
           },
           loading: false,
         });
-        router.push('/explore');
+
+        // Redirect based on role and approval status
+        if (authData.data.user.role === 'STUDENT' && authData.data.user.approvalStatus !== 'APPROVED') {
+          router.push('/account-status');
+        } else {
+          router.push('/explore');
+        }
 
         return authData;
       }
