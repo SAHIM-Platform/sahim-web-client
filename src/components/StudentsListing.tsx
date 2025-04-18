@@ -12,17 +12,9 @@ import UsersBadge from "./app/Badge/UsersBadge";
 import UserCardItem from "./app/UserCardItem";
 import { ArrowUpDown, RefreshCw } from "lucide-react";
 import { Student, ApprovalStatus } from "@/types";
-import { fetchStudents, searchStudents } from "@/services/admin/studentService";
+import { fetchStudents, searchStudents, approveStudent, rejectStudent } from "@/services/admin/studentService";
 
-interface StudentsListingProps {
-  onApprove: (id: string) => void;
-  onReject: (id: string) => void;
-}
-
-const StudentsListing = ({
-  onApprove,
-  onReject,
-}: StudentsListingProps) => {
+const StudentsListing = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
@@ -30,6 +22,7 @@ const StudentsListing = ({
   const [selectedStatus, setSelectedStatus] = useState<ApprovalStatus | null>(null);
   const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
   const [isFiltering, setIsFiltering] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const loadStudents = async (filters?: { status?: ApprovalStatus; query?: string }) => {
     try {
@@ -66,6 +59,52 @@ const StudentsListing = ({
     } finally {
       setIsLoading(false);
       setIsFiltering(false);
+    }
+  };
+
+  const handleApprove = async (studentId: number) => {
+    try {
+      setIsProcessing(true);
+      const result = await approveStudent(studentId);
+      
+      if (result.success) {
+        toast.success(result.message || 'تمت الموافقة على الطالب بنجاح');
+        await loadStudents({
+          status: selectedStatus || undefined,
+          query: searchQuery || undefined
+        });
+      } else if (result.error) {
+        toast.error(result.error.message);
+      }
+    } catch (error) {
+      console.error('Approve error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'حدث خطأ أثناء الموافقة على الطالب';
+      toast.error(errorMessage);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleReject = async (studentId: number) => {
+    try {
+      setIsProcessing(true);
+      const result = await rejectStudent(studentId);
+      
+      if (result.success) {
+        toast.success(result.message || 'تم رفض الطالب بنجاح');
+        await loadStudents({
+          status: selectedStatus || undefined,
+          query: searchQuery || undefined
+        });
+      } else if (result.error) {
+        toast.error(result.error.message);
+      }
+    } catch (error) {
+      console.error('Reject error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'حدث خطأ أثناء رفض الطالب';
+      toast.error(errorMessage);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -191,9 +230,10 @@ const StudentsListing = ({
             .map((student) => (
               <UserCardItem
                 key={student.id}
-                onApprove={onApprove}
-                onReject={onReject}
                 student={student}
+                onApprove={() => handleApprove(Number(student.id))}
+                onReject={() => handleReject(Number(student.id))}
+                isProcessing={isProcessing}
               />
             ))}
         </div>

@@ -141,4 +141,105 @@ export const searchStudents = async (filters: SearchFilters): Promise<Student[]>
     });
     throw error;
   }
+};
+
+export interface StudentActionResult {
+  success: boolean;
+  message?: string;
+  error?: {
+    message: string;
+    code: string;
+  };
+}
+
+export const approveStudent = async (studentId: number): Promise<StudentActionResult> => {
+  try {
+    const response = await axiosInstance.patch(`/admins/students/${studentId}/approve`);
+    
+    if (response.status === 200) {
+      return { 
+        success: true,
+        message: response.data.message || 'Student approved successfully'
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.student.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  } catch (error) {
+    console.error('Error approving student:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      
+      if (axiosError.response?.data) {
+        const errorData = axiosError.response.data as APIError;
+        return {
+          success: false,
+          error: {
+            message: errorData.message || ERROR_MESSAGES.student.VALIDATION_ERROR,
+            code: errorData.error || 'VALIDATION_ERROR'
+          }
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.student.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  }
+};
+
+export const rejectStudent = async (studentId: number): Promise<StudentActionResult> => {
+  try {
+    const response = await axiosInstance.patch(`/admins/students/${studentId}/reject`);
+    
+    if (response.status === 200) {
+      return { 
+        success: true,
+        message: response.data.message || 'Student rejected successfully'
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.student.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  } catch (error) {
+    console.error('Error rejecting student:', error);
+
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      
+      if (axiosError.response?.data) {
+        const errorData = axiosError.response.data as APIError;
+        return {
+          success: false,
+          error: {
+            message: errorData.message || ERROR_MESSAGES.student.VALIDATION_ERROR,
+            code: errorData.error || 'VALIDATION_ERROR'
+          }
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.student.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  }
 }; 
