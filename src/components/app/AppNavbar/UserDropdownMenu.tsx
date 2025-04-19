@@ -1,4 +1,4 @@
-import { ChevronDown, User, Settings, LogOut } from "lucide-react";
+import { ChevronDown, User, LogOut } from "lucide-react";
 import UserInfo from "../UserInfo";
 import useLogout from "@/hooks/useLogout";
 import { useState, useRef, useEffect } from "react";
