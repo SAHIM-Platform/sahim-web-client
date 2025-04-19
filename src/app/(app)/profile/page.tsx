@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 import useAuthRedirect from '@/hooks/UseAuthRedirect';
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 import Divider from '@/components/Divider';
-import { Edit2, Save, X, Trash2, User, Mail, Hash, Shield, Building2, GraduationCap } from 'lucide-react';
+import { Edit2, Save, X, Trash2, Mail, Hash, Shield, Building2, GraduationCap } from 'lucide-react';
 import { Profile, userRoleLabels, UserRole } from '@/types';
 import UserPhoto from '@/components/UserPhoto';
 import { userService } from '@/services/userService';
@@ -53,7 +53,7 @@ export default function ProfilePage() {
           setError(result.error?.message || ERROR_MESSAGES.profile.DEFAULT);
           toast.error(result.error?.message || ERROR_MESSAGES.profile.DEFAULT);
         }
-      } catch (err) {
+      } catch {
         setError(ERROR_MESSAGES.profile.DEFAULT);
         toast.error(ERROR_MESSAGES.profile.DEFAULT);
       } finally {
@@ -153,7 +153,15 @@ export default function ProfilePage() {
 
   const isFormValid = formData.name.trim() !== '' && formData.username.trim() !== '';
 
-  const ReadOnlyField = ({ label, value, icon: Icon }: { label: string; value: string | number; icon: any }) => (
+  const ReadOnlyField = ({ 
+    label, 
+    value, 
+    icon: Icon 
+  }: { 
+    label: string; 
+    value: string | number; 
+    icon: React.ComponentType<{ className?: string }> 
+  }) => (
     <div className="flex items-center gap-4">
       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
         <Icon className="w-5 h-5 text-primary" />
