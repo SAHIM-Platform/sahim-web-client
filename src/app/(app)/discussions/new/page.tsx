@@ -150,7 +150,7 @@ export default function NewDiscussionPage() {
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">إنشاء مناقشة جديدة</h1>
+        <h1 className="text-2xl font-bold text-gray-900">ابدأ مناقشة</h1>
         <p className="mt-2 text-sm text-gray-600">
           شارك أفكارك وابدأ مناقشة جديدة مع المجتمع
         </p>
