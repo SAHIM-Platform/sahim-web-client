@@ -20,7 +20,7 @@ import validateThreadForm from "@/utils/api/thread/validateThreadForm";
 
 export default function NewDiscussionPage() {
   const router = useRouter();
-  const axios = useAxios();
+  useAxios(); // Keep for side effects
   const { auth } = useAuth();
   const isLoading = useAuthRedirect();
   
@@ -37,10 +37,6 @@ export default function NewDiscussionPage() {
   });
   const { isImageValid, isImageLoading } = useImageValidation(formData.thumbnail_url);
 
-  if (auth.loading || isLoading) {
-    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
-  }
-
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -51,7 +47,7 @@ export default function NewDiscussionPage() {
           setError(ERROR_MESSAGES.thread.DEFAULT);
           setCategories([]);
         }
-      } catch (error) {
+      } catch (err) {
         setError(ERROR_MESSAGES.thread.DEFAULT);
         setCategories([]);
       } finally {
@@ -117,9 +113,10 @@ export default function NewDiscussionPage() {
       } else {
         setError(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
       }
-    } catch (error: any) {
-      console.error("Error creating thread:", error);
-      setError(error.message || ERROR_MESSAGES.thread.DEFAULT);
+    } catch (err: unknown) {
+      console.error("Error creating thread:", err);
+      const errorMessage = err instanceof Error ? err.message : ERROR_MESSAGES.thread.DEFAULT;
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -131,7 +128,7 @@ export default function NewDiscussionPage() {
 
   const areAllRequiredFieldsFilled = formData.title && formData.category_id && formData.content;
 
-  if (isLoadingCategories) {
+  if (auth.loading || isLoading || isLoadingCategories) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
