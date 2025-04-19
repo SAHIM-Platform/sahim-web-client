@@ -3,11 +3,13 @@
 import { logoutService } from "@/services/auth/logoutService";
 import useAuth from "./useAuth";
 import { useRouter } from "next/navigation";
+import useAxios from "./useAxios";
 import { useState } from "react";
 import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 
 const useLogout = () => {
   const { setAuth } = useAuth();
+  useAxios();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
