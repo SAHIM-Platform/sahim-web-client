@@ -87,7 +87,7 @@ function SearchButton({
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage((prev) => prev + 1);
       }
-    } catch (err) {
+    } catch {
       toast.error("حدث خطأ أثناء تحميل المزيد من النتائج");
     } finally {
       setIsFetchingMore(false);
