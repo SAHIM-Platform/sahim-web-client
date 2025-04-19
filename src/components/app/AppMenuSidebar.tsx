@@ -1,45 +1,18 @@
 "use client";
 
 import { cn } from "@/utils/utils";
-import {
-  Book,
-  Bookmark,
-  HelpCircle,
-  Home,
-  MessageSquare,
-  X,
-} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { routesData } from "@/data/routes";
-
-const appMenuSidebarData = [
-  {
-    name: routesData[0].name,
-    href: routesData[0].path,
-    icon: Home,
-  },
-  {
-    name: routesData[1].name,
-    href: routesData[1].path,
-    icon: MessageSquare,
-  },
-  {
-    name: routesData[2].name,
-    href: routesData[2].path,
-    icon: Bookmark,
-  },
-  {
-    name: routesData[3].name,
-    href: routesData[3].path,
-    icon: Book,
-  },
-  {
-    name: routesData[4].name,
-    href: routesData[4].path,
-    icon: HelpCircle,
-  },
-];
+import useAuth from "@/hooks/useAuth";
+import {
+  Tags,
+  UserCheck,
+  SquarePlus,
+  UserCog,
+  UserPlus,
+  X,
+} from "lucide-react";
+import { UserRole } from "@/types/auth";
 
 interface AppMenuSidebarProps {
   isOpen: boolean;
@@ -48,6 +21,51 @@ interface AppMenuSidebarProps {
 
 function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
   const pathname = usePathname();
+
+  const { auth } = useAuth();
+  const isAdmin = auth?.user?.role === UserRole.ADMIN;
+  const isSuperAdmin = auth?.user?.role === UserRole.SUPER_ADMIN;
+
+  const sidebarLinks = [
+    // Visible to All Users
+    {
+      label: "التصنيفات",
+      href: "/categories",
+      icon: <Tags />,
+    },
+
+    // Visible to Admins and Super Admins
+    ...(isAdmin || isSuperAdmin
+      ? [
+          {
+            label: "الطلاب",
+            href: "/admin/students",
+            icon: <UserCheck />,
+          },
+          {
+            label: "أضف تصنيف",
+            href: "/admin/categories/new",
+            icon: <SquarePlus />,
+          },
+        ]
+      : []),
+
+    // Visible to Super Admin Only
+    ...(isSuperAdmin
+      ? [
+          {
+            label: "المشرفين",
+            href: "/admin/admins",
+            icon: <UserCog />,
+          },
+          {
+            label: "إنشاء مُشرف",
+            href: "/admin/new",
+            icon: <UserPlus />,
+          },
+        ]
+      : []),
+  ];
 
   return (
     <>
@@ -71,9 +89,9 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
         </div>
 
         <div className="h-full overflow-y-auto pt-24 pb-12 px-4 space-y-3">
-          {appMenuSidebarData.map((item) => (
+          {sidebarLinks.map((item) => (
             <Link
-              key={item.name}
+              key={item.href}
               href={item.href}
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors",
@@ -82,8 +100,8 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
                   : "text-gray-600 hover:bg-gray-100"
               )}
             >
-              <item.icon className="w-5 h-5" />
-              {item.name}
+              <span className="w-5 h-5">{item.icon}</span>
+              {item.label}
             </Link>
           ))}
         </div>
@@ -91,9 +109,9 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
 
       <aside className="fixed top-14 right-0 w-[280px] h-[calc(100vh-3.5rem)] hidden lg:block border-l overflow-y-auto bg-[#fafafa]">
         <div className="h-full overflow-y-auto pt-24 pb-12 px-4 space-y-3">
-          {appMenuSidebarData.map((item) => (
+          {sidebarLinks.map((item) => (
             <Link
-              key={item.name}
+              key={item.href}
               href={item.href}
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors",
@@ -102,8 +120,8 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
                   : "text-gray-600 hover:bg-gray-100"
               )}
             >
-              <item.icon className="w-5 h-5" />
-              {item.name}
+              <span className="w-5 h-5">{item.icon}</span>
+              {item.label}
             </Link>
           ))}
         </div>
