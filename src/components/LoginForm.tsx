@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import validateLoginForm from '@/utils/api/login/validateLoginForm';
 import ErrorAlert from './Form/ErrorAlert';
@@ -44,7 +43,6 @@ const formData: FormData = {
 
 const LoginForm = () => {
   const { login } = useAuth();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -59,7 +57,7 @@ const LoginForm = () => {
       [field.id]: ''
     }), {});
     setValues(initialValues);
-  }, [formData.fields]);
+  }, []);
 
   const handleChange = (id: string, value: string) => {
     setValues(prev => {
