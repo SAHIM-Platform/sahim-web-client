@@ -16,7 +16,7 @@ const useRefreshToken = () => {
         accessToken,
         user: {
           ...user,
-          approvalStatus: user.role === 'STUDENT' ? user.approvalStatus : undefined
+          approvalStatus: user.role === UserRole.STUDENT ? user.approvalStatus : undefined
         },
         loading: false,
       });
