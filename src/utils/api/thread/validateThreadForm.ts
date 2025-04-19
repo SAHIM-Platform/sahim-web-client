@@ -34,7 +34,7 @@ const validateThreadForm = (
       if (!['http:', 'https:'].includes(url.protocol)) {
         errors.thumbnail_url = "يجب أن يكون الرابط صالحاً (http أو https)";
       }
-    } catch (e) {
+    } catch {
       errors.thumbnail_url = "يجب أن يكون الرابط صالحاً";
     }
   }
