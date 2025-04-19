@@ -345,8 +345,9 @@ export default function ProfilePage() {
 
 
       {profile.role !== UserRole.SUPER_ADMIN && (
+        <>
+        <Divider label="" />
         <div className="space-y-6 bg-red-50/50 border-2 border-red-200/60 rounded-xl p-8">
-          <Divider label="" />
           <div className="space-y-2">
             <h1 className="text-2xl font-bold text-gray-900">حذف الحساب</h1>
             <p className="text-gray-500">لا يمكنك استرجاع حسابك لاحقاً.</p>
@@ -364,6 +365,7 @@ export default function ProfilePage() {
             حذف الحساب
           </Button>
         </div>
+        </>
       )}
 
       <Modal

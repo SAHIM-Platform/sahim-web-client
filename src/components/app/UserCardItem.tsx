@@ -165,6 +165,7 @@ const UserCardItem = ({
   // Render admin card
   if (admin) {
     return (
+      <>
       <div className="bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200 p-6 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
         <div className="flex flex-col gap-4 text-sm text-gray-700">
           <div className="flex flex-col gap-1">
@@ -190,17 +191,18 @@ const UserCardItem = ({
             {isDeleting ? "جاري الحذف..." : "حذف"}
           </Button>
         </div>
-        <ConfirmModal
-              isOpen={isDeleteModalOpen}
-              onClose={() => setIsDeleteModalOpen(false)}
-              onConfirm={handleDeleteConfirm}
-              title="حذف مشرف"
-              message="هل أنت متأكد من حذف المشرف؟"
-              confirmText="حذف"
-              confirmButtonVariant="danger"
-              isLoading={isDeleting}
-            />
       </div>
+      <ConfirmModal
+      isOpen={isDeleteModalOpen}
+      onClose={() => setIsDeleteModalOpen(false)}
+      onConfirm={handleDeleteConfirm}
+      title="حذف مشرف"
+      message="هل أنت متأكد من حذف المشرف؟"
+      confirmText="حذف"
+      confirmButtonVariant="danger"
+      isLoading={isDeleting}
+    />
+    </>
     );
   }
 
