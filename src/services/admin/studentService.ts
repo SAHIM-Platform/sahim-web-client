@@ -1,6 +1,5 @@
 import axiosInstance from '@/api/axios';
 import { Student, ApprovalStatus, APIError, ValidationErrorResponse } from '@/types';
-import { Department } from '@/types';
 import { AxiosError, isAxiosError } from 'axios';
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 
