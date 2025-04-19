@@ -14,13 +14,11 @@ import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 
 interface ThreadListingProps {
   onReply?: (threadId: number) => void;
-  onShare?: (threadId: number) => void;
   emptyMessage?: string;
 }
 
 const ThreadListing = ({
   onReply,
-  onShare,
   emptyMessage = "لا توجد مناقشات حالياً"
 }: ThreadListingProps) => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -89,7 +87,7 @@ const ThreadListing = ({
       } else {
         toast.error(result.error?.message || 'حدث خطأ أثناء تحميل المزيد من المناقشات');
       }
-    } catch (err) {
+    } catch {
       toast.error("حدث خطأ أثناء تحميل المزيد من المناقشات");
     } finally {
       setIsFetchingMore(false);
@@ -99,7 +97,7 @@ const ThreadListing = ({
   // Initial load
   useEffect(() => {
     fetchThreadsData(true);
-  }, []);
+  }, [fetchThreadsData]);
 
   // Filter/sort updates
   useEffect(() => {
@@ -122,7 +120,7 @@ const ThreadListing = ({
       } else {
         toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
       }
-    } catch (err) {
+    } catch {
       toast.error('حدث خطأ أثناء حذف المناقشة');
     }
   };
@@ -191,7 +189,6 @@ const ThreadListing = ({
                     key={thread.thread_id}
                     {...thread}
                     onReply={() => onReply?.(thread.thread_id)}
-                    onShare={() => onShare?.(thread.thread_id)}
                     onDelete={() => handleDeleteThread(thread.thread_id)}
                   />
                 ))}

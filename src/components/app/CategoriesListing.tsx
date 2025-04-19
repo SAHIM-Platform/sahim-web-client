@@ -53,7 +53,7 @@ function CategoriesListing({
       } else {
         toast.error(result.error?.message || "فشل في تحديث التصنيف");
       }
-    } catch (error) {
+    } catch {
       toast.error("حدث خطأ أثناء تحديث التصنيف");
     } finally {
       setEditingCategory(null);
@@ -83,7 +83,7 @@ function CategoriesListing({
       } else {
         toast.error(result.error?.message || "فشل في حذف التصنيف");
       }
-    } catch (error) {
+    } catch {
       toast.error("حدث خطأ أثناء حذف التصنيف");
     } finally {
       setIsDeleting(null);

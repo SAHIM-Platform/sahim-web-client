@@ -2,6 +2,7 @@ import axiosInstance from '@/api/axios';
 import { AxiosError, isAxiosError } from 'axios';
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
+import { Profile } from '@/types';
 
 export interface UpdateProfileData {
   name?: string;
@@ -17,7 +18,7 @@ export interface UserServiceResult {
   success: boolean;
   data?: {
     message: string;
-    user?: any;
+    user?: Profile;
   };
   error?: {
     message: string;

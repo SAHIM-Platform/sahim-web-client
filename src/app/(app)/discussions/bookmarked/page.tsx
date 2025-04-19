@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Thread } from '@/types/thread';
 import toast from 'react-hot-toast';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
@@ -22,11 +22,7 @@ const BookmarksPageContent = () => {
   const [error, setError] = useState<string | null>(null);
   const isLoading = useAuthRedirect();
 
-  if (isLoading) {
-    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
-  }
-
-  const fetchInitialBookmarks = async () => {
+  const fetchInitialBookmarks = useCallback(async () => {
     setPage(1);
     setHasMore(true);
     setIsInitialLoading(true);
@@ -51,7 +47,7 @@ const BookmarksPageContent = () => {
     } finally {
       setIsInitialLoading(false);
     }
-  };
+  }, [limit]);
 
   const fetchMoreBookmarks = async () => {
     if (isFetchingMore || !hasMore) return;
@@ -101,8 +97,14 @@ const BookmarksPageContent = () => {
   };
 
   useEffect(() => {
-    fetchInitialBookmarks();
-  }, []);
+    if (!isLoading) {
+      fetchInitialBookmarks();
+    }
+  }, [isLoading, fetchInitialBookmarks]);
+
+  if (isLoading) {
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
+  }
 
   if (isInitialLoading) {
     return <LoadingSpinner size="xl" color="primary" fullScreen />;

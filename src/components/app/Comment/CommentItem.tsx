@@ -135,7 +135,7 @@ function CommentItem({
       if (onDelete) {
         await onDelete();
       }
-    } catch (error) {
+    } catch {
       toast.error(ERROR_MESSAGES.comment.DELETE_FAILED);
     } finally {
       setIsDeleting(false);
@@ -150,7 +150,7 @@ function CommentItem({
         await onEdit(editedContent);
         setIsEditing(false);
       }
-    } catch (error) {
+    } catch {
       toast.error(ERROR_MESSAGES.comment.UPDATE_FAILED);
     } finally {
       setIsSubmitting(false);
@@ -234,7 +234,6 @@ function CommentItem({
           <div className="mt-4 text-xs text-gray-600 leading-relaxed">
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
-              children={content}
               components={{
                 a: ({ href, children }) => (
                   <a
@@ -276,7 +275,9 @@ function CommentItem({
                   </div>
                 ),
               }}
-            />
+            >
+              {content}
+            </ReactMarkdown>
           </div>
         )}
 

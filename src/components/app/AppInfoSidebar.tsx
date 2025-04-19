@@ -1,6 +1,6 @@
 "use client";
 
-import { Hash, X } from "lucide-react";
+import { X } from "lucide-react";
 import Divider from "../Divider";
 import ThreadItemMinimal from "./ThreadListing/ThreadItemMinimal";
 import { Fragment, useState, useEffect } from "react";

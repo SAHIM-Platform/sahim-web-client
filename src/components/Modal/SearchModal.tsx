@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import Modal from "./Modal";
-import { Fragment, RefObject, useState } from "react";
+import { Fragment, RefObject } from "react";
 import SearchField from "../app/SearchField";
 import Loader from "../Loader";
 import ThreadItemMinimal from "../app/ThreadListing/ThreadItemMinimal";

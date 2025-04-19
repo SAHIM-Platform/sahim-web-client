@@ -5,7 +5,7 @@ interface SearchFieldProps {
   error?: string | null;
 }
 
-export default function SearchField({ searchQuery, setSearchQuery, onSearch, error }: SearchFieldProps) {
+export default function SearchField({ searchQuery, onSearch, error }: SearchFieldProps) {
   return (
     <div className="relative flex-1">
       <input

@@ -5,7 +5,6 @@ import { ArrowUpDown, MessageSquare } from "lucide-react";
 import { Thread } from "@/types/thread";
 import Select from "@/components/Select";
 import { useEffect, useState } from "react";
-import { CategoryBadgeProps } from "../Badge/CategoryBadge";
 import { fetchCategories } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 

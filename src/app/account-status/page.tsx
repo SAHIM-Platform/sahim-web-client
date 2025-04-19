@@ -15,7 +15,7 @@ import useLogout from "@/hooks/useLogout";
 export default function AccountStatusPage() {
   const isLoading = useStudentGuard();
   const { auth } = useAuth();
-  const { logout, error: logoutError, isLoading: isLoggingOut } = useLogout();
+  const { logout, isLoading: isLoggingOut } = useLogout();
   const router = useRouter();
 
   if (isLoading) {
@@ -26,7 +26,6 @@ export default function AccountStatusPage() {
 
   const isApproved = auth.user?.approvalStatus === ApprovalStatus.APPROVED;
   const isPending = auth.user?.approvalStatus === ApprovalStatus.PENDING;
-  const isRejected = auth.user?.approvalStatus === ApprovalStatus.REJECTED;
 
   const handleRefresh = () => {
     router.refresh();

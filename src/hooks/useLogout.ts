@@ -9,7 +9,7 @@ import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 
 const useLogout = () => {
   const { setAuth } = useAuth();
-  const axiosPrivate = useAxios();
+  useAxios();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +19,7 @@ const useLogout = () => {
     setIsLoading(true);
 
     try {
-      const response = await logoutService(axiosPrivate);
+      const response = await logoutService();
 
       if (!response.success) {
         setError(response.error?.message || ERROR_MESSAGES.logout.DEFAULT);
