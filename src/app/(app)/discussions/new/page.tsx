@@ -47,7 +47,7 @@ export default function NewDiscussionPage() {
           setError(ERROR_MESSAGES.thread.DEFAULT);
           setCategories([]);
         }
-      } catch (err) {
+      } catch {
         setError(ERROR_MESSAGES.thread.DEFAULT);
         setCategories([]);
       } finally {
