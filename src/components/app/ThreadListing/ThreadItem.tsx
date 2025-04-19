@@ -9,7 +9,6 @@ import Excerpt from "@/components/Excerpt";
 import Button from "@/components/Button";
 import { ArrowUp, ArrowDown, MessageSquare, Share2, Loader2, Ellipsis, Edit, Trash2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
-import { CommentItemProps } from "../Comment/CommentItem";
 import BookmarkToggle from "@/components/BookmarkToggle";
 import { voteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
@@ -25,7 +24,6 @@ export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
   onUpvote?: () => void;
   onDownvote?: () => void;
   onReply?: () => void;
-  onShare?: () => void;
   onEdit?: (updatedThread: Thread) => void;
   onDelete?: () => void;
   className?: string;
@@ -49,7 +47,6 @@ const ThreadItem = ({
   onUpvote,
   onDownvote,
   onReply,
-  onShare,
   onEdit,
   onDelete,
   className,
@@ -213,7 +210,7 @@ const ThreadItem = ({
       setIsDeleting(true);
       onDelete?.();
       toast.success('تم حذف المناقشة بنجاح');
-    } catch (error) {
+    } catch {
       toast.error('فشل في حذف المناقشة');
     } finally {
       setIsDeleting(false);
@@ -290,7 +287,6 @@ const ThreadItem = ({
                 <div className="text-xs sm:text-sm text-gray-600 leading-[2] sm:leading-[2] ">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
-                    children={content}
                     components={{
                       a: ({ href, children }) => (
                         <a
@@ -332,7 +328,9 @@ const ThreadItem = ({
                         </div>
                       ),
                     }}
-                  />
+                  >
+                    {content}
+                  </ReactMarkdown>
                 </div>
               ) : (
                 <Excerpt content={content} className="text-gray-600" />
