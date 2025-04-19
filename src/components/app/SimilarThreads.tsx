@@ -13,7 +13,6 @@ interface SimilarThreadsProps {
 
 function SimilarThreads({ 
   threads, 
-  threadPageId, 
   lastElementRef,
   isLoading = false 
 }: SimilarThreadsProps) {
