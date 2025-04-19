@@ -40,7 +40,7 @@ const BookmarkToggle: React.FC<BookmarkToggleProps> = ({
           toast.error("فشل في إضافة الموضوع إلى المحفوظات");
         }
       }
-    } catch (err) {
+    } catch {
       toast.error("حدث خطأ أثناء تحديث المحفوظات");
     } finally {
       setLoading(false);
