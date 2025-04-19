@@ -8,7 +8,7 @@ import Logo from "./Logo";
 import Divider from "./Divider";
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, EyeOff, Mail, Lock, User, GraduationCap, Building2, GraduationCap as GraduationCap2, ChevronLeft, ChevronRight, Check, CheckCircle, UserCheck } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, GraduationCap, Building2, GraduationCap as GraduationCap2, ChevronLeft, ChevronRight, UserCheck } from "lucide-react";
 import { departmentLabels, Level } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -35,7 +35,6 @@ const steps = [
 
 const SignupForm = () => {
   const { signup } = useAuth();
-  const router = useRouter();
   
   const [formData, setFormData] = useState<Partial<SignupFormData>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
