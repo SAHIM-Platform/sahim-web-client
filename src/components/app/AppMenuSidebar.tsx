@@ -80,7 +80,7 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
       ? [
           {
             label: "المشرفين",
-            href: "/admin/admins",
+            href: "/admins",
             icon: <UserCog className="w-5 h-5" />,
           },
           {

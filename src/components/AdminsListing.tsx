@@ -176,7 +176,6 @@ export default function AdminsListing() {
                 key={admin.id}
                 admin={admin}
                 onDelete={() => handleDeleteAdmin(admin.id)}
-                isDeleting={isDeleting}
                 isProcessing={isDeleting}
               />
             ))}
