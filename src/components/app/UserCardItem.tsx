@@ -26,7 +26,6 @@ const UserCardItem = ({
   isDeleting,
   isProcessing,
 }: UserCardItemProps) => {
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null);
@@ -55,10 +54,6 @@ const UserCardItem = ({
         onDelete(Number(admin.id));
       }
     }
-  };
-
-  const handleEdit = () => {
-    return;
   };
 
   const getStatusText = (status?: ApprovalStatus) => {
