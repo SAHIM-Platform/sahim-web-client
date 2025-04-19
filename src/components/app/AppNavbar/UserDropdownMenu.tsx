@@ -1,4 +1,4 @@
-import { ChevronDown, User, LogOut } from "lucide-react";
+import { ChevronDown, User, LogOut, MessageSquare } from "lucide-react";
 import UserInfo from "../UserInfo";
 import useLogout from "@/hooks/useLogout";
 import { useState, useRef, useEffect } from "react";
@@ -57,6 +57,16 @@ function UserDropdownMenu() {
             : "opacity-0 scale-95 pointer-events-none"
         )}
       >
+        <div>
+          <Link
+            href="/my-discussions"
+            onClick={handleItemClick}
+            className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <MessageSquare className="w-4 h-4" />
+            مناقشاتي
+          </Link>
+        </div>
         <div>
           <Link
             href="/profile"

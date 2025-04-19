@@ -917,3 +917,76 @@ export const createThread = async (threadData: {
     };
   }
 };
+
+export interface ThreadServiceResult {
+  success: boolean;
+  data?: {
+    data: Thread[];
+    meta: {
+      page: number;
+      totalPages: number;
+    };
+  };
+  error?: {
+    message: string;
+    code: string;
+  };
+}
+
+export const fetchUserThreads = async ({
+  page = 1,
+  limit = 10,
+  sort = 'latest',
+  query = '',
+  category_id
+}: {
+  page?: number;
+  limit?: number;
+  sort?: 'latest' | 'oldest' | 'most_commented' | 'most_voted';
+  query?: string;
+  category_id?: number;
+} = {}): Promise<ThreadServiceResult> => {
+  try {
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+      sort
+    });
+
+    if (query) {
+      params.append('search', query);
+    }
+
+    if (category_id !== undefined) {
+      params.append('category_id', String(category_id));
+    }
+
+    const response = await axiosInstance.get(`/users/me/threads?${params}`);
+    return {
+      success: true,
+      data: {
+        data: response.data.data,
+        meta: response.data.meta
+      }
+    };
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      return {
+        success: false,
+        error: {
+          message: axiosError.response?.data?.message || ERROR_MESSAGES.thread.DEFAULT,
+          code: 'SERVER_ERROR'
+        }
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: ERROR_MESSAGES.thread.DEFAULT,
+        code: 'UNKNOWN_ERROR'
+      }
+    };
+  }
+};
