@@ -11,7 +11,6 @@ import Link from "next/link";
 import { Eye, EyeOff, Mail, Lock, User, GraduationCap, Building2, GraduationCap as GraduationCap2, ChevronLeft, ChevronRight, UserCheck } from "lucide-react";
 import { departmentLabels, Level } from "@/types";
 import useAuth from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
 import validateSignupForm, { SignupFormData } from "@/utils/api/signup/validateSignupForm";
 import ErrorAlert from "./Form/ErrorAlert";
 
