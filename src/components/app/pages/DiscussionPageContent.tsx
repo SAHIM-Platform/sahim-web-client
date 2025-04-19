@@ -29,7 +29,6 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
   
   // Pagination state for similar threads
   const [page, setPage] = useState(1);
