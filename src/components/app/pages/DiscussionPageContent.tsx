@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import SimilarThreads from "@/components/app/SimilarThreads";
 import Textarea from "@/components/Textarea";
 import Button from "@/components/Button";
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, ChangeEvent, useEffect, useCallback } from "react";
 import { Thread } from "@/types/thread";
 import { toast } from "react-hot-toast";
 import { createComment, fetchThreadById, fetchThreads, deleteThread } from "@/services/threadService";
@@ -36,7 +36,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingSimilar, setIsLoadingSimilar] = useState(false);
 
-  const loadThread = async () => {
+  const loadThread = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -53,17 +53,16 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
         setError(threadResult.error?.message || 'حدث خطأ أثناء تحميل المناقشة');
         toast.error(threadResult.error?.message || 'حدث خطأ أثناء تحميل المناقشة');
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المناقشة';
+    } catch {
+      const errorMessage = 'حدث خطأ أثناء تحميل المناقشة';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [discussionId]);
 
-  // Load initial similar threads
-  const fetchInitialSimilarThreads = async () => {
+  const fetchInitialSimilarThreads = useCallback(async () => {
     if (!thread) return;
     
     setIsLoadingSimilar(true);
@@ -83,13 +82,12 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
         setHasMore(threadsResult.data.meta.page < threadsResult.data.meta.totalPages);
         setPage(2); // Prepare for next page
       }
-    } catch (err) {
-      console.error("Error loading similar threads:", err);
+    } catch {
       toast.error("حدث خطأ أثناء تحميل المناقشات المشابهة");
     } finally {
       setIsLoadingSimilar(false);
     }
-  };
+  }, [thread]);
 
   // Load more similar threads
   const fetchMoreSimilarThreads = async () => {
@@ -179,7 +177,6 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     if (!thread) return;
     
     try {
-      setIsDeleting(true);
       const result = await deleteThread(thread.thread_id);
 
       if (result.success) {
@@ -188,10 +185,8 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
       } else {
         toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
       }
-    } catch (err) {
+    } catch {
       toast.error('حدث خطأ أثناء حذف المناقشة');
-    } finally {
-      setIsDeleting(false);
     }
   };
 
@@ -205,13 +200,13 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
 
   useEffect(() => {
     loadThread();
-  }, [discussionId]);
+  }, [discussionId, loadThread]);
 
   useEffect(() => {
     if (thread) {
       fetchInitialSimilarThreads();
     }
-  }, [thread]);
+  }, [thread, fetchInitialSimilarThreads]);
 
   if (auth.loading || isLoading) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
