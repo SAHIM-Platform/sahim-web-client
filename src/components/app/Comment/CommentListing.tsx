@@ -1,4 +1,4 @@
-import { Reply } from "lucide-react";
+import { MessageSquareIcon } from "lucide-react";
 import { Thread } from "@/types/thread";
 import CommentItem from "./CommentItem";
 import { updateComment, deleteComment } from "@/services/threadService";
@@ -42,7 +42,7 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
   if (!thread.comments || thread.comments.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <Reply className="w-12 h-12 text-gray-300 mb-3" />
+        <MessageSquareIcon className="w-12 h-12 text-gray-300 mb-3" />
         <p className="text-gray-500">لا توجد ردود</p>
       </div>
     );

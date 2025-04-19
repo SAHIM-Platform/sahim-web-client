@@ -6,14 +6,15 @@ import { Check, X, Trash2, Loader2 } from "lucide-react";
 import { Admin, Student, ApprovalStatus } from "@/types";
 import DateBadge from "./Badge/DateBadge";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
+import toast from "react-hot-toast";
+import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 
 interface UserCardItemProps {
   student?: Student;
   admin?: Admin;
   onApprove?: (id: number) => void;
   onReject?: (id: number) => void;
-  onDelete?: (id: number) => void;
-  isDeleting?: boolean;
+  onDelete?: () => Promise<void>;
   isProcessing: boolean;
 }
 
@@ -23,12 +24,13 @@ const UserCardItem = ({
   onApprove,
   onReject,
   onDelete,
-  isDeleting,
   isProcessing,
 }: UserCardItemProps) => {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleAction = async (type: "approve" | "reject") => {
     setActionType(type);
@@ -47,13 +49,27 @@ const UserCardItem = ({
 
   const isActionLoading = (type: "approve" | "reject") => isProcessing && actionType === type;
 
-  const handleDelete = () => {
-    if (admin && onDelete) {
-      const confirmed = window.confirm("هل أنت متأكد من حذف المشرف؟");
-      if (confirmed) {
-        onDelete(Number(admin.id));
+  const handleDeleteConfirm = async () => {
+    try {
+      setIsDeleting(true);
+      if (onDelete) {
+        await onDelete();
       }
+    } catch {
+      toast.error(ERROR_MESSAGES.comment.DELETE_FAILED);
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteModalOpen(false);
     }
+  };
+  
+  const handleDelete = () => {
+    if (!admin && onDelete) {
+      toast.error(ERROR_MESSAGES.comment.FORBIDDEN);
+      return;
+    }
+    setIsDeleting(false);
+    setIsDeleteModalOpen(true);
   };
 
   const getStatusText = (status?: ApprovalStatus) => {
@@ -174,6 +190,16 @@ const UserCardItem = ({
             {isDeleting ? "جاري الحذف..." : "حذف"}
           </Button>
         </div>
+        <ConfirmModal
+              isOpen={isDeleteModalOpen}
+              onClose={() => setIsDeleteModalOpen(false)}
+              onConfirm={handleDeleteConfirm}
+              title="حذف مشرف"
+              message="هل أنت متأكد من حذف المشرف؟"
+              confirmText="حذف"
+              confirmButtonVariant="danger"
+              isLoading={isDeleting}
+            />
       </div>
     );
   }

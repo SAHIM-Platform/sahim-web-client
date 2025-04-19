@@ -11,8 +11,8 @@ import ErrorAlert from "@/components/Form/ErrorAlert";
 import Modal from "@/components/Modal/Modal";
 import { X } from "lucide-react";
 import { fetchCategories, updateThread } from "@/services/threadService";
-import Loader from "@/components/Loader";
 import validateThreadForm from "@/utils/api/thread/validateThreadForm";
+import LoadingSpinner from "../LoadingSpinner";
 
 interface EditThreadModalProps {
   isOpen: boolean;
@@ -152,7 +152,7 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
     >
       {isLoadingCategories ? (
         <div className="flex justify-center py-8">
-          <Loader />
+          <LoadingSpinner />
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
