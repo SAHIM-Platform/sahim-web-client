@@ -4,10 +4,10 @@ import { Search } from "lucide-react";
 import Modal from "./Modal";
 import { Fragment, RefObject } from "react";
 import SearchField from "../app/SearchField";
-import Loader from "../Loader";
 import ThreadItemMinimal from "../app/ThreadListing/ThreadItemMinimal";
 import Divider from "../Divider";
 import { Thread } from "@/types/thread";
+import LoadingSpinner from "../LoadingSpinner";
 
 interface SearchModalProps {
   onClose: () => void;
@@ -72,7 +72,7 @@ function SearchModal({
       <div className="space-y-2 px-1">
         <div className="min-h-[200px] max-h-[400px] overflow-y-auto">
           {isLoading && !searchResults.length ? (
-            <Loader />
+            <LoadingSpinner />
           ) : searchQuery && searchResults.length === 0 && !error ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <Search className="w-12 h-12 text-gray-300 mb-3" />
@@ -103,7 +103,7 @@ function SearchModal({
               ))}
               {/* Trigger infinite scroll when user reaches the bottom */}
               <div ref={loadMoreRef} className="py-2">
-                {isFetchingMore && <Loader />}
+                {isFetchingMore && <LoadingSpinner />}
               </div>
             </div>
           )}
