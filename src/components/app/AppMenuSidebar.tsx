@@ -48,7 +48,7 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
     },
     {
       label: "المحفوظات",
-      href: "/bookmarks",
+      href: "/discussions/bookmarked",
       icon: <Bookmark className="w-5 h-5" />,
     },
     {
