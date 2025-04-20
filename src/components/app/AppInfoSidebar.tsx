@@ -96,34 +96,33 @@ function SidebarContent() {
   };
 
   return (
-    <div className="pt-24 pb-12 px-4 flex flex-col gap-10">
+    <div className="pt-12 pb-8 px-4 flex flex-col gap-6">
       <div>
-        <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">التصنيفات</span>
+        <span className="pr-4 text-sm font-semibold text-gray-900 mb-2 block">التصنيفات</span>
         <CategoriesListing 
           categories={categories}
           isLoading={isLoadingCategories}
           onCategoriesChange={handleCategoriesChange}
         />
-        <div className="mt-2 text-center">
+        <div className="mt-1 text-center">
           <Link
             href="/categories"
             className="text-blue-500 text-sm font-semibold hover:underline">
             عرض الكل
           </Link>
         </div>
-        
       </div>
 
       <Divider label="" />
 
       <div>
-        <span className="pr-4 text-sm font-semibold text-gray-900 mb-3 block">آخر المناقشات</span>
+        <span className="pr-4 text-sm font-semibold text-gray-900 mb-2 block">آخر المناقشات</span>
         {isLoading ? (
-          <div className="flex justify-center py-4">
+          <div className="flex justify-center py-2">
             <LoadingSpinner size="sm" color="primary" />
           </div>
         ) : (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-0.5">
             {latestDiscussions.map((thread, index) => (
               <Fragment key={thread.thread_id}>
                 <ThreadItemMinimal
@@ -135,7 +134,7 @@ function SidebarContent() {
                   authorPhotoPath={thread.author?.photoPath}
                 />
                 {index < latestDiscussions.length - 1 && (
-                  <Divider label="" className="my-1" borderColor="gray-100" />
+                  <Divider label="" className="my-0.5" borderColor="gray-100" />
                 )}
               </Fragment>
             ))}

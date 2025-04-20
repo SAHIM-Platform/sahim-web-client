@@ -111,15 +111,15 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
   );
 
   const sidebarContent = (
-    <div className="h-full overflow-y-auto pt-24 pb-12 px-4 flex flex-col gap-8">
-      <div className="space-y-3">
+    <div className="h-full overflow-y-auto pt-12 pb-8 px-4 flex flex-col gap-6">
+      <div className="space-y-2">
         {renderLinks(generalLinks)}
       </div>
       
       {roleSpecificLinks.length > 0 && (
         <>
           <Divider label="" borderColor="gray-200" />
-          <div className="space-y-3">
+          <div className="space-y-2">
             {renderLinks(roleSpecificLinks)}
           </div>
         </>
@@ -142,7 +142,7 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="flex justify-end p-4">
+        <div className="flex justify-end p-3">
           <button onClick={onClose}>
             <X className="w-5 h-5 text-gray-700" />
           </button>
