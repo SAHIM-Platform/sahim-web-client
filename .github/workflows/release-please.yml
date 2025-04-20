@@ -14,3 +14,6 @@ jobs:
       - uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
+          package-name: sahim-web-client
+          bump-minor-pre-major: true

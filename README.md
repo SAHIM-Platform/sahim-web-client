@@ -5,7 +5,7 @@
 For the backend, see: [SAHIM API Repository](https://github.com/SAHIM-Platform/sahim-api)
 
 [![Node.js](https://img.shields.io/badge/Node.js-v20.11.0-339933)](https://nodejs.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-v15.1.7-blue)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-v15.2.3-blue)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-v5-blue)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-v3.4.1-38B2AC)](https://tailwindcss.com/)
 [![Axios](https://img.shields.io/badge/Axios-v1.8.4-5A29E4)](https://axios-http.com/)
