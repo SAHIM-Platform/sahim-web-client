@@ -184,14 +184,22 @@ const ThreadListing = ({
                   const dateB = new Date(b.created_at).getTime();
                   return sortOrder === "latest" ? dateB - dateA : dateA - dateB;
                 })
-                .map((thread) => (
-                  <ThreadItem
-                    key={thread.thread_id}
-                    {...thread}
-                    onReply={() => onReply?.(thread.thread_id)}
-                    onDelete={() => handleDeleteThread(thread.thread_id)}
-                  />
-                ))}
+                .map((thread) => {
+                  console.log('ThreadListing - Thread Author:', {
+                    id: thread.author.id,
+                    name: thread.author.name,
+                    photoPath: thread.author.photoPath,
+                    username: thread.author.username
+                  });
+                  return (
+                    <ThreadItem
+                      key={thread.thread_id}
+                      {...thread}
+                      onReply={() => onReply?.(thread.thread_id)}
+                      onDelete={() => handleDeleteThread(thread.thread_id)}
+                    />
+                  );
+                })}
             </div>
 
             {isFetchingMore && (

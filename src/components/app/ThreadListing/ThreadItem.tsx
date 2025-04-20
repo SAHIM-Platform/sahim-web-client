@@ -389,7 +389,7 @@ const ThreadItem = ({
             <Button
               onClick={(e) => {
                 e.preventDefault();
-                onReply?.();
+                window.location.href = `/discussions/${thread_id}#comments`;
               }}
               variant='ghost'
               size="sm"
@@ -397,7 +397,11 @@ const ThreadItem = ({
               icon={<MessageSquare className="w-[18px] h-[18px]" />}
               aria-label="عدد التعليقات"
             >
-              {_count?.comments ?? 0}
+              {(() => {
+                const commentCount = _count?.comments;
+                console.log('Comments count:', commentCount, 'Thread ID:', thread_id);
+                return commentCount === 0 || commentCount === undefined ? "0" : commentCount;
+              })()}
             </Button>
             <Button
               onClick={(e) => {

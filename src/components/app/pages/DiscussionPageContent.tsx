@@ -41,9 +41,19 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
       setError(null);
 
       const threadResult = await fetchThreadById(parseInt(discussionId));
+      console.log('DiscussionPageContent - API Response:', threadResult);
 
       if (threadResult.success && threadResult.data) {
-        setThread(threadResult.data);
+        console.log('DiscussionPageContent - Thread Data:', threadResult.data);
+        // Ensure author data is properly structured
+        const threadData = {
+          ...threadResult.data,
+          author: {
+            ...threadResult.data.author,
+            photoPath: threadResult.data.author.photoPath || '/public/avatars/defaults/super-admin.webp'
+          }
+        };
+        setThread(threadData);
         // Reset similar threads when main thread changes
         setSimilarThreads([]);
         setPage(1);
@@ -231,6 +241,13 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     return <ErrorAlert message="لم يتم العثور على المناقشة المطلوبة" />;
   }
 
+  console.log('DiscussionPageContent - Thread Author:', {
+    id: thread.author.id,
+    name: thread.author.name,
+    photoPath: thread.author.photoPath,
+    username: thread.author.username
+  });
+
   return (
     <>
       <h1 className="mb-6 text-2xl font-bold text-gray-900">{thread.title}</h1>
@@ -265,7 +282,9 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
           </div>
         </div>
 
-        <CommentListing thread={thread} refreshThread={refreshThread} />
+        <div id="comments">
+          <CommentListing thread={thread} refreshThread={refreshThread} />
+        </div>
       </div>
 
       <SimilarThreads
