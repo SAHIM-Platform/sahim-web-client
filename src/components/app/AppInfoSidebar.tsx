@@ -103,6 +103,7 @@ function SidebarContent() {
           categories={categories}
           isLoading={isLoadingCategories}
           onCategoriesChange={handleCategoriesChange}
+          maxChars={15}
         />
         <div className="mt-1 text-center">
           <Link

@@ -15,13 +15,15 @@ interface CategoriesListingProps {
   categories: { category_id: number; name: string; }[];
   isLoading: boolean;
   onCategoriesChange: () => Promise<void>;
+  maxChars?: number;
 }
 
 function CategoriesListing({ 
   allowManagement = false,
   categories,
   isLoading,
-  onCategoriesChange
+  onCategoriesChange,
+  maxChars = 20
 }: CategoriesListingProps) {
   const { auth } = useAuth();
   const [editingCategory, setEditingCategory] = useState<number | null>(null);
@@ -133,7 +135,11 @@ function CategoriesListing({
               </div>
             ) : (
               <>
-                <span className="flex-1">{category.name}</span>
+                <span className="flex-1 truncate">
+                  {maxChars && category.name.length > maxChars 
+                    ? `${category.name.substring(0, maxChars)}...` 
+                    : category.name}
+                </span>
 
                 {showManagementIcons && (
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
