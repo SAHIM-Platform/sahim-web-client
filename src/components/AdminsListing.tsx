@@ -76,7 +76,7 @@ export default function AdminsListing() {
   const processedAdmins = admins.filter((admin) => {
     const matchesSearch = searchQuery
       ? admin.name.includes(searchQuery) ||
-      admin.email.includes(searchQuery) ||
+      (admin.email && admin.email.includes(searchQuery)) ||
       admin.username.includes(searchQuery)
       : true;
 

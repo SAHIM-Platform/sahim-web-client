@@ -40,6 +40,11 @@ export enum ApprovalStatus {
   REJECTED = "REJECTED",
 }
 
+export enum AuthMethod {
+  EMAIL_PASSWORD = "EMAIL_PASSWORD",
+  OAUTH_GOOGLE = "OAUTH_GOOGLE",
+}
+
 export interface Profile {
   id: string;
   name: string;
@@ -50,6 +55,7 @@ export interface Profile {
   department?: Department;
   level?: Level;
   photoPath?: string;
+  authMethod?: AuthMethod;
 }
 
 export const userRoleLabels: Record<UserRole, string> = {

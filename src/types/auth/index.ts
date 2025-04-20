@@ -3,7 +3,7 @@ import { Department, Level, ApprovalStatus } from "..";
 
 export interface User {
   id: string;
-  email: string;
+  email?: string;
   username: string;
   name: string;
   academicNumber: string;
@@ -15,7 +15,7 @@ export interface User {
 export type Student = {
   id: string;
   name: string;
-  email: string;
+  email?: string;
   student?: {
     id: string;
     userId: string;
@@ -56,7 +56,7 @@ export interface AuthContextType {
 }
 
 export interface LoginCredentials {
-  email: string;
+  identifier: string;
   password: string;
 }
 

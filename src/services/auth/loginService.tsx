@@ -6,8 +6,15 @@ import { ValidationErrorResponse } from '@/types';
 
 async function loginService(credentials: LoginCredentials): Promise<AuthResult> {
 	try {
-		const response = await axiosInstance.post('/auth/signin', credentials);
-		console.log('response ', response)
+		const requestBody = {
+			identifier: credentials.identifier,
+			password: credentials.password
+		};
+		console.log('Login request body:', requestBody);
+		
+		const response = await axiosInstance.post('/auth/signin', requestBody);
+		console.log('Login response:', response.data);
+
 		// there is accessToken? consider it success
 		if (response.data && response.data.accessToken) {
 			return {
@@ -23,15 +30,22 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 			return {
 				success: false,
 				error: {
-					message: 'Login failed.',
+					message: 'فشل تسجيل الدخول',
 					code: 'AUTH_FAILED'
 				}
 			};
 		}
 
 	} catch (error) {
+		console.error('Login error details:', error);
+		
 		if (isAxiosError(error)) {
 			const axiosError = error as AxiosError;
+			console.error('Axios error response:', {
+				status: axiosError.response?.status,
+				data: axiosError.response?.data,
+				message: axiosError.message
+			});
 
 			// Handle credentials errors
 			if (axiosError.response?.status === 401) {
@@ -41,7 +55,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 					success: false,
 					error: {
 						message: errorData.message || ERROR_MESSAGES.login.INVALID_CREDENTIALS,
-						fields: Array.isArray(errorData.fields) ? errorData.fields : ['email', 'password'],
+						fields: Array.isArray(errorData.fields) ? errorData.fields : ['identifier', 'password'],
 						code: errorData.code || 'INVALID_CREDENTIALS'
 					}
 				};
@@ -53,7 +67,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 					success: false,
 					error: {
 						message: ERROR_MESSAGES.login.USER_NOT_FOUND,
-						fields: ['email'],
+						fields: ['identifier'],
 						code: 'USER_NOT_FOUND'
 					}
 				};
