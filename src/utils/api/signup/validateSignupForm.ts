@@ -7,7 +7,7 @@ export enum AuthMethod {
 }
 
 export interface SignupFormData {
-  email: string;
+  email?: string;
   username: string;
   password?: string;
   confirmPassword?: string;
@@ -37,15 +37,6 @@ export const validateSignupForm = (values: Partial<SignupFormData>) => {
     errors.academicNumber = ERROR_MESSAGES.signup.VALIDATIONS.ACADEMIC_LENGTH;
   } else if (!/^\d+$/.test(values.academicNumber)) {
     errors.academicNumber = ERROR_MESSAGES.signup.VALIDATIONS.ACADEMIC_ONLY_NUMBERS;
-  }
-
-  // Email validation
-  if (!values.email?.trim()) {
-    errors.email = ERROR_MESSAGES.signup.VALIDATIONS.EMAIL_REQUIRED;
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-    errors.email = ERROR_MESSAGES.signup.VALIDATIONS.EMAIL_INVALID;
-  } else if (values.email.length > 255) {
-    errors.email = ERROR_MESSAGES.signup.VALIDATIONS.EMAIL_TOO_LONG;
   }
 
   // Username validation

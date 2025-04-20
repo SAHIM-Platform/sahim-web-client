@@ -39,7 +39,7 @@ async function handleAuthSubmit(config: AuthSubmitConfig): Promise<void> {
     setIsLoading(true);
 
     const authData = {
-      email: values.email?.trim(),
+      identifier: values.identifier?.trim(),
       password: values.password?.trim()
     };
 

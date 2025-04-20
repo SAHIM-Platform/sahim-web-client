@@ -17,6 +17,8 @@ import UserPhoto from '@/components/UserPhoto';
 import { userService } from '@/services/userService';
 import validateProfileForm from '@/utils/api/profile/validateProfileForm';
 import Modal from '@/components/Modal/Modal';
+import { AuthMethod } from '@/utils/api/signup/validateSignupForm';
+import Image from 'next/image';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -153,14 +155,16 @@ export default function ProfilePage() {
 
   const isFormValid = formData.name.trim() !== '' && formData.username.trim() !== '';
 
-  const ReadOnlyField = ({ 
-    label, 
-    value, 
-    icon: Icon 
-  }: { 
-    label: string; 
-    value: string | number; 
-    icon: React.ComponentType<{ className?: string }> 
+  const ReadOnlyField = ({
+    label,
+    value,
+    icon: Icon,
+    authMethod
+  }: {
+    label: string;
+    value: string | number;
+    icon: React.ComponentType<{ className?: string }>;
+    authMethod?: AuthMethod;
   }) => (
     <div className="flex items-center gap-4">
       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -168,7 +172,18 @@ export default function ProfilePage() {
       </div>
       <div className="flex-1">
         <span className="text-sm font-medium text-gray-500">{label}</span>
-        <p className="text-base font-medium text-gray-900 mt-0.5">{value}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-base font-medium text-gray-900 mt-0.5">{value}</p>
+          {authMethod === AuthMethod.OAUTH_GOOGLE && (
+            <Image
+              src="/icons8-google.svg"
+              className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 inline-block me-2 opacity-80"
+              alt="Google Icon"
+              width={20}
+              height={20}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -194,44 +209,47 @@ export default function ProfilePage() {
             <Divider label="" borderColor="gray-100" />
 
             <div className="space-y-8">
-              <ReadOnlyField 
-                label="البريد الإلكتروني" 
-                value={profile.email}
-                icon={Mail}
-              />
+              {profile.email && (
+                <ReadOnlyField
+                  label="البريد الإلكتروني"
+                  value={profile.email}
+                  icon={Mail}
+                  authMethod={profile.authMethod}
+                />
+              )}
               {profile.role === 'STUDENT' && (
                 <>
-                  <ReadOnlyField 
-                    label="الرقم الأكاديمي" 
-                    value={profile.academicNumber || ''} 
+                  <ReadOnlyField
+                    label="الرقم الأكاديمي"
+                    value={profile.academicNumber || ''}
                     icon={Hash}
                   />
                   {profile.department && (
-                    <ReadOnlyField 
-                      label="القسم" 
-                      value={profile.department} 
+                    <ReadOnlyField
+                      label="القسم"
+                      value={profile.department}
                       icon={Building2}
                     />
                   )}
                   {profile.level && (
-                    <ReadOnlyField 
-                      label="المستوى" 
-                      value={profile.level} 
+                    <ReadOnlyField
+                      label="المستوى"
+                      value={profile.level}
                       icon={GraduationCap}
                     />
                   )}
                 </>
               )}
-              <ReadOnlyField 
-                label="الدور" 
-                value={userRoleLabels[profile.role]} 
+              <ReadOnlyField
+                label="الدور"
+                value={userRoleLabels[profile.role]}
                 icon={Shield}
               />
             </div>
 
             <div className="pt-2">
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 onClick={() => setIsEditing(true)}
                 icon={<Edit2 className="w-4 h-4" />}
                 iconPosition="start"
@@ -272,37 +290,40 @@ export default function ProfilePage() {
               </div>
 
               <div className="space-y-4">
-                <ReadOnlyField 
-                  label="البريد الإلكتروني" 
-                  value={profile.email} 
-                  icon={Mail}
-                />
+                {profile.email && (
+                  <ReadOnlyField
+                    label="البريد الإلكتروني"
+                    value={profile.email}
+                    icon={Mail}
+                    authMethod={profile.authMethod}
+                  />
+                )}
                 {profile.role === 'STUDENT' && (
                   <>
-                    <ReadOnlyField 
-                      label="الرقم الأكاديمي" 
-                      value={profile.academicNumber || ''} 
+                    <ReadOnlyField
+                      label="الرقم الأكاديمي"
+                      value={profile.academicNumber || ''}
                       icon={Hash}
                     />
                     {profile.department && (
-                      <ReadOnlyField 
-                        label="القسم" 
-                        value={profile.department} 
+                      <ReadOnlyField
+                        label="القسم"
+                        value={profile.department}
                         icon={Building2}
                       />
                     )}
                     {profile.level && (
-                      <ReadOnlyField 
-                        label="المستوى" 
-                        value={profile.level} 
+                      <ReadOnlyField
+                        label="المستوى"
+                        value={profile.level}
                         icon={GraduationCap}
                       />
                     )}
                   </>
                 )}
-                <ReadOnlyField 
-                  label="الدور" 
-                  value={userRoleLabels[profile.role]} 
+                <ReadOnlyField
+                  label="الدور"
+                  value={userRoleLabels[profile.role]}
                   icon={Shield}
                 />
               </div>
@@ -343,28 +364,27 @@ export default function ProfilePage() {
         )}
       </div>
 
-
       {profile.role !== UserRole.SUPER_ADMIN && (
         <>
-        <Divider label="" />
-        <div className="space-y-6 bg-red-50/50 border-2 border-red-200/60 rounded-xl p-8">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-gray-900">حذف الحساب</h1>
-            <p className="text-gray-500">لا يمكنك استرجاع حسابك لاحقاً.</p>
-          </div>
+          <Divider label="" />
+          <div className="space-y-6 bg-red-50/50 border-2 border-red-200/60 rounded-xl p-8">
+            <div className="space-y-2">
+              <h1 className="text-2xl font-bold text-gray-900">حذف الحساب</h1>
+              <p className="text-gray-500">لا يمكنك استرجاع حسابك لاحقاً.</p>
+            </div>
 
-          <Button
-            type="button"
-            variant="outline"
-            color="secondary"
-            onClick={() => setShowDeleteModal(true)}
-            className="text-red-600 hover:border-red-700 hover:text-red-600 hover:shadow-none"
-            icon={<Trash2 className="w-4 h-4" />}
-            iconPosition="start"
-          >
-            حذف الحساب
-          </Button>
-        </div>
+            <Button
+              type="button"
+              variant="outline"
+              color="secondary"
+              onClick={() => setShowDeleteModal(true)}
+              className="text-red-600 hover:border-red-700 hover:text-red-600 hover:shadow-none"
+              icon={<Trash2 className="w-4 h-4" />}
+              iconPosition="start"
+            >
+              حذف الحساب
+            </Button>
+          </div>
         </>
       )}
 

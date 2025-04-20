@@ -8,7 +8,7 @@ import Logo from './Logo';
 import Divider from './Divider';
 import Button from './Button';
 import Image from 'next/image';
-import { Eye, EyeOff, Mail, Lock, ChevronLeft } from 'lucide-react';
+import { Eye, EyeOff, User, Lock, ChevronLeft } from 'lucide-react';
 import Input from './Input';
 import Link from 'next/link';
 import { FormData } from '@/types';
@@ -21,12 +21,12 @@ const formData: FormData = {
   description: "من فضلك، أدخل بيانات حسابك لتسجيل الدخول",
   fields: [
     {
-      id: "email",
-      label: "البريد الإلكتروني",
-      type: "email",
+      id: "identifier",
+      label: "اسم المستخدم أو الرقم الأكاديمي",
+      type: "text",
       required: true,
-      placeholder: "أدخل بريدك الإلكتروني",
-      autoComplete: "email"
+      placeholder: "أدخل اسم المستخدم أو الرقم الأكاديمي",
+      autoComplete: "username"
     },
     {
       id: "password",
@@ -106,7 +106,7 @@ const LoginForm = () => {
     try {
       console.log('Starting login submission...');
       const result = await login({
-        email: values.email,
+        identifier: values.identifier,
         password: values.password
       });
 
@@ -132,8 +132,8 @@ const LoginForm = () => {
 
   const getFieldIcon = (fieldId: string) => {
     switch (fieldId) {
-      case 'email':
-        return <Mail className="w-[18px] h-[18px]" />;
+      case 'identifier':
+        return <User className="w-[18px] h-[18px]" />;
       case 'password':
         return <Lock className="w-[18px] h-[18px]" />;
       default:

@@ -8,10 +8,10 @@ const validateLoginForm = (
 ): Record<string, string> => {
   const errors: Record<string, string> = {};
 
-  if (!values.email) {
-    errors.email = "البريد الإلكتروني مطلوب";
-  } else if (!/\S+@\S+\.\S+/.test(values.email)) {
-    errors.email = "يرجى إدخال بريد إلكتروني صحيح";
+  if (!values.identifier) {
+    errors.identifier = "اسم المستخدم أو الرقم الأكاديمي مطلوب";
+  } else if (values.identifier.length < 3) {
+    errors.identifier = "يجب أن يكون اسم المستخدم أو الرقم الأكاديمي 3 أحرف على الأقل";
   }
 
   if (!values.password) {

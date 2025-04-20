@@ -15,7 +15,7 @@ export const handleSignupSubmit = async (
   }
 
   const signupData = {
-    email: values.email.trim(),
+    email: values?.email?.trim(),
     username: values.username.trim(),
     password: values.password,
     name: values.name.trim(),

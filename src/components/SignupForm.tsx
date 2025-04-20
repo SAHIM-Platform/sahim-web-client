@@ -8,7 +8,7 @@ import Logo from "./Logo";
 import Divider from "./Divider";
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, EyeOff, Mail, Lock, User, GraduationCap, Building2, GraduationCap as GraduationCap2, ChevronLeft, ChevronRight, UserCheck } from "lucide-react";
+import { Eye, EyeOff, User, Lock, GraduationCap, Building2, GraduationCap as GraduationCap2, ChevronLeft, ChevronRight, UserCheck } from "lucide-react";
 import { departmentLabels, Level } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import validateSignupForm, { SignupFormData } from "@/utils/api/signup/validateSignupForm";
@@ -19,7 +19,7 @@ const steps = [
   {
     title: "المعلومات الشخصية",
     description: "أدخل معلوماتك الشخصية الأساسية",
-    fields: ['name', 'username', 'email']
+    fields: ['name', 'username']
   },
   {
     title: "كلمة المرور",
@@ -153,16 +153,6 @@ const SignupForm = () => {
               onChange={(e) => handleChange('username', e.target.value)}
               error={errors.username}
               startIcon={<User className="w-[18px] h-[18px]" />}
-            />
-            <Input
-              type="email"
-              placeholder="البريد الإلكتروني"
-              label="البريد الإلكتروني"
-              required
-              value={formData.email || ''}
-              onChange={(e) => handleChange('email', e.target.value)}
-              error={errors.email}
-              startIcon={<Mail className="w-[18px] h-[18px]" />}
             />
           </div>
         );

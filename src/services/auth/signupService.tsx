@@ -6,10 +6,9 @@ import { ValidationErrorResponse } from '@/types';
 import { AuthMethod, SignupFormData } from '@/utils/api/signup/validateSignupForm';
 
 async function signupService(data: SignupFormData): Promise<AuthResult> {
-  console.log("Signupd data: ", data)
+  console.log("Signup data: ", data)
   try {
     const signupData = {
-      email: data.email.trim(),
       username: data.username.trim(),
       ...((!data.authMethod || data.authMethod === AuthMethod.EMAIL_PASSWORD) && { 
         password: data.password 
@@ -64,16 +63,15 @@ async function signupService(data: SignupFormData): Promise<AuthResult> {
         };
       }
 
-      // Handle duplicate email/username errors
+      // Handle duplicate username errors
       if (axiosError.response?.status === 409) {
         const errorData = axiosError.response.data as AuthError;
-        const field = errorData.message?.toLowerCase().includes('email') ? 'email' : 'username';
 
         return {
           success: false,
           error: {
             message: errorData.message || ERROR_MESSAGES.signup.DUPLICATE_USER,
-            fields: [field],
+            fields: ['username'],
             code: errorData.code || 'DUPLICATE_USER'
           }
         };
