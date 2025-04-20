@@ -1,11 +1,17 @@
 import { Department, Level } from "@/types";
 import ERROR_MESSAGES from "../ERROR_MESSAGES";
 
+export enum AuthMethod {
+  EMAIL_PASSWORD = 'EMAIL_PASSWORD',
+  OAUTH_GOOGLE = 'OAUTH_GOOGLE',
+}
+
 export interface SignupFormData {
   email: string;
   username: string;
-  password: string;
-  confirmPassword: string;
+  password?: string;
+  confirmPassword?: string;
+  authMethod?: AuthMethod;
   name: string;
   academicNumber: string;
   department: Department;
