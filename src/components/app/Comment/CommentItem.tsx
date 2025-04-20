@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import { voteComment } from "@/services/threadService";
+import MarkdownRenderer from '@/components/app/MarkdownRenderer';
 
 export interface CommentItemProps {
   id: string;
@@ -232,52 +233,7 @@ function CommentItem({
           </div>
         ) : (
           <div className="mt-4 text-xs text-gray-600 leading-relaxed">
-            <ReactMarkdown 
-              remarkPlugins={[remarkGfm]}
-              components={{
-                a: ({ href, children }) => (
-                  <a
-                    href={href}
-                    className='text-blue-400 hover:text-blue-300 underline'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    {children}
-                  </a>
-                ),
-                h1: ({ children }) => (
-                  <p className='text-2xl font-bold mb-4'>{children}</p>
-                ),
-                h2: ({ children }) => (
-                  <p className='text-xl font-bold mb-4 mt-4'>{children}</p>
-                ),
-                h3: ({ children }) => (
-                  <p className='text-lg font-semibold mb-2 mt-2'>{children}</p>
-                ),
-                ul: ({ children }) => (
-                  <ul className='list-disc pl-2 mb-4 space-y-1'>{children}</ul>
-                ),
-                ol: ({ children }) => (
-                  <ol className='list-decimal pl-6 mb-4 space-y-1'>{children}</ol>
-                ),
-                p: ({ children }) => (
-                  <p className='leading-8 mb-2 font-light'>{children}</p>
-                ),
-                li: ({ children }) => (
-                  <li className='leading-7 pl-2 marker:text-gray-400 [&>strong]:mt-0 [&>strong]:inline'>{children}</li>
-                ),
-                strong: ({ children }) => (
-                  <strong className='font-semibold '>{children}</strong>
-                ),
-                code: ({ children }) => (
-                  <div className="bg-gray-100 text-xs p-2 rounded-lg font-semibold" dir="ltr">
-                    <code>{children}</code>
-                  </div>
-                ),
-              }}
-            >
-              {content}
-            </ReactMarkdown>
+            <MarkdownRenderer content={content} />
           </div>
         )}
 

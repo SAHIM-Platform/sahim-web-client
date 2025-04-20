@@ -198,7 +198,7 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
               value={formData.thumbnailUrl}
               onChange={(e) => handleChange("thumbnailUrl", e.target.value)}
               optional
-              helperText="يمكنك إضافة رابط صورة لتظهر كصورة مصغرة للمناقشة"
+              helperText="يمكنك إضافة رابط صورة لتظهر كصورة مصغرة للمناقشة. النسبة الموصى بها: 6:4 (مثال: 1200x800 بكسل) للحصول على أفضل تناسق بصري"
               endIcon={formData.thumbnailUrl ? <X className="w-4 h-4 cursor-pointer" onClick={clearThumbnail} /> : undefined}
               error={validationErrors.thumbnail_url}
             />

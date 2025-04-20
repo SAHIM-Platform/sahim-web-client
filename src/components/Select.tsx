@@ -20,6 +20,7 @@ interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>
   required?: boolean;
   optional?: boolean;
   placeholder?: string;
+  maxChars?: number;
 }
 
 const selectVariants = cva(
@@ -84,6 +85,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(({
   required,
   optional,
   placeholder,
+  maxChars = 15,
   ...props 
 }, ref) => {
   const StartIcon = startIcon && React.cloneElement(startIcon, {
@@ -93,6 +95,13 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(({
       startIcon.props.className
     ),
   });
+
+  const truncateLabel = (label: string) => {
+    if (maxChars && label.length > maxChars) {
+      return `${label.substring(0, maxChars)}...`;
+    }
+    return label;
+  };
 
   return (
     <div className="w-full space-y-1.5 sm:space-y-2" dir="rtl">
@@ -127,8 +136,8 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(({
             <option value="" disabled className="hidden">{placeholder}</option>
           )}
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
+            <option key={option.value} value={option.value} title={option.label}>
+              {truncateLabel(option.label)}
             </option>
           ))}
         </select>

@@ -201,7 +201,7 @@ export default function NewDiscussionPage() {
             value={formData.thumbnail_url}
             onChange={(e) => handleChange("thumbnail_url", e.target.value)}
             optional
-            helperText="يمكنك إضافة رابط صورة لتظهر كصورة مصغرة للمناقشة"
+            helperText="يمكنك إضافة رابط صورة لتظهر كصورة مصغرة للمناقشة. النسبة الموصى بها: 6:4 (مثال: 1200x800 بكسل) للحصول على أفضل تناسق بصري"
             endIcon={formData.thumbnail_url ? <X className="w-4 h-4 cursor-pointer" onClick={clearThumbnail} /> : undefined}
             error={validationErrors.thumbnail_url}
           />

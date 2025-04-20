@@ -32,7 +32,14 @@ const BookmarksPageContent = () => {
       const result = await fetchBookmarkedThreads({ page: 1, limit });
 
       if (result.success && result.data) {
-        setBookmarkedThreads(result.data.data);
+        const processedThreads = result.data.data.map(thread => ({
+          ...thread,
+          author: {
+            ...thread.author,
+            photoPath: thread.author.photoPath || '/public/avatars/defaults/super-admin.webp'
+          }
+        }));
+        setBookmarkedThreads(processedThreads);
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage(2);
       } else {
@@ -57,7 +64,13 @@ const BookmarksPageContent = () => {
       const result = await fetchBookmarkedThreads({ page, limit });
 
       if (result.success && result.data) {
-        const newBookmarkedThreads = result.data.data;
+        const newBookmarkedThreads = result.data.data.map(thread => ({
+          ...thread,
+          author: {
+            ...thread.author,
+            photoPath: thread.author.photoPath || '/public/avatars/defaults/super-admin.webp'
+          }
+        }));
         setBookmarkedThreads((prev) => [...prev, ...newBookmarkedThreads]);
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage((prev) => prev + 1);
