@@ -111,7 +111,7 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
   );
 
   const sidebarContent = (
-    <div className="h-full overflow-y-auto pt-12 pb-8 px-4 flex flex-col gap-6">
+    <div className="h-full overflow-y-auto pt-12 pb-8 md:pt-24 md:pb-12 px-4 flex flex-col gap-6">
       <div className="space-y-2">
         {renderLinks(generalLinks)}
       </div>

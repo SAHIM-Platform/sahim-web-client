@@ -96,7 +96,7 @@ function SidebarContent() {
   };
 
   return (
-    <div className="pt-12 pb-8 px-4 flex flex-col gap-6">
+    <div className="pt-12 pb-8 md:pt-24 md:pb-12 px-4 flex flex-col gap-6">
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-2 block">التصنيفات</span>
         <CategoriesListing 
