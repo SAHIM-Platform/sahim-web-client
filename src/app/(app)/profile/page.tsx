@@ -33,6 +33,8 @@ export default function ProfilePage() {
   const [deleteError, setDeleteError] = useState('');
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -124,16 +126,18 @@ export default function ProfilePage() {
     }
 
     try {
+      setIsDeletingAccount(true);
       const result = await userService.deleteProfile({ password: deletePassword });
 
       if (result.success) {
+        setIsRedirecting(true);
         setAuth({
           accessToken: undefined,
           user: undefined,
           loading: false,
         });
-        router.push('/');
         toast.success('تم حذف الحساب بنجاح');
+        router.push('/');
       } else {
         const errorMessage = 'حدث خطأ أثناء حذف الحساب. يرجى المحاولة مرة أخرى';
         setDeleteError(errorMessage);
@@ -143,6 +147,8 @@ export default function ProfilePage() {
       const errorMessage = 'حدث خطأ أثناء حذف الحساب. يرجى المحاولة مرة أخرى';
       setDeleteError(errorMessage);
       toast.error(errorMessage);
+    } finally {
+      setIsDeletingAccount(false);
     }
   };
 
@@ -187,6 +193,28 @@ export default function ProfilePage() {
       </div>
     </div>
   );
+
+  if (isRedirecting) {
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
+  }
+
+  if (error && !isSubmitting) {
+    return (
+      <div className="space-y-4">
+        <ErrorAlert message={error} />
+        <Button
+          onClick={() => {
+            window.location.reload();
+            router.refresh();
+          }}
+          variant="outline"
+          color="secondary"
+        >
+          تحديث حالة الحساب
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-20">
@@ -391,9 +419,11 @@ export default function ProfilePage() {
       <Modal
         isOpen={showDeleteModal}
         onClose={() => {
-          setShowDeleteModal(false);
-          setDeletePassword('');
-          setDeleteError('');
+          if (!isDeletingAccount) {
+            setShowDeleteModal(false);
+            setDeletePassword('');
+            setDeleteError('');
+          }
         }}
         title="حذف الحساب"
         size="md"
@@ -411,6 +441,7 @@ export default function ProfilePage() {
             onChange={(e) => setDeletePassword(e.target.value)}
             fullWidth
             required
+            disabled={isDeletingAccount}
           />
 
           {deleteError && <ErrorAlert message={deleteError} />}
@@ -422,6 +453,9 @@ export default function ProfilePage() {
               className="bg-red-600 hover:bg-red-700 hover:shadow-none"
               icon={<Trash2 className="w-4 h-4" />}
               iconPosition="start"
+              isLoading={isDeletingAccount}
+              loadingText="جاري حذف الحساب..."
+              disabled={!deletePassword || isDeletingAccount}
             >
               حذف الحساب
             </Button>
@@ -429,12 +463,15 @@ export default function ProfilePage() {
               type="button"
               variant="outline"
               onClick={() => {
-                setShowDeleteModal(false);
-                setDeletePassword('');
-                setDeleteError('');
+                if (!isDeletingAccount) {
+                  setShowDeleteModal(false);
+                  setDeletePassword('');
+                  setDeleteError('');
+                }
               }}
               icon={<X className="w-4 h-4" />}
               iconPosition="start"
+              disabled={isDeletingAccount}
             >
               إلغاء
             </Button>

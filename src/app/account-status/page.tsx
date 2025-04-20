@@ -66,8 +66,8 @@ export default function AccountStatusPage() {
         <Container narrow>
           <div className="flex flex-col gap-8 items-center justify-center w-full">
             <div className={`rounded-xl border p-8 w-full shadow-sm ${isApproved ? "border-blue-200 bg-blue-50" :
-                isPending ? "border-amber-200 bg-amber-50" :
-                  "border-red-200 bg-red-50"
+              isPending ? "border-amber-200 bg-amber-50" :
+                "border-red-200 bg-red-50"
               }`}>
               <div className="flex flex-col items-center space-y-4">
                 {isApproved ? (
@@ -116,7 +116,10 @@ export default function AccountStatusPage() {
                   variant="outline"
                   icon={<RefreshCw className="w-5 h-5" />}
                   iconPosition="end"
-                  onClick={handleRefresh}
+                  onClick={() => {
+                    window.location.reload();
+                    router.refresh();
+                  }}
                   className="w-full md:w-auto"
                 >
                   تحديث حالة الحساب
