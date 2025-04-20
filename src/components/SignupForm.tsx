@@ -13,6 +13,7 @@ import { departmentLabels, Level } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import validateSignupForm, { SignupFormData } from "@/utils/api/signup/validateSignupForm";
 import ErrorAlert from "./Form/ErrorAlert";
+import { useGoogleLogin } from "@/hooks/useGoogleLogin";
 
 const steps = [
   {
@@ -34,6 +35,7 @@ const steps = [
 
 const SignupForm = () => {
   const { signup } = useAuth();
+  const { handleGoogleSubmit } = useGoogleLogin();
   
   const [formData, setFormData] = useState<Partial<SignupFormData>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -356,7 +358,7 @@ const SignupForm = () => {
               </div>
             </form>
 
-            <p className="text-sm sm:text-base text-gray-500 text-center">
+            <p className="text-sm sm:text-base text-gray-500 text-center" >
               لديك حساب بالفعل؟{" "}
               <Link href="/login" className="text-primary font-medium hover:underline hover:underline-offset-4 transition-all">
                 سجل الدخول
@@ -367,7 +369,7 @@ const SignupForm = () => {
           <div className="space-y-4 sm:space-y-5">
             <Divider />
 
-            <Button variant="outline" fullWidth>
+            <Button variant="outline" fullWidth onClick={handleGoogleSubmit}>
               <Image
                 src="/icons8-google.svg"
                 className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 inline-block me-2 opacity-80"

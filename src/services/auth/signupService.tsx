@@ -3,18 +3,22 @@ import { AuthError, AuthResult } from "@/types/auth";
 import { AxiosError, isAxiosError } from "axios";
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
-import { SignupFormData } from '@/utils/api/signup/validateSignupForm';
+import { AuthMethod, SignupFormData } from '@/utils/api/signup/validateSignupForm';
 
 async function signupService(data: SignupFormData): Promise<AuthResult> {
+  console.log("Signupd data: ", data)
   try {
     const signupData = {
       email: data.email.trim(),
       username: data.username.trim(),
-      password: data.password,
+      ...((!data.authMethod || data.authMethod === AuthMethod.EMAIL_PASSWORD) && { 
+        password: data.password 
+      }),
       name: data.name.trim(),
+      authMethod: data.authMethod,
       academicNumber: data.academicNumber,
       department: data.department,
-      studyLevel: Number(data.studyLevel)
+      studyLevel: Number(data.studyLevel),
     };
 
     console.log('Sending signup request with:', signupData);

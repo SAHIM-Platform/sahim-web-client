@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Container from '@/components/Container';
 import Button from "@/components/Button";
@@ -10,7 +10,8 @@ import Logo from "@/components/Logo";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import { GraduationCap, Building2, GraduationCap as GraduationCap2, UserCheck } from "lucide-react";
 import { departmentLabels, Level, Department } from "@/types";
-import validateSignupForm from "@/utils/api/signup/validateSignupForm";
+import validateSignupForm, { AuthMethod, SignupFormData } from "@/utils/api/signup/validateSignupForm";
+import useAuth from "@/hooks/useAuth";
 
 interface CompleteSignupFormData {
   academicNumber: string;
@@ -18,13 +19,36 @@ interface CompleteSignupFormData {
   studyLevel: Level;
 }
 
+interface UserParams {
+  email: string;
+  username: string;
+  name: string;
+  picture?: string;
+}
+
 export default function CompleteSignupPage() {
   const router = useRouter();
-  // const { completeSignup } = useAuth();
+  const { signup } = useAuth();
   const [formData, setFormData] = useState<Partial<CompleteSignupFormData>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [userParams, setUserParams] = useState<UserParams | null>(null);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has('email') && searchParams.has('username')) {
+      setUserParams({
+        email: searchParams.get('email')!,
+        username: searchParams.get('username')!,
+        name: searchParams.get('name')!,
+        picture: searchParams.get('picture') || undefined
+      });
+    } else {
+      // Redirect if no user params (shouldn't access this page directly)
+      router.push('/login');
+    }
+  }, []);
 
   const handleChange = (field: keyof CompleteSignupFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -67,10 +91,34 @@ export default function CompleteSignupPage() {
       return;
     }
 
-    // will be implemented later ..
     try {
       console.log('Form data:', formData);
-      router.push('/');
+      const completeData: SignupFormData = {
+        email: userParams?.email || '',
+        username: userParams?.username || '',
+        authMethod: AuthMethod.OAUTH_GOOGLE,
+        academicNumber: formData.academicNumber || '', 
+        department: formData.department as Department,
+        studyLevel: Number(formData.studyLevel),
+        name: userParams?.name || ''
+      };
+
+      const result = await signup(completeData)
+      console.log('Signup result:', result);
+
+      if (!result.success) {
+        console.log('Signup failed:', result.error);
+        if (result.error?.fields) {
+          setErrors(result.error.fields.reduce<Record<string, string>>((acc, field) => ({
+            ...acc,
+            [field]: result.error?.message || ''
+          }), {}));
+        }
+        setFormError(result.error?.message || "حدث خطأ أثناء إنشاء الحساب");
+      }
+      if (result.success) {
+        router.push('/account-status'); 
+      }
     } catch (error) {
       console.error("Complete signup error:", error);
       setFormError("حدث خطأ غير متوقع أثناء إكمال معلومات الحساب");
