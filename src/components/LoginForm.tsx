@@ -12,6 +12,7 @@ import { Eye, EyeOff, Mail, Lock, ChevronLeft } from 'lucide-react';
 import Input from './Input';
 import Link from 'next/link';
 import { FormData } from '@/types';
+import { useGoogleLogin } from '@/hooks/useGoogleLogin';
 
 const formData: FormData = {
   title: {
@@ -49,6 +50,7 @@ const LoginForm = () => {
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const { handleGoogleSubmit } = useGoogleLogin();
 
   // Initialize form values
   useEffect(() => {
@@ -213,7 +215,7 @@ const LoginForm = () => {
 
         <div className="space-y-4 sm:space-y-5">
           <Divider />
-          <Button variant="outline" fullWidth>
+          <Button variant="outline" fullWidth onClick={handleGoogleSubmit}>
             <Image
               src="/icons8-google.svg"
               className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 inline-block me-2 opacity-80"
