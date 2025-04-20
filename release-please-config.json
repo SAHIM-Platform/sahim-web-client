@@ -1,0 +1,9 @@
+{
+  "release-type": "node",
+  "prerelease": true,
+  "packages": {
+    ".": {
+      "package-name": "sahim-web-client"
+    }
+  }
+}
