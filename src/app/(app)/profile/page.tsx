@@ -66,7 +66,7 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
-  }, []);
+  }, [router]);
 
   if (auth.loading || isLoading || isLoadingProfile) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;

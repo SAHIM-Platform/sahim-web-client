@@ -5,8 +5,6 @@ import Button from "@/components/Button";
 import { useRef, useState, useEffect } from "react";
 import Divider from "@/components/Divider";
 import Textarea from "@/components/Textarea";
-import remarkGfm from "remark-gfm";
-import ReactMarkdown from "react-markdown";
 import useAuth from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";

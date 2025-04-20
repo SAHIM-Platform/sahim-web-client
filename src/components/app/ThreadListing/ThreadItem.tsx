@@ -2,8 +2,6 @@ import { cn } from "@/utils/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useCallback, useRef, useEffect } from "react";
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import UserInfo from "../UserInfo";
 import Excerpt from "@/components/Excerpt";
 import Button from "@/components/Button";
@@ -24,7 +22,6 @@ export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
   title: string;
   onUpvote?: () => void;
   onDownvote?: () => void;
-  onReply?: () => void;
   onEdit?: (updatedThread: Thread) => void;
   onDelete?: () => void;
   className?: string;
@@ -47,7 +44,6 @@ const ThreadItem = ({
   thumbnail_url,
   onUpvote,
   onDownvote,
-  onReply,
   onEdit,
   onDelete,
   className,

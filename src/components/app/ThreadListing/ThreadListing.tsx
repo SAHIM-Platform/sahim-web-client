@@ -13,12 +13,10 @@ import Button from "@/components/Button";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 
 interface ThreadListingProps {
-  onReply?: (threadId: number) => void;
   emptyMessage?: string;
 }
 
 const ThreadListing = ({
-  onReply,
   emptyMessage = "لا توجد مناقشات حالياً"
 }: ThreadListingProps) => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -195,7 +193,6 @@ const ThreadListing = ({
                     <ThreadItem
                       key={thread.thread_id}
                       {...thread}
-                      onReply={() => onReply?.(thread.thread_id)}
                       onDelete={() => handleDeleteThread(thread.thread_id)}
                     />
                   );

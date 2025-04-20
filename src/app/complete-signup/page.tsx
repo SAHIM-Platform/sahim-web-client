@@ -48,7 +48,7 @@ export default function CompleteSignupPage() {
       // Redirect if no user params (shouldn't access this page directly)
       router.push('/login');
     }
-  }, []);
+  }, [router]);
 
   const handleChange = (field: keyof CompleteSignupFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));

@@ -27,10 +27,6 @@ export default function AccountStatusPage() {
   const isApproved = auth.user?.approvalStatus === ApprovalStatus.APPROVED;
   const isPending = auth.user?.approvalStatus === ApprovalStatus.PENDING;
 
-  const handleRefresh = () => {
-    router.refresh();
-  };
-
   const handleLogout = async () => {
     await logout();
   };

@@ -4,11 +4,11 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { cn } from '@/utils/utils';
 import { useCallback, useState } from 'react';
+import Image from 'next/image';
 
 interface MarkdownRendererProps {
   content: string;
   className?: string;
-  dir?: 'rtl' | 'ltr';
 }
 
 interface CodeElementProps {
@@ -16,7 +16,7 @@ interface CodeElementProps {
   className?: string;
 }
 
-export default function MarkdownRenderer({ content, className, dir = 'rtl' }: MarkdownRendererProps) {
+export default function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null);
 
   const handleCopyCode = useCallback((code: string, index: string, e: React.MouseEvent) => {
@@ -143,12 +143,17 @@ export default function MarkdownRenderer({ content, className, dir = 'rtl' }: Ma
             <hr className="my-6 border-gray-200/50" />
           ),
           img: ({ src, alt }) => (
-            <img
-              src={src}
-              alt={alt || ''}
-              className="my-4 rounded-lg max-w-full h-auto"
-              loading="lazy"
-            />
+            <div className="my-4">
+              {src && <Image 
+                src={src}
+                alt={alt || ''}
+                width={1200}
+                height={675}
+                className="rounded-lg max-w-full h-auto"
+                loading="lazy"
+                style={{ objectFit: 'contain' }}
+              />}
+            </div>
           ),
         }}
       >
