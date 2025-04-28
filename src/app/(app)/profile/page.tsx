@@ -160,7 +160,6 @@ export default function ProfilePage() {
   };
 
   const isFormValid = formData.name.trim() !== '' && formData.username.trim() !== '';
-
   const ReadOnlyField = ({
     label,
     value,

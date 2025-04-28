@@ -2,23 +2,19 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import useAuth from '@/hooks/useAuth';
-import useAuthRedirect from '@/hooks/UseAuthRedirect';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import ErrorAlert from '@/components/Form/ErrorAlert';
 import ThreadItem from '@/components/app/ThreadListing/ThreadItem';
 import { Thread } from '@/types/thread';
 import { fetchUserThreads } from '@/services/threadService';
-import { RefreshCw } from 'lucide-react';
 import Button from '@/components/Button';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import MyDiscussionsHeader from '@/components/app/pages/MyDiscussionsHeader';
+import { checkAuthLoadingWithRedirect } from '@/utils/loading';
+import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import RetryAgain from '@/components/app/RetryAgain';
 
 export default function MyDiscussionsPage() {
   const router = useRouter();
-  const { auth } = useAuth();
-  const isLoading = useAuthRedirect();
-
   const [threads, setThreads] = useState<Thread[]>([]);
   const [isLoadingThreads, setIsLoadingThreads] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,12 +57,12 @@ export default function MyDiscussionsPage() {
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage(2);
       } else {
-        const errorMessage = result.error?.message || 'حدث خطأ أثناء تحميل المناقشات';
+        const errorMessage = result.error?.message || ERROR_MESSAGES.thread.DEFAULT;
         setError(errorMessage);
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المناقشات';
-      setError(`${errorMessage}. حاول مرة أخرى.`);
+      const errorMessage = err instanceof Error ? err.message : ERROR_MESSAGES.thread.DEFAULT;
+      setError(`${errorMessage}. ${ERROR_MESSAGES.GLOBAL.TRY_AGAIN}`);
     } finally {
       if (isInitialLoad) {
         setIsLoadingThreads(false);
@@ -94,10 +90,10 @@ export default function MyDiscussionsPage() {
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage((prev) => prev + 1);
       } else {
-        setError(result.error?.message || 'حدث خطأ أثناء تحميل المزيد من المناقشات');
+        setError(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
       }
     } catch {
-      setError('حدث خطأ أثناء تحميل المزيد من المناقشات');
+      setError(ERROR_MESSAGES.thread.LOADING_MORE);
     } finally {
       setIsFetchingMore(false);
     }
@@ -124,24 +120,14 @@ export default function MyDiscussionsPage() {
     isLoading: isFetchingMore,
     onLoadMore: fetchMoreThreads,
   });
-
-  if (auth.loading || isLoading) {
-    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
+  
+  if (checkAuthLoadingWithRedirect()) {
+    return <LoadingSpinner size="xl" fullScreen={true} />;
   }
 
   if (error && threads.length === 0) {
     return (
-      <div className="space-y-4">
-        <ErrorAlert message={error} />
-        <Button
-          onClick={handleRetry}
-          variant="outline"
-          icon={<RefreshCw className="w-4" />}
-          color="secondary"
-        >
-          إعادة المحاولة
-        </Button>
-      </div>
+      <RetryAgain error={error} handleRetry={handleRetry} />
     );
   }
 
