@@ -1,18 +1,17 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import Button from "./Button";
-import Input from "./Input";
-import Select from "./Select";
-import Logo from "./Logo";
-import Divider from "./Divider";
+import Button from "../Button";
+import Input from "../Input";
+import Select from "../Select";
+import Divider from "../Divider";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, EyeOff, User, Lock, GraduationCap, Building2, GraduationCap as GraduationCap2, ChevronLeft, ChevronRight, UserCheck } from "lucide-react";
 import { departmentLabels, Level } from "@/types";
 import useAuth from "@/hooks/useAuth";
 import validateSignupForm, { SignupFormData } from "@/utils/api/signup/validateSignupForm";
-import ErrorAlert from "./Form/ErrorAlert";
+import ErrorAlert from "../Form/ErrorAlert";
 import { useGoogleLogin } from "@/hooks/useGoogleLogin";
 
 const steps = [
@@ -36,7 +35,7 @@ const steps = [
 const SignupForm = () => {
   const { signup } = useAuth();
   const { handleGoogleSubmit } = useGoogleLogin();
-  
+
   const [formData, setFormData] = useState<Partial<SignupFormData>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +46,7 @@ const SignupForm = () => {
 
   const handleChange = (field: keyof SignupFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     // Clear error for the changed field
     if (errors[field]) {
       setErrors(prev => {
@@ -97,7 +96,7 @@ const SignupForm = () => {
     e.preventDefault();
     setFormError(null);
     setIsLoading(true);
-    
+
     const validationErrors = validateSignupForm(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -268,108 +267,98 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="w-full max-w-[520px] flex flex-col justify-center items-center text-right gap-6 sm:gap-8 p-6 sm:p-8 lg:p-10 rounded-lg sm:rounded-xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/20 box-border" dir="rtl">
-      <div className="space-y-4 sm:space-y-5 text-right w-full">
-        <Logo className="mx-auto" />
-        <div className="space-y-2 sm:space-y-3 text-center">
-          <h1 className="font-semibold text-xl sm:text-2xl lg:text-3xl text-gray-800 tracking-tight">إنشاء حساب جديد</h1>
-          <p className="text-sm sm:text-base text-gray-500 font-normal break-words">{steps[currentStep].description}</p>
+    <div className="w-full">
+      <div className="flex flex-col gap-2 mb-6">
+        <div className="flex items-center justify-between">
+          {steps.map((step, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className={`flex items-center justify-center w-10 h-10 rounded-full ${index <= currentStep ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'} transition-colors duration-200`}>
+                {index + 1}
+              </div>
+              <span className={`text-xs mt-2 ${index <= currentStep ? 'text-primary font-medium' : 'text-gray-400'}`}>
+                {step.title}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="relative h-1 bg-gray-100 rounded-full mt-4">
+          <div
+            className="absolute top-0 right-0 h-full bg-primary rounded-full transition-all duration-300"
+            style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+          />
         </div>
       </div>
 
-      <div className="w-full">
-        <div className="flex flex-col gap-2 mb-6">
-          <div className="flex items-center justify-between">
-            {steps.map((step, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full ${index <= currentStep ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'} transition-colors duration-200`}>
-                  {index + 1}
-                </div>
-                <span className={`text-xs mt-2 ${index <= currentStep ? 'text-primary font-medium' : 'text-gray-400'}`}>
-                  {step.title}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="relative h-1 bg-gray-100 rounded-full mt-4">
-            <div 
-              className="absolute top-0 right-0 h-full bg-primary rounded-full transition-all duration-300"
-              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-            />
-          </div>
+      <div className="space-y-6 sm:space-y-8 w-full">
+        <div className="space-y-5 w-full">
+          <form onSubmit={handleSubmit} className="flex flex-col space-y-4 w-full">
+            {renderStepContent()}
+
+            {formError && <ErrorAlert message={formError} />}
+
+            <div className="flex gap-3 pt-2">
+              {currentStep > 0 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  fullWidth
+                  onClick={handlePrevious}
+                  disabled={isLoading}
+                  icon={<ChevronRight className="w-4 h-4" />}
+                  iconPosition="start"
+                >
+                  السابق
+                </Button>
+              )}
+              {currentStep < steps.length - 1 ? (
+                <Button
+                  type="button"
+                  variant="primary"
+                  fullWidth
+                  onClick={handleNext}
+                  disabled={isLoading || Object.keys(errors).length > 0}
+                  icon={<ChevronLeft className="w-4 h-4" />}
+                  iconPosition="end"
+                >
+                  التالي
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  variant="primary"
+                  fullWidth
+                  isLoading={isLoading}
+                  disabled={isLoading || Object.keys(errors).length > 0}
+                  icon={<UserCheck className="w-4 h-4" />}
+                  iconPosition="end"
+                >
+                  إنشاء حساب
+                </Button>
+              )}
+            </div>
+          </form>
+
+          <p className="text-sm sm:text-base text-gray-500 text-center" >
+            لديك حساب بالفعل؟{" "}
+            <Link href="/login" className="text-primary font-medium hover:underline hover:underline-offset-4 transition-all">
+              سجل الدخول
+            </Link>
+          </p>
         </div>
 
-        <div className="space-y-6 sm:space-y-8 w-full">
-          <div className="space-y-5 w-full">
-            <form onSubmit={handleSubmit} className="flex flex-col space-y-4 w-full">
-              {renderStepContent()}
+        <div className="space-y-4 sm:space-y-5">
+          <Divider />
 
-              {formError && <ErrorAlert message={formError} />}
-
-              <div className="flex gap-3 pt-2">
-                {currentStep > 0 && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    fullWidth
-                    onClick={handlePrevious}
-                    disabled={isLoading}
-                    icon={<ChevronRight className="w-4 h-4" />}
-                    iconPosition="start"
-                  >
-                    السابق
-                  </Button>
-                )}
-                {currentStep < steps.length - 1 ? (
-                  <Button
-                    type="button"
-                    variant="primary"
-                    fullWidth
-                    onClick={handleNext}
-                    disabled={isLoading || Object.keys(errors).length > 0}
-                    icon={<ChevronLeft className="w-4 h-4" />}
-                    iconPosition="end"
-                  >
-                    التالي
-                  </Button>
-                ) : (
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    fullWidth
-                    isLoading={isLoading}
-                    disabled={isLoading || Object.keys(errors).length > 0}
-                    icon={<UserCheck className="w-4 h-4" />}
-                    iconPosition="end"
-                  >
-                    إنشاء حساب
-                  </Button>
-                )}
-              </div>
-            </form>
-
-            <p className="text-sm sm:text-base text-gray-500 text-center" >
-              لديك حساب بالفعل؟{" "}
-              <Link href="/login" className="text-primary font-medium hover:underline hover:underline-offset-4 transition-all">
-                سجل الدخول
-              </Link>
-            </p>
-          </div>
-
-          <div className="space-y-4 sm:space-y-5">
-            <Divider />
-
-            <Button variant="outline" fullWidth onClick={handleGoogleSubmit}>
-              <Image
-                src="/icons8-google.svg"
-                className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 inline-block me-2 opacity-80"
-                alt="Google Icon"
-                width={20}
-                height={20}
-              />
-              أنشئ حساب بواسطة جوجل
-            </Button>
-          </div>
+          <Button variant="outline" fullWidth onClick={handleGoogleSubmit}>
+            <Image
+              src="/icons8-google.svg"
+              className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 inline-block me-2 opacity-80"
+              alt="Google Icon"
+              width={20}
+              height={20}
+            />
+            أنشئ حساب بواسطة جوجل
+          </Button>
         </div>
       </div>
     </div>

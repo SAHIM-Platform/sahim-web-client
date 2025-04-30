@@ -22,10 +22,13 @@ export interface FormButton {
 }
 
 export interface FormData {
-  title: FormTitle;
-  description: string;
   submitButton: FormButton;
   fields: FormField[];
+}
+
+export interface FormDataHeading {
+  title: FormTitle;
+  description: string;
 }
 
 export interface ValidationErrorResponse {

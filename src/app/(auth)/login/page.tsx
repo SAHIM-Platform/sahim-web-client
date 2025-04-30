@@ -1,26 +1,23 @@
 'use client';
 
-import Container from '@/components/Container';
-import LoginForm from '@/components/LoginForm';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import useAuth from '@/hooks/useAuth';
-import useAuthRedirect from '@/hooks/UseAuthRedirect';
+import LoginForm from '@/components/Auth/LoginForm';
+import AuthCard from '@/components/app/AuthCard';
+import { FormDataHeading } from '@/types';
 
-export default function Home() {
-  const { auth } = useAuth();
-  const isLoading = useAuthRedirect();
+const formData: FormDataHeading = {
+  title: {
+    text: "مرحباً بك مجدداً في ساهم"
+  },
+  description: "من فضلك، أدخل بيانات حسابك لتسجيل الدخول"
+};
 
-  if (auth.loading || isLoading) {
-    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
-  }
-
+export default function LoginPage() {
   return (
-    <main className="bg-[url('/login-bg.jpg')] bg-no-repeat bg-fixed bg-cover bg-center min-h-screen overflow-x-hidden">
-      <Container>
-        <div className='flex items-center justify-center min-h-screen py-6 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8'>
-          <LoginForm />
-        </div>
-      </Container>
-    </main>
+    <AuthCard 
+      title={formData.title.text}
+      description={formData.description}
+    >
+      <LoginForm />
+    </AuthCard>
   );
 }
