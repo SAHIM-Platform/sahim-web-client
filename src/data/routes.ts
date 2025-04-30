@@ -19,4 +19,17 @@ export const routesData = [
     name: "الأسئلة الشائعة",
     path: "/faq",
   },
+  {
+    name: "الدعم الفني",
+    path: "/support",
+  },
 ];
+
+export enum FrontendRoutes {
+  Explore = "/explore",
+  NewDiscussion = "/discussions/new",
+  BookmarkedDiscussions = "/discussions/bookmarked",
+  Resources = "/resources",
+  FAQ = "/faq",
+  Support = "/support",
+}
