@@ -26,10 +26,12 @@ export const routesData = [
 ];
 
 export enum FrontendRoutes {
-  Explore = "/explore",
-  NewDiscussion = "/discussions/new",
-  BookmarkedDiscussions = "/discussions/bookmarked",
-  Resources = "/resources",
+  EXPLORE = "/explore",
+  NEW_DISCUSSION = "/discussions/new",
+  BOOKMARKED_DISCUSSIONS = "/discussions/bookmarked",
+  RESOURCES = "/resources",
   FAQ = "/faq",
-  Support = "/support",
+  SUPPORT = "/support",
+  CATEGORIES = "/categories",
+  ADMINS = "/admins",
 }

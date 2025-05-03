@@ -1,16 +1,23 @@
 "use client";
 
-import useAdminRoleGuard from '@/hooks/useAdminRoleGuard';
+import { FrontendRoutes } from '@/data/routes';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { isAuthOrSuperAdminRoleGuardLoading } from '@/utils/loading';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import useSuperAdminRoleGuard from '@/hooks/useSuperAdminRoleGuard';
 
 export default function AdminPage() {
-  useAdminRoleGuard();
+  const router = useRouter();
+  useSuperAdminRoleGuard();
 
-  return (
-    <div>
-      <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold">لوحة التحكم</h1>
-      <p className="mt-2 text-xs sm:text-sm lg:text-base text-gray-500">
-        قريباً...
-      </p>
-    </div>
-  );
-} 
+  useEffect(() => {
+    router.push(FrontendRoutes.ADMINS);
+  }, [router]);
+
+  if (isAuthOrSuperAdminRoleGuardLoading()) {
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
+  }
+
+  return null;
+}

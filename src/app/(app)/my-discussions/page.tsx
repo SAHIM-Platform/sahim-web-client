@@ -9,7 +9,7 @@ import { fetchUserThreads } from '@/services/threadService';
 import Button from '@/components/Button';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import MyDiscussionsHeader from '@/components/app/pages/MyDiscussionsHeader';
-import { checkAuthLoadingWithRedirect } from '@/utils/loading';
+import { isAuthLoadingOrRedirecting } from '@/utils/loading';
 import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
 import RetryAgain from '@/components/app/RetryAgain';
 
@@ -121,7 +121,7 @@ export default function MyDiscussionsPage() {
     onLoadMore: fetchMoreThreads,
   });
   
-  if (checkAuthLoadingWithRedirect()) {
+  if (isAuthLoadingOrRedirecting()) {
     return <LoadingSpinner size="xl" fullScreen={true} />;
   }
 

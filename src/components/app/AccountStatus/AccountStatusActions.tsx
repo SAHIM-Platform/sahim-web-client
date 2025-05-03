@@ -22,14 +22,14 @@ const ACTION_VARIANTS: Record<ApprovalStatus, ActionVariant> = {
     primaryButton: {
       icon: <ArrowLeft className="w-5 h-5" />,
       text: "المتابعة إلى الصفحة الرئيسية",
-      href: `${FrontendRoutes.Explore}`,
+      href: `${FrontendRoutes.EXPLORE}`,
     },
   },
   [ApprovalStatus.PENDING]: {
     primaryButton: {
       icon: <MessageCircle className="w-5 h-5" />,
       text: "التواصل مع الدعم الفني",
-      href: `${FrontendRoutes.Support}`,
+      href: `${FrontendRoutes.SUPPORT}`,
     },
     showRefreshButton: true,
   },
@@ -37,7 +37,7 @@ const ACTION_VARIANTS: Record<ApprovalStatus, ActionVariant> = {
     primaryButton: {
       icon: <MessageCircle className="w-5 h-5" />,
       text: "التواصل مع الدعم الفني",
-      href: `${FrontendRoutes.Support}`,
+      href: `${FrontendRoutes.SUPPORT}`,
     },
     showRefreshButton: true,
   },

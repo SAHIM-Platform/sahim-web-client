@@ -6,14 +6,16 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import useAuth from "@/hooks/useAuth";
 import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
 import { createCategory } from "@/services/admin/categoryService";
 import toast from "react-hot-toast";
+import { isAuthOrAdminRoleGuardLoading } from "@/utils/loading";
+import { logger } from "@/utils/logger";
+import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import { FrontendRoutes } from "@/data/routes";
 
 export default function NewCategoryPage() {
   const router = useRouter();
-  const { auth } = useAuth();
   
   useAdminRoleGuard();
   
@@ -23,7 +25,7 @@ export default function NewCategoryPage() {
     name: "",
   });
 
-  if (auth.loading) {
+  if (isAuthOrAdminRoleGuardLoading()) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
@@ -36,14 +38,14 @@ export default function NewCategoryPage() {
       const result = await createCategory(formData.name.trim());
 
       if (result.success) {
-        toast.success("تم إنشاء التصنيف بنجاح!");
-        router.push("/categories");
+        toast.success(ERROR_MESSAGES.category.CREATED_SUCCESSFULLY);
+        router.push(FrontendRoutes.CATEGORIES);
       } else {
-        setError(result.error?.message || "حدث خطأ أثناء إنشاء التصنيف");
+        setError(result.error?.message || ERROR_MESSAGES.category.CREATE_FAILED);
       }
     } catch (error) {
-      console.error("Error creating category:", error);
-      setError("حدث خطأ غير متوقع أثناء إنشاء التصنيف");
+      logger().error("Error creating category:", error);
+      setError(ERROR_MESSAGES.category.CREATE_FAILED);
     } finally {
       setIsSubmitting(false);
     }
