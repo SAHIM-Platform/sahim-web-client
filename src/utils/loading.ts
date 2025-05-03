@@ -49,4 +49,3 @@ export function isAuthOrSuperAdminRoleGuardLoading(): boolean {
 
   return isRedirectingOrLoading || isSuperAdminRoleGuardActive;
 }
-

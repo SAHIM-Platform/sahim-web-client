@@ -50,7 +50,7 @@ export function isStudentByRole(role: string) {
  * @param role - The role to check.
  * @returns True if the role is that of an admin, false otherwise.
  */
-export function isAdminByRole(role: string) {
+export function isAdminByRole(role: UserRole) {
   return role === UserRole.ADMIN;
 }
 
@@ -59,7 +59,7 @@ export function isAdminByRole(role: string) {
  * @param role - The role to check.
  * @returns True if the role is that of a super admin, false otherwise.
  */
-export function isSuperAdminByRole(role: string) {
+export function isSuperAdminByRole(role: UserRole) {
   return role === UserRole.SUPER_ADMIN;
 }
 
@@ -68,6 +68,6 @@ export function isSuperAdminByRole(role: string) {
  * @param role - The role to check.
  * @returns True if the role is that of an admin or a super admin, false otherwise.
  */
-export function isAdminOrSuperAdminByRole(role: string) {
+export function isAdminOrSuperAdminByRole(role: UserRole) {
   return isAdminByRole(role) || isSuperAdminByRole(role);
 }
