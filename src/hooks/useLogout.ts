@@ -5,7 +5,7 @@ import useAuth from "./useAuth";
 import { useRouter } from "next/navigation";
 import useAxios from "./useAxios";
 import { useState } from "react";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 
 const useLogout = () => {
   const { setAuth } = useAuth();

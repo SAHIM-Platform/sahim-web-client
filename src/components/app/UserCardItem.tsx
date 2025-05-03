@@ -7,7 +7,7 @@ import { Admin, Student, ApprovalStatus } from "@/types";
 import DateBadge from "./Badge/DateBadge";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import toast from "react-hot-toast";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 
 interface UserCardItemProps {
   student?: Student;

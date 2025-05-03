@@ -1,6 +1,6 @@
 import { Department, Level } from "@/types";
 import validateSignupForm, { SignupFormData } from "./validateSignupForm";
-import ERROR_MESSAGES from "../ERROR_MESSAGES";
+import ERROR_MESSAGES from "../../constants/ERROR_MESSAGES";
 
 describe("validateSignupForm", () => {
   // Helper function to create valid form data

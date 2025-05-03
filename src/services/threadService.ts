@@ -1,7 +1,7 @@
 import axiosInstance from '@/api/axios';
 import { ThreadResult, ThreadResponse, SingleThreadResult, Thread, BookmarkedThreadsResult } from '@/types/thread';
 import { AxiosError, isAxiosError } from 'axios';
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
 import { THREADS_LIMIT } from '@/utils/constant';
 

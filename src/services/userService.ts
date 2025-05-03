@@ -1,6 +1,6 @@
 import axiosInstance from '@/api/axios';
 import { AxiosError, isAxiosError } from 'axios';
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
 import { Profile } from '@/types';
 

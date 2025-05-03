@@ -1,4 +1,4 @@
-import ERROR_MESSAGES from "../ERROR_MESSAGES";
+import ERROR_MESSAGES from "../../constants/ERROR_MESSAGES";
 
 export interface AdminFormData {
   email: string;

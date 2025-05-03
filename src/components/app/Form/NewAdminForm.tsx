@@ -9,7 +9,7 @@ import { Eye, EyeOff, Lock } from "lucide-react";
 import validateCreateAdminForm, { AdminFormData } from "@/utils/api/admin/validateCreateAdminForm";
 import createAdminService from "@/services/admin/createAdminService";
 import { logger } from "@/utils/logger";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
 import { clearFieldError } from "@/utils/formUtils";
 

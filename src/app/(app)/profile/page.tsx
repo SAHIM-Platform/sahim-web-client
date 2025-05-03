@@ -9,7 +9,7 @@ import ErrorAlert from '@/components/Form/ErrorAlert';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import toast from 'react-hot-toast';
 import useAuthRedirect from '@/hooks/UseAuthRedirect';
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import Divider from '@/components/Divider';
 import { Edit2, Save, X, Trash2, Mail, Hash, Shield, Building2, GraduationCap } from 'lucide-react';
 import { Profile, userRoleLabels, UserRole } from '@/types';

@@ -6,7 +6,7 @@ import Textarea from "@/components/Textarea";
 import { Thread } from "@/types/thread";
 import ThumbnailPreview from "@/components/app/ThumbnailPreview";
 import { useImageValidation } from "@/hooks/useImageValidation";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import Modal from "@/components/Modal/Modal";
 import { X } from "lucide-react";

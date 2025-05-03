@@ -8,7 +8,7 @@ import Button from "@/components/Button";
 import { PlusCircle } from "lucide-react";
 import { isAuthLoadingOrRedirecting } from "@/utils/loading";
 import { logger } from "@/utils/logger";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import { isSuperAdminByRole } from "@/utils/role";
 import { UserRole } from "@/types";
 export default function CategoriesPage() {

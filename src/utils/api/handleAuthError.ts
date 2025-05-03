@@ -1,6 +1,6 @@
 import { AuthError } from '@/types/auth';
-import ERROR_MESSAGES from './ERROR_MESSAGES';
-import FIELD_ERROR_MAPPING from './FIELD_ERROR_MAPPING';
+import ERROR_MESSAGES from '../constants/ERROR_MESSAGES';
+import FIELD_ERROR_MAPPING from '../constants/FIELD_ERROR_MAPPING';
 
 /**
  * Generic handler for authentication errors

@@ -8,7 +8,7 @@ import { fetchBookmarkedThreads, deleteThread } from '@/services/threadService';
 import ThreadItem from '@/components/app/ThreadListing/ThreadItem';
 import { isAuthLoadingOrRedirecting } from '@/utils/loading';
 import { logger } from '@/utils/logger';
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import toast from 'react-hot-toast';
 import RetryAgain from '@/components/app/RetryAgain';
 import ItemNotFound from '@/components/app/NotFound/ItemNotFound';

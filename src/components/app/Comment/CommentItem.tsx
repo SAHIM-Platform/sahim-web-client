@@ -7,7 +7,7 @@ import Divider from "@/components/Divider";
 import Textarea from "@/components/Textarea";
 import useAuth from "@/hooks/useAuth";
 import toast from "react-hot-toast";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import { voteComment } from "@/services/threadService";
 import MarkdownRenderer from '@/components/app/MarkdownRenderer';

@@ -10,7 +10,7 @@ import { X } from "lucide-react";
 import ThumbnailPreview from "@/components/app/ThumbnailPreview";
 import { useImageValidation } from "@/hooks/useImageValidation";
 import useAxios from "@/hooks/useAxios";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import { fetchCategories, createThread } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";

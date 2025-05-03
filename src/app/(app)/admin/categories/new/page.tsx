@@ -11,7 +11,7 @@ import { createCategory } from "@/services/admin/categoryService";
 import toast from "react-hot-toast";
 import { isAuthOrAdminRoleGuardLoading } from "@/utils/loading";
 import { logger } from "@/utils/logger";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
 
 export default function NewCategoryPage() {

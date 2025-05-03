@@ -16,7 +16,7 @@ import useAuth from "@/hooks/useAuth";
 import useAuthRedirect from "@/hooks/UseAuthRedirect";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import { RefreshCw } from "lucide-react";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import ItemNotFound from "../NotFound/ItemNotFound";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {

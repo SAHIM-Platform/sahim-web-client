@@ -1,7 +1,7 @@
 import axiosInstance from '@/api/axios';
 import { Admin } from '@/types';
 import { AxiosError, isAxiosError } from 'axios';
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 
 interface AdminResponse {
   id: number;

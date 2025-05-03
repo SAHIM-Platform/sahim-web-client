@@ -1,5 +1,5 @@
 import { Department, Level } from "@/types";
-import ERROR_MESSAGES from "../ERROR_MESSAGES";
+import ERROR_MESSAGES from "../../constants/ERROR_MESSAGES";
 
 export enum AuthMethod {
   EMAIL_PASSWORD = 'EMAIL_PASSWORD',

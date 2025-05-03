@@ -1,7 +1,7 @@
 import { AxiosInstance, AxiosError } from 'axios';
 import { SignupFormData } from './validateSignupForm';
 import { AuthResult, APIError } from '@/types/auth';
-import ERROR_MESSAGES from '../ERROR_MESSAGES';
+import ERROR_MESSAGES from '../../constants/ERROR_MESSAGES';
 
 export const handleSignupSubmit = async (
   axiosInstance: AxiosInstance,

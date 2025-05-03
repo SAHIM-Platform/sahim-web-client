@@ -12,7 +12,7 @@ import UserCardItem from "./app/UserCardItem";
 import { ArrowUpDown, RefreshCw, UserPlus } from "lucide-react";
 import { Admin } from "@/types";
 import { adminService } from "@/services/admin/adminService";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 
 export default function AdminsListing() {
   const [isLoading, setIsLoading] = useState(true);

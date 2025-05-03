@@ -1,7 +1,7 @@
 import axiosInstance from '@/api/axios';
 import { AuthError, AuthResult, LoginCredentials } from "@/types/auth";
 import { AxiosError, isAxiosError } from "axios";
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
 
 async function loginService(credentials: LoginCredentials): Promise<AuthResult> {
