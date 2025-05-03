@@ -35,4 +35,6 @@ export enum FrontendRoutes {
   SUPPORT = "/support",
   CATEGORIES = "/categories",
   ADMINS = "/admins",
+  MY_DISCUSSIONS = "/my-discussions",
+  PROFILE = "/profile",
 }
