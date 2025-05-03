@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import CategoriesListing from "@/components/app/CategoriesListing";
+import CategoriesListing from "@/components/App/CategoriesListing";
 import { fetchCategories } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Button from "@/components/Button";

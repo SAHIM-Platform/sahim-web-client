@@ -1,7 +1,7 @@
 "use client";
 
-import ItemNotFound from "@/components/app/NotFound/ItemNotFound";
-import DiscussionPageContent from "@/components/app/pages/DiscussionPageContent";
+import ItemNotFound from "@/components/App/NotFound/ItemNotFound";
+import DiscussionPageContent from "@/components/App/pages/DiscussionPageContent";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import { isAuthLoadingOrRedirecting } from "@/utils/loading";

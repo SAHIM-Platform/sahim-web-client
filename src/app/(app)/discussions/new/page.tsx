@@ -7,7 +7,7 @@ import Select from "@/components/Select";
 import Button from "@/components/Button";
 import Textarea from "@/components/Textarea";
 import { X } from "lucide-react";
-import ThumbnailPreview from "@/components/app/ThumbnailPreview";
+import ThumbnailPreview from "@/components/App/ThumbnailPreview";
 import { useImageValidation } from "@/hooks/useImageValidation";
 import useAxios from "@/hooks/useAxios";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
@@ -19,7 +19,7 @@ import useAuthRedirect from "@/hooks/UseAuthRedirect";
 import validateThreadForm from "@/utils/api/thread/validateThreadForm";
 import { FrontendRoutes } from "@/data/routes";
 import { logger } from "@/utils/logger";
-import RetryAgain from "@/components/app/RetryAgain";
+import RetryAgain from "@/components/App/RetryAgain";
 import { toast } from "react-hot-toast";
 
 export default function NewDiscussionPage() {

@@ -5,13 +5,13 @@ import { Thread } from '@/types/thread';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { fetchBookmarkedThreads, deleteThread } from '@/services/threadService';
-import ThreadItem from '@/components/app/ThreadListing/ThreadItem';
+import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
 import { isAuthLoadingOrRedirecting } from '@/utils/loading';
 import { logger } from '@/utils/logger';
 import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import toast from 'react-hot-toast';
-import RetryAgain from '@/components/app/RetryAgain';
-import ItemNotFound from '@/components/app/NotFound/ItemNotFound';
+import RetryAgain from '@/components/App/RetryAgain';
+import ItemNotFound from '@/components/App/NotFound/ItemNotFound';
 
 const BookmarksPageContent = () => {
   const [bookmarkedThreads, setBookmarkedThreads] = useState<Thread[]>([]);

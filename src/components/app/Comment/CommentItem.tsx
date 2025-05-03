@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import { voteComment } from "@/services/threadService";
-import MarkdownRenderer from '@/components/app/MarkdownRenderer';
+import MarkdownRenderer from '@/components/App/MarkdownRenderer';
 
 export interface CommentItemProps {
   id: string;
