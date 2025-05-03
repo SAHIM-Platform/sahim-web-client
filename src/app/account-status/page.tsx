@@ -1,6 +1,5 @@
 "use client";
 
-import useStudentGuard from "@/hooks/useStudentGuard";
 import useAuth from "@/hooks/useAuth";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useRouter } from "next/navigation";
@@ -11,14 +10,14 @@ import AccountStatusCard from "@/components/app/AccountStatus/AccountStatusCard"
 import AccountStatusActions from "@/components/app/AccountStatus/AccountStatusActions";
 import AccountStatusFooter from "@/components/app/AccountStatus/AccountStatusFooter";
 import { ApprovalStatus } from "@/types";
+import { isAuthOrStudentRoleGuardLoading } from "@/utils/loading";
 
 export default function AccountStatusPage() {
-  const isLoading = useStudentGuard();
   const { auth } = useAuth();
   const { logout, isLoading: isLoggingOut } = useLogout();
   const router = useRouter();
 
-  if (isLoading) {
+  if (isAuthOrStudentRoleGuardLoading()) {
     return (
       <LoadingSpinner size="xl" color="primary" fullScreen={true} />
     );

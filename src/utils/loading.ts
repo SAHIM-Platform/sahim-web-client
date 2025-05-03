@@ -1,6 +1,7 @@
 import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
 import useAuth from "@/hooks/useAuth";
 import useAuthRedirect from "@/hooks/UseAuthRedirect";
+import useStudentApprovalGuard from "@/hooks/useStudentApprovalGuard";
 import useSuperAdminRoleGuard from "@/hooks/useSuperAdminRoleGuard";
 
 /**
@@ -24,6 +25,18 @@ export function isAuthLoadingOrRedirecting(): boolean {
   const isRedirecting = useAuthRedirect();
 
   return auth.loading || isRedirecting;
+}
+
+/**
+ * Determines if the authentication process is currently in progress, or if a redirect is underway, or if a student role guard is active.
+ * 
+ * @returns {boolean} True if authentication is in progress, or a redirect is underway, or a student role guard is active, false otherwise.
+ */
+export function isAuthOrStudentRoleGuardLoading(): boolean {
+  const isRedirectingOrLoading = isAuthLoadingOrRedirecting();
+  const isStudentRoleGuardActive = useStudentApprovalGuard();
+
+  return isRedirectingOrLoading || isStudentRoleGuardActive;
 }
 
 /**
