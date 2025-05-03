@@ -1,7 +1,7 @@
 import axiosInstance from '@/api/axios';
 import { AdminFormData } from '@/utils/api/admin/validateCreateAdminForm';
 import { AxiosError, isAxiosError } from "axios";
-import { APIError } from '@/types/auth';
+import { APIError } from '@/types/api/auth';
 import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 
 interface AdminCreationResponse {

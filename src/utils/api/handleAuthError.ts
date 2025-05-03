@@ -1,4 +1,4 @@
-import { AuthError } from '@/types/auth';
+import { AuthError } from '@/types/api/auth';
 import ERROR_MESSAGES from '../constants/ERROR_MESSAGES';
 import FIELD_ERROR_MAPPING from '../constants/FIELD_ERROR_MAPPING';
 

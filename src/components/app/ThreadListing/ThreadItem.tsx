@@ -10,7 +10,7 @@ import CategoryBadge from "../Badge/CategoryBadge";
 import BookmarkToggle from "@/components/BookmarkToggle";
 import { voteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
-import { Thread } from "@/types/thread";
+import { Thread } from "@/types/api/thread";
 import Divider from "@/components/Divider";
 import EditThreadModal from "../../Modal/EditThreadModal";
 import useAuth from "@/hooks/useAuth";

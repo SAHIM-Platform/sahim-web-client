@@ -6,7 +6,7 @@ import { Fragment, RefObject } from "react";
 import SearchField from "../App/SearchField";
 import ThreadItemMinimal from "../App/ThreadListing/ThreadItemMinimal";
 import Divider from "../Divider";
-import { Thread } from "@/types/thread";
+import { Thread } from "@/types/api/thread";
 import LoadingSpinner from "../LoadingSpinner";
 
 interface SearchModalProps {

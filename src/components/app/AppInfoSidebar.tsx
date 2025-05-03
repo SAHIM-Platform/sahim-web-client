@@ -6,7 +6,7 @@ import ThreadItemMinimal from "./ThreadListing/ThreadItemMinimal";
 import { Fragment, useState, useEffect } from "react";
 import { cn } from "@/utils/utils";
 import { fetchThreads, fetchCategories } from "@/services/threadService";
-import { Thread } from "@/types/thread";
+import { Thread } from "@/types/api/thread";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CategoriesListing from "./CategoriesListing";
 import Link from "next/link";

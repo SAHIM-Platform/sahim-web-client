@@ -3,7 +3,7 @@
 import { useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/context/AuthProvider';
-import { AuthResult, LoginCredentials, UserRole } from '@/types/auth';
+import { AuthResult, LoginCredentials, UserRole } from '@/types/api/auth';
 import loginService from '@/services/auth/loginService';
 import { SignupFormData } from '@/utils/api/signup/validateSignupForm';
 import signupService from '@/services/auth/signupService';

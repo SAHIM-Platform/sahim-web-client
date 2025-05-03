@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
-import { Thread } from '@/types/thread';
+import { Thread } from '@/types/api/thread';
 import { fetchUserThreads } from '@/services/threadService';
 import Button from '@/components/Button';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';

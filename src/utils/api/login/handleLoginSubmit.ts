@@ -1,4 +1,4 @@
-import { AuthError, LoginCredentials } from '@/types/auth';
+import { AuthError, LoginCredentials } from '@/types/api/auth';
 import validateLoginForm from './validateLoginForm';
 import handleAuthSubmit from '../handleAuthSubmit';
 

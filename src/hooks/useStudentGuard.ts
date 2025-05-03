@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuth from "./useAuth";
-import { UserRole } from "@/types/auth";
+import { UserRole } from "@/types/api/auth";
 
 /**
  * Hook for protecting routes that should only be accessible to students
