@@ -27,6 +27,7 @@ export const routesData = [
 
 export enum FrontendRoutes {
   EXPLORE = "/explore",
+  DISCUSSIONS = "/discussions",
   NEW_DISCUSSION = "/discussions/new",
   BOOKMARKED_DISCUSSIONS = "/discussions/bookmarked",
   RESOURCES = "/resources",

@@ -17,14 +17,18 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import useAuth from "@/hooks/useAuth";
 import useAuthRedirect from "@/hooks/UseAuthRedirect";
 import validateThreadForm from "@/utils/api/thread/validateThreadForm";
+import { FrontendRoutes } from "@/data/routes";
+import { logger } from "@/utils/logger";
+import RetryAgain from "@/components/app/RetryAgain";
+import { toast } from "react-hot-toast";
 
 export default function NewDiscussionPage() {
   const router = useRouter();
   useAxios(); // Keep for side effects
   const { auth } = useAuth();
   const isLoading = useAuthRedirect();
-  
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [error, setError] = useState<string>("");
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
@@ -109,12 +113,15 @@ export default function NewDiscussionPage() {
       const result = await createThread(payload);
       
       if (result.success && result.data) {
-        router.push(`/discussions/${result.data.thread_id}`);
+        toast.success(ERROR_MESSAGES.thread.CREATE_SUCCESS);
+        setIsRedirecting(true);
+        router.push(`${FrontendRoutes.DISCUSSIONS}/${result.data.thread_id}`);
       } else {
         setError(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
       }
     } catch (err: unknown) {
-      console.error("Error creating thread:", err);
+      toast.error(ERROR_MESSAGES.thread.CREATE_FAILED);
+      logger().error("Error creating thread:", err);
       const errorMessage = err instanceof Error ? err.message : ERROR_MESSAGES.thread.DEFAULT;
       setError(errorMessage);
     } finally {
@@ -128,22 +135,16 @@ export default function NewDiscussionPage() {
 
   const areAllRequiredFieldsFilled = formData.title && formData.category_id && formData.content;
 
-  if (auth.loading || isLoading || isLoadingCategories) {
+  if (auth.loading || isLoading || isLoadingCategories || isRedirecting) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
   if (error && !isSubmitting) {
     return (
-      <div className="space-y-4">
-        <ErrorAlert message={error} />
-        <Button
-          onClick={() => window.location.reload()}
-          variant="outline"
-          color="secondary"
-        >
-          إعادة المحاولة
-        </Button>
-      </div>
+      <RetryAgain 
+      error={error}
+        handleRetry={() => window.location.reload()}
+      />
     );
   }
 

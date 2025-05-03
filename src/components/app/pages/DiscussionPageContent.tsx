@@ -16,6 +16,8 @@ import useAuth from "@/hooks/useAuth";
 import useAuthRedirect from "@/hooks/UseAuthRedirect";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import { RefreshCw } from "lucide-react";
+import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ItemNotFound from "../NotFound/ItemNotFound";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const router = useRouter();
@@ -238,7 +240,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   }
 
   if (!thread) {
-    return <ErrorAlert message="لم يتم العثور على المناقشة المطلوبة" />;
+    return <ItemNotFound description={ERROR_MESSAGES.thread.NOT_FOUND} />;
   }
 
   console.log('DiscussionPageContent - Thread Author:', {
