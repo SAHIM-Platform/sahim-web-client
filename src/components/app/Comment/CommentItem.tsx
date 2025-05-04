@@ -165,7 +165,12 @@ function CommentItem({
     <div className="flex gap-1 items-start" data-comment-id={id}>
       <div className="bg-white rounded-xl border border-gray-200 px-6 pt-6 pb-3 w-full relative transition-all duration-200">
         <div className="flex justify-between items-start">
-          <UserInfo name={auth.user?.name} date={timestamp} photoPath={auth.user?.photoPath} />
+          <UserInfo 
+            name={auth.user?.name} 
+            date={timestamp} 
+            photoPath={auth.user?.photoPath} 
+            role={auth.user?.role}
+          />
           
           {isOwner && (
             <div className="relative" ref={dropdownRef}>

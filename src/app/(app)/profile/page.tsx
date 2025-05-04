@@ -226,7 +226,7 @@ export default function ProfilePage() {
         {!isEditing ? (
           <div className="flex flex-col gap-10 bg-white rounded-xl border border-gray-200 p-8">
             <div className="flex items-center gap-6">
-              <UserPhoto photoPath={profile.photoPath || ''} name={profile.name} size={80} />
+              <UserPhoto photoPath={profile.photoPath || ''} name={profile.name} size={80} role={profile.role} />
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900">{profile.name}</h2>
                 <p className="text-sm text-gray-500 mt-1">@{profile.username}</p>

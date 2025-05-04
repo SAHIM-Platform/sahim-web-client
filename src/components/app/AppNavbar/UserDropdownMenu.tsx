@@ -12,7 +12,7 @@ function UserDropdownMenu() {
   const { logout, error, isLoading } = useLogout();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { photoPath, username } = useCurrentUserInfo();
+  const { photoPath, username, role } = useCurrentUserInfo();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -36,6 +36,7 @@ function UserDropdownMenu() {
         className="flex items-center gap-2 focus:outline-none"
       >
         <UserInfo
+          role={role}
           photoPath={photoPath}
           name={username}
           hideDetailsOnSmallScreens={true}
