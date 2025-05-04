@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/utils/utils";
 import Divider from "@/components/Divider";
-import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
 import { useCurrentUserInfo, useLogout } from "@/hooks";
 
@@ -89,7 +89,7 @@ function UserDropdownMenu() {
           {isLoading ? "جاري تسجيل الخروج..." : "تسجيل الخروج"}
         </button>
         {error && (
-          <p className="px-4 pb-2 text-xs text-red-600">{ERROR_MESSAGES.logout.DEFAULT}</p>
+          <p className="px-4 pb-2 text-xs text-red-600">{RESPONSE_MESSAGES.logout.DEFAULT}</p>
         )}
       </div>
     </div>

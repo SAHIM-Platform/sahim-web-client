@@ -1,4 +1,4 @@
-const ERROR_MESSAGES = {
+const RESPONSE_MESSAGES = {
     GLOBAL: {
         DEFAULT: "حدث خطأ أثناء معالجة الطلب",
         TRY_AGAIN: "حاول مرة أخرى",
@@ -134,4 +134,4 @@ const ERROR_MESSAGES = {
     }
 };
 
-export default ERROR_MESSAGES;
+export default RESPONSE_MESSAGES;

@@ -1,7 +1,7 @@
 import axiosInstance from '@/api/axios';
 import { isAxiosError } from "axios";
 import { AuthResult, LogoutResponse, APIError } from "@/types";
-import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 
 export const logoutService = async (): Promise<AuthResult<LogoutResponse>> => {
     try {
@@ -27,7 +27,7 @@ export const logoutService = async (): Promise<AuthResult<LogoutResponse>> => {
         return {
             success: false,
             error: {
-                message: ERROR_MESSAGES.logout.DEFAULT,
+                message: RESPONSE_MESSAGES.logout.DEFAULT,
                 code: 'UNKNOWN_ERROR'
             }
         };

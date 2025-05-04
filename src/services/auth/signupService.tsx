@@ -1,7 +1,7 @@
 import axiosInstance from '@/api/axios';
 import { AuthError, AuthResult } from "@/types";
 import { AxiosError, isAxiosError } from "axios";
-import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
 import { AuthMethod, SignupFormData } from '@/utils/api/signup/validateSignupForm';
 
@@ -56,7 +56,7 @@ async function signupService(data: SignupFormData): Promise<AuthResult> {
         return {
           success: false,
           error: {
-            message: errorData.message || ERROR_MESSAGES.signup.VALIDATION_ERROR,
+            message: errorData.message || RESPONSE_MESSAGES.signup.VALIDATION_ERROR,
             fields: errorData.fields || (errorData.field ? [errorData.field] : []),
             code: errorData.code || 'VALIDATION_ERROR'
           }
@@ -70,7 +70,7 @@ async function signupService(data: SignupFormData): Promise<AuthResult> {
         return {
           success: false,
           error: {
-            message: errorData.message || ERROR_MESSAGES.signup.DUPLICATE_USER,
+            message: errorData.message || RESPONSE_MESSAGES.signup.DUPLICATE_USER,
             fields: ['username'],
             code: errorData.code || 'DUPLICATE_USER'
           }
@@ -81,7 +81,7 @@ async function signupService(data: SignupFormData): Promise<AuthResult> {
       return {
         success: false,
         error: {
-          message: ERROR_MESSAGES.signup.SERVER_ERROR,
+          message: RESPONSE_MESSAGES.signup.SERVER_ERROR,
           code: 'SERVER_ERROR'
         }
       };
@@ -91,7 +91,7 @@ async function signupService(data: SignupFormData): Promise<AuthResult> {
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.signup.DEFAULT,
+        message: RESPONSE_MESSAGES.signup.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };

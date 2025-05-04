@@ -1,7 +1,7 @@
 import { AxiosInstance, AxiosError } from 'axios';
 import { SignupFormData } from './validateSignupForm';
 import { AuthResult, APIError } from "@/types";
-import ERROR_MESSAGES from '../../constants/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '../../constants/RESPONSE_MESSAGES';
 
 export const handleSignupSubmit = async (
   axiosInstance: AxiosInstance,
@@ -39,11 +39,11 @@ export const handleSignupSubmit = async (
       if (response.data.error?.fields) {
         const fieldErrors = response.data.error.fields.reduce<Record<string, string>>((acc, field) => ({
           ...acc,
-          [field]: response.data.error?.message || ERROR_MESSAGES.signup.VALIDATION_ERROR
+          [field]: response.data.error?.message || RESPONSE_MESSAGES.signup.VALIDATION_ERROR
         }), {});
         setErrors(fieldErrors);
       }
-      setFormError(response.data.error?.message || ERROR_MESSAGES.signup.DEFAULT);
+      setFormError(response.data.error?.message || RESPONSE_MESSAGES.signup.DEFAULT);
       return response.data;
     }
   } catch (error) {
@@ -55,7 +55,7 @@ export const handleSignupSubmit = async (
       });
     }
 
-    const errorMessage = (error as AxiosError<APIError>)?.response?.data?.message || ERROR_MESSAGES.signup.SERVER_ERROR;
+    const errorMessage = (error as AxiosError<APIError>)?.response?.data?.message || RESPONSE_MESSAGES.signup.SERVER_ERROR;
     setFormError(errorMessage);
     return {
       success: false,

@@ -1,7 +1,7 @@
 import axiosInstance from '@/api/axios';
 import { AuthError, AuthResult, LoginCredentials } from "@/types";
 import { AxiosError, isAxiosError } from "axios";
-import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
 
 async function loginService(credentials: LoginCredentials): Promise<AuthResult> {
@@ -54,7 +54,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 				return {
 					success: false,
 					error: {
-						message: errorData.message || ERROR_MESSAGES.login.INVALID_CREDENTIALS,
+						message: errorData.message || RESPONSE_MESSAGES.login.INVALID_CREDENTIALS,
 						fields: Array.isArray(errorData.fields) ? errorData.fields : ['identifier', 'password'],
 						code: errorData.code || 'INVALID_CREDENTIALS'
 					}
@@ -66,7 +66,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 				return {
 					success: false,
 					error: {
-						message: ERROR_MESSAGES.login.USER_NOT_FOUND,
+						message: RESPONSE_MESSAGES.login.USER_NOT_FOUND,
 						fields: ['identifier'],
 						code: 'USER_NOT_FOUND'
 					}
@@ -80,7 +80,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 				return {
 					success: false,
 					error: {
-						message: errorData.message || ERROR_MESSAGES.login.VALIDATION_ERROR,
+						message: errorData.message || RESPONSE_MESSAGES.login.VALIDATION_ERROR,
 						fields: errorData.fields || (errorData.field ? [errorData.field] : []),
 						code: errorData.code || 'VALIDATION_ERROR'
 					}
@@ -91,7 +91,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 			return {
 				success: false,
 				error: {
-					message: ERROR_MESSAGES.login.SERVER_ERROR,
+					message: RESPONSE_MESSAGES.login.SERVER_ERROR,
 					code: 'SERVER_ERROR'
 				}
 			};
@@ -101,7 +101,7 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 		return {
 			success: false,
 			error: {
-				message: ERROR_MESSAGES.login.DEFAULT,
+				message: RESPONSE_MESSAGES.login.DEFAULT,
 				code: 'UNKNOWN_ERROR'
 			}
 		};

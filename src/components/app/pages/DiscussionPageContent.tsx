@@ -13,7 +13,7 @@ import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CommentListing from "@/components/App/Comment/CommentListing";
 import { RefreshCw } from "lucide-react";
-import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ItemNotFound from "../NotFound/ItemNotFound";
 import { useAuth, useAuthRedirect, useInfiniteScroll } from "@/hooks";
 
@@ -238,7 +238,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   }
 
   if (!thread) {
-    return <ItemNotFound description={ERROR_MESSAGES.thread.NOT_FOUND} />;
+    return <ItemNotFound description={RESPONSE_MESSAGES.thread.NOT_FOUND} />;
   }
 
   console.log('DiscussionPageContent - Thread Author:', {

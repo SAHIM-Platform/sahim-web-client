@@ -1,5 +1,5 @@
 import axiosInstance from '@/api/axios';
-import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import { AxiosError, isAxiosError } from 'axios';
 
 export interface Category {
@@ -35,7 +35,7 @@ export const createCategory = async (name: string): Promise<CategoryResponse> =>
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            message: RESPONSE_MESSAGES.auth.UNAUTHORIZED,
             code: 'UNAUTHORIZED'
           }
         };
@@ -45,7 +45,7 @@ export const createCategory = async (name: string): Promise<CategoryResponse> =>
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.FORBIDDEN,
+            message: RESPONSE_MESSAGES.auth.FORBIDDEN,
             code: 'FORBIDDEN'
           }
         };
@@ -55,7 +55,7 @@ export const createCategory = async (name: string): Promise<CategoryResponse> =>
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.category.DEFAULT,
+        message: RESPONSE_MESSAGES.category.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -80,7 +80,7 @@ export const updateCategory = async (categoryId: number, name: string): Promise<
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            message: RESPONSE_MESSAGES.auth.UNAUTHORIZED,
             code: 'UNAUTHORIZED'
           }
         };
@@ -90,7 +90,7 @@ export const updateCategory = async (categoryId: number, name: string): Promise<
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.FORBIDDEN,
+            message: RESPONSE_MESSAGES.auth.FORBIDDEN,
             code: 'FORBIDDEN'
           }
         };
@@ -100,7 +100,7 @@ export const updateCategory = async (categoryId: number, name: string): Promise<
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.category.NOT_FOUND,
+            message: RESPONSE_MESSAGES.category.NOT_FOUND,
             code: 'NOT_FOUND'
           }
         };
@@ -110,7 +110,7 @@ export const updateCategory = async (categoryId: number, name: string): Promise<
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.category.DEFAULT,
+        message: RESPONSE_MESSAGES.category.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -134,7 +134,7 @@ export const deleteCategory = async (categoryId: number): Promise<CategoryRespon
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            message: RESPONSE_MESSAGES.auth.UNAUTHORIZED,
             code: 'UNAUTHORIZED'
           }
         };
@@ -144,7 +144,7 @@ export const deleteCategory = async (categoryId: number): Promise<CategoryRespon
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.FORBIDDEN,
+            message: RESPONSE_MESSAGES.auth.FORBIDDEN,
             code: 'FORBIDDEN'
           }
         };
@@ -154,7 +154,7 @@ export const deleteCategory = async (categoryId: number): Promise<CategoryRespon
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.category.NOT_FOUND,
+            message: RESPONSE_MESSAGES.category.NOT_FOUND,
             code: 'NOT_FOUND'
           }
         };
@@ -164,7 +164,7 @@ export const deleteCategory = async (categoryId: number): Promise<CategoryRespon
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.category.DEFAULT,
+        message: RESPONSE_MESSAGES.category.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };

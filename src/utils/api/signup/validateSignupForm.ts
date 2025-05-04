@@ -1,5 +1,5 @@
 import { Department, Level } from "@/types";
-import ERROR_MESSAGES from "../../constants/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "../../constants/RESPONSE_MESSAGES";
 
 export enum AuthMethod {
   EMAIL_PASSWORD = 'EMAIL_PASSWORD',
@@ -23,71 +23,71 @@ export const validateSignupForm = (values: Partial<SignupFormData>) => {
 
   // Name validation
   if (!values.name?.trim()) {
-    errors.name = ERROR_MESSAGES.signup.VALIDATIONS.NAME_REQUIRED;
+    errors.name = RESPONSE_MESSAGES.signup.VALIDATIONS.NAME_REQUIRED;
   } else if (values.name.length < 3) {
-    errors.name = ERROR_MESSAGES.signup.VALIDATIONS.NAME_TOO_SHORT;
+    errors.name = RESPONSE_MESSAGES.signup.VALIDATIONS.NAME_TOO_SHORT;
   } else if (values.name.length > 100) {
-    errors.name = ERROR_MESSAGES.signup.VALIDATIONS.NAME_TOO_LONG;
+    errors.name = RESPONSE_MESSAGES.signup.VALIDATIONS.NAME_TOO_LONG;
   }
 
   // Academic number validation
   if (!values.academicNumber?.trim()) {
-    errors.academicNumber = ERROR_MESSAGES.signup.VALIDATIONS.ACADEMIC_REQUIRED;
+    errors.academicNumber = RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_REQUIRED;
   } else if (values.academicNumber.length !== 13) {
-    errors.academicNumber = ERROR_MESSAGES.signup.VALIDATIONS.ACADEMIC_LENGTH;
+    errors.academicNumber = RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_LENGTH;
   } else if (!/^\d+$/.test(values.academicNumber)) {
-    errors.academicNumber = ERROR_MESSAGES.signup.VALIDATIONS.ACADEMIC_ONLY_NUMBERS;
+    errors.academicNumber = RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_ONLY_NUMBERS;
   }
 
   // Username validation
   if (!values.username?.trim()) {
-    errors.username = ERROR_MESSAGES.signup.VALIDATIONS.USERNAME_REQUIRED;
+    errors.username = RESPONSE_MESSAGES.signup.VALIDATIONS.USERNAME_REQUIRED;
   } else if (values.username.length < 3) {
-    errors.username = ERROR_MESSAGES.signup.VALIDATIONS.USERNAME_TOO_SHORT;
+    errors.username = RESPONSE_MESSAGES.signup.VALIDATIONS.USERNAME_TOO_SHORT;
   } else if (values.username.length > 50) {
-    errors.username = ERROR_MESSAGES.signup.VALIDATIONS.USERNAME_TOO_LONG;
+    errors.username = RESPONSE_MESSAGES.signup.VALIDATIONS.USERNAME_TOO_LONG;
   } else if (!/^[a-zA-Z0-9_-]+$/.test(values.username)) {
-    errors.username = ERROR_MESSAGES.signup.VALIDATIONS.USERNAME_INVALID_FORMAT;
+    errors.username = RESPONSE_MESSAGES.signup.VALIDATIONS.USERNAME_INVALID_FORMAT;
   }
 
   // Password validation
   if (!values.password?.trim()) {
-    errors.password = ERROR_MESSAGES.signup.VALIDATIONS.PASSWORD_REQUIRED;
+    errors.password = RESPONSE_MESSAGES.signup.VALIDATIONS.PASSWORD_REQUIRED;
   } else if (values.password.length < 8) {
-    errors.password = ERROR_MESSAGES.signup.VALIDATIONS.PASSWORD_TOO_SHORT;
+    errors.password = RESPONSE_MESSAGES.signup.VALIDATIONS.PASSWORD_TOO_SHORT;
   } else if (values.password.length > 72) {
-    errors.password = ERROR_MESSAGES.signup.VALIDATIONS.PASSWORD_TOO_LONG;
+    errors.password = RESPONSE_MESSAGES.signup.VALIDATIONS.PASSWORD_TOO_LONG;
   } else if (!/[A-Z]/.test(values.password)) {
-    errors.password = ERROR_MESSAGES.signup.VALIDATIONS.PASSWORD_UPPERCASE;
+    errors.password = RESPONSE_MESSAGES.signup.VALIDATIONS.PASSWORD_UPPERCASE;
   } else if (!/[a-z]/.test(values.password)) {
-    errors.password = ERROR_MESSAGES.signup.VALIDATIONS.PASSWORD_LOWERCASE;
+    errors.password = RESPONSE_MESSAGES.signup.VALIDATIONS.PASSWORD_LOWERCASE;
   } else if (!/[0-9]/.test(values.password)) {
-    errors.password = ERROR_MESSAGES.signup.VALIDATIONS.PASSWORD_NUMBER;
+    errors.password = RESPONSE_MESSAGES.signup.VALIDATIONS.PASSWORD_NUMBER;
   } else if (!/[@$!%*?&]/.test(values.password)) {
-    errors.password = ERROR_MESSAGES.signup.VALIDATIONS.PASSWORD_SPECIAL;
+    errors.password = RESPONSE_MESSAGES.signup.VALIDATIONS.PASSWORD_SPECIAL;
   }
 
   // Confirm password validation
   if (!values.confirmPassword?.trim()) {
-    errors.confirmPassword = ERROR_MESSAGES.signup.VALIDATIONS.CONFIRM_PASSWORD_REQUIRED;
+    errors.confirmPassword = RESPONSE_MESSAGES.signup.VALIDATIONS.CONFIRM_PASSWORD_REQUIRED;
   } else if (values.confirmPassword !== values.password) {
-    errors.confirmPassword = ERROR_MESSAGES.signup.VALIDATIONS.CONFIRM_PASSWORD_MISMATCH;
+    errors.confirmPassword = RESPONSE_MESSAGES.signup.VALIDATIONS.CONFIRM_PASSWORD_MISMATCH;
   }
 
   // Department validation
   if (!values.department) {
-    errors.department = ERROR_MESSAGES.signup.VALIDATIONS.DEPARTMENT_REQUIRED;
+    errors.department = RESPONSE_MESSAGES.signup.VALIDATIONS.DEPARTMENT_REQUIRED;
   } else if (!(values.department in Department)) {
-    errors.department = ERROR_MESSAGES.signup.VALIDATIONS.DEPARTMENT_INVALID;
+    errors.department = RESPONSE_MESSAGES.signup.VALIDATIONS.DEPARTMENT_INVALID;
   }
 
   // Study level validation
   if (!values.studyLevel) {
-    errors.studyLevel = ERROR_MESSAGES.signup.VALIDATIONS.STUDY_LEVEL_REQUIRED;
+    errors.studyLevel = RESPONSE_MESSAGES.signup.VALIDATIONS.STUDY_LEVEL_REQUIRED;
   } else {
     const level = Number(values.studyLevel);
     if (isNaN(level) || level < 1 || level > 5) {
-      errors.studyLevel = ERROR_MESSAGES.signup.VALIDATIONS.STUDY_LEVEL_INVALID;
+      errors.studyLevel = RESPONSE_MESSAGES.signup.VALIDATIONS.STUDY_LEVEL_INVALID;
     }
   }
 

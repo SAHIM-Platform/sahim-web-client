@@ -3,7 +3,7 @@
 import ItemNotFound from "@/components/App/NotFound/ItemNotFound";
 import DiscussionPageContent from "@/components/App/pages/DiscussionPageContent";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { use } from "react";
 import { useLoading } from "@/hooks";
 
@@ -21,7 +21,7 @@ export default function DiscussionPage({ params }: DiscussionPageProps) {
 
   if (!discussionId) {
     return (
-      <ItemNotFound description={ERROR_MESSAGES.thread.NOT_FOUND} />
+      <ItemNotFound description={RESPONSE_MESSAGES.thread.NOT_FOUND} />
     )
   }
 

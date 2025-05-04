@@ -7,7 +7,7 @@ import Button from '@/components/Button';
 import ErrorAlert from '@/components/Form/ErrorAlert';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import toast from 'react-hot-toast';
-import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import Divider from '@/components/Divider';
 import { Edit2, Save, X, Trash2, Mail, Hash, Shield, Building2, GraduationCap } from 'lucide-react';
 import { Profile, userRoleLabels } from '@/types';
@@ -54,12 +54,12 @@ export default function ProfilePage() {
             photoPath: result.data.user.photoPath || '',
           });
         } else {
-          setError(result.error?.message || ERROR_MESSAGES.profile.DEFAULT);
-          toast.error(result.error?.message || ERROR_MESSAGES.profile.DEFAULT);
+          setError(result.error?.message || RESPONSE_MESSAGES.profile.DEFAULT);
+          toast.error(result.error?.message || RESPONSE_MESSAGES.profile.DEFAULT);
         }
       } catch {
-        setError(ERROR_MESSAGES.profile.DEFAULT);
-        toast.error(ERROR_MESSAGES.profile.DEFAULT);
+        setError(RESPONSE_MESSAGES.profile.DEFAULT);
+        toast.error(RESPONSE_MESSAGES.profile.DEFAULT);
       } finally {
         setIsLoadingProfile(false);
       }

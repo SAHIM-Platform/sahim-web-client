@@ -3,7 +3,7 @@
 import { logoutService } from "@/services/auth/logoutService";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { useAuth, useAxios } from "@/hooks";
 
 export function useLogout() {
@@ -21,7 +21,7 @@ export function useLogout() {
       const response = await logoutService();
 
       if (!response.success) {
-        setError(response.error?.message || ERROR_MESSAGES.logout.DEFAULT);
+        setError(response.error?.message || RESPONSE_MESSAGES.logout.DEFAULT);
         return;
       }
 
@@ -34,7 +34,7 @@ export function useLogout() {
 
     } catch (error) {
       console.error("Logout failed:", error);
-      setError(ERROR_MESSAGES.logout.DEFAULT);
+      setError(RESPONSE_MESSAGES.logout.DEFAULT);
     } finally {
       setIsLoading(false);
     }

@@ -6,7 +6,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import { fetchBookmarkedThreads, deleteThread } from '@/services/threadService';
 import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
 import { logger } from '@/utils/logger';
-import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import toast from 'react-hot-toast';
 import RetryAgain from '@/components/App/RetryAgain';
 import ItemNotFound from '@/components/App/NotFound/ItemNotFound';
@@ -44,11 +44,11 @@ const BookmarksPageContent = () => {
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage(2);
       } else {
-        setError(ERROR_MESSAGES.BOOKMARK.DEFAULT);
+        setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
       }
     } catch (error) {
       logger().error("Error loading bookmarks:", error);
-      setError(ERROR_MESSAGES.BOOKMARK.DEFAULT);
+      setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
     } finally {
       setIsInitialLoading(false);
     }
@@ -73,11 +73,11 @@ const BookmarksPageContent = () => {
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage((prev) => prev + 1);
       } else {
-        setError(ERROR_MESSAGES.BOOKMARK.DEFAULT);
+        setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
       }
     } catch (error) {
       logger().error("Error loading more bookmarks:", error);
-      setError(ERROR_MESSAGES.BOOKMARK.DEFAULT);
+      setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
     } finally {
       setIsFetchingMore(false);
     }
@@ -98,14 +98,14 @@ const BookmarksPageContent = () => {
       const result = await deleteThread(threadId);
 
       if (result.success) {
-        toast.success(ERROR_MESSAGES.BOOKMARK.DELETE_SUCCESS);
+        toast.success(RESPONSE_MESSAGES.BOOKMARK.DELETE_SUCCESS);
         setBookmarkedThreads(prev => prev.filter(thread => thread.thread_id !== threadId));
       } else {
-        toast.error(ERROR_MESSAGES.BOOKMARK.NOT_FOUND);
+        toast.error(RESPONSE_MESSAGES.BOOKMARK.NOT_FOUND);
       }
     } catch {
       logger().error("Error deleting thread:", error);
-      toast.error(ERROR_MESSAGES.BOOKMARK.NOT_FOUND);
+      toast.error(RESPONSE_MESSAGES.BOOKMARK.NOT_FOUND);
     }
   };
 
@@ -131,7 +131,7 @@ const BookmarksPageContent = () => {
   return (
     <div className="space-y-5">
       {bookmarkedThreads.length === 0 ? (
-        <ItemNotFound description={ERROR_MESSAGES.BOOKMARK.NOT_FOUND} />
+        <ItemNotFound description={RESPONSE_MESSAGES.BOOKMARK.NOT_FOUND} />
       ) : (
         <>
           <div className="flex flex-col gap-5">

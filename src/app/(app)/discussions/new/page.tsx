@@ -8,7 +8,7 @@ import Button from "@/components/Button";
 import Textarea from "@/components/Textarea";
 import { X } from "lucide-react";
 import ThumbnailPreview from "@/components/App/ThumbnailPreview";
-import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import { fetchCategories, createThread } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -45,11 +45,11 @@ export default function NewDiscussionPage() {
         if (response.data && Array.isArray(response.data)) {
           setCategories(response.data);
         } else {
-          setError(ERROR_MESSAGES.thread.DEFAULT);
+          setError(RESPONSE_MESSAGES.thread.DEFAULT);
           setCategories([]);
         }
       } catch {
-        setError(ERROR_MESSAGES.thread.DEFAULT);
+        setError(RESPONSE_MESSAGES.thread.DEFAULT);
         setCategories([]);
       } finally {
         setIsLoadingCategories(false);
@@ -110,16 +110,16 @@ export default function NewDiscussionPage() {
       const result = await createThread(payload);
       
       if (result.success && result.data) {
-        toast.success(ERROR_MESSAGES.thread.CREATE_SUCCESS);
+        toast.success(RESPONSE_MESSAGES.thread.CREATE_SUCCESS);
         setIsRedirecting(true);
         router.push(`${FrontendRoutes.DISCUSSIONS}/${result.data.thread_id}`);
       } else {
-        setError(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
+        setError(result.error?.message || RESPONSE_MESSAGES.thread.DEFAULT);
       }
     } catch (err: unknown) {
-      toast.error(ERROR_MESSAGES.thread.CREATE_FAILED);
+      toast.error(RESPONSE_MESSAGES.thread.CREATE_FAILED);
       logger().error("Error creating thread:", err);
-      const errorMessage = err instanceof Error ? err.message : ERROR_MESSAGES.thread.DEFAULT;
+      const errorMessage = err instanceof Error ? err.message : RESPONSE_MESSAGES.thread.DEFAULT;
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);

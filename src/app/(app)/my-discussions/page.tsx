@@ -8,7 +8,7 @@ import { Thread } from "@/types";
 import { fetchUserThreads } from '@/services/threadService';
 import Button from '@/components/Button';
 import MyDiscussionsHeader from '@/components/App/pages/MyDiscussionsHeader';
-import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import RetryAgain from '@/components/App/RetryAgain';
 import { useInfiniteScroll, useLoading } from '@/hooks';
 
@@ -57,12 +57,12 @@ export default function MyDiscussionsPage() {
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage(2);
       } else {
-        const errorMessage = result.error?.message || ERROR_MESSAGES.thread.DEFAULT;
+        const errorMessage = result.error?.message || RESPONSE_MESSAGES.thread.DEFAULT;
         setError(errorMessage);
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : ERROR_MESSAGES.thread.DEFAULT;
-      setError(`${errorMessage}. ${ERROR_MESSAGES.GLOBAL.TRY_AGAIN}`);
+      const errorMessage = err instanceof Error ? err.message : RESPONSE_MESSAGES.thread.DEFAULT;
+      setError(`${errorMessage}. ${RESPONSE_MESSAGES.GLOBAL.TRY_AGAIN}`);
     } finally {
       if (isInitialLoad) {
         setIsLoadingThreads(false);
@@ -90,10 +90,10 @@ export default function MyDiscussionsPage() {
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage((prev) => prev + 1);
       } else {
-        setError(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
+        setError(result.error?.message || RESPONSE_MESSAGES.thread.DEFAULT);
       }
     } catch {
-      setError(ERROR_MESSAGES.thread.LOADING_MORE);
+      setError(RESPONSE_MESSAGES.thread.LOADING_MORE);
     } finally {
       setIsFetchingMore(false);
     }

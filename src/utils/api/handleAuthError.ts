@@ -1,5 +1,5 @@
 import { AuthError } from "@/types";
-import ERROR_MESSAGES from '../constants/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '../constants/RESPONSE_MESSAGES';
 import FIELD_ERROR_MAPPING from '../constants/FIELD_ERROR_MAPPING';
 
 /**
@@ -20,7 +20,7 @@ export function handleAuthError(
   }
 
   const errorCode = error.code || "UNKNOWN_ERROR";
-  const messages = ERROR_MESSAGES['login'];
+  const messages = RESPONSE_MESSAGES['login'];
   const fieldMappings = FIELD_ERROR_MAPPING['login'];
 
   if (errorCode === "VALIDATION_ERROR") {

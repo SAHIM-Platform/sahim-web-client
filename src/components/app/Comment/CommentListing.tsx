@@ -3,7 +3,7 @@ import { Thread } from "@/types";
 import CommentItem from "./CommentItem";
 import { updateComment, deleteComment } from "@/services/threadService";
 import toast from "react-hot-toast";
-import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 
 interface CommentListingProps {
   thread: Thread;
@@ -19,7 +19,7 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
     } catch (error) {
       console.error('Failed to update comment:', error);
       toast.error(
-        error instanceof Error ? error.message : ERROR_MESSAGES.comment.UPDATE_FAILED
+        error instanceof Error ? error.message : RESPONSE_MESSAGES.comment.UPDATE_FAILED
       );
     }
   };
@@ -34,7 +34,7 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
     } catch (error) {
       console.error('Failed to delete comment:', error);
       toast.error(
-        error instanceof Error ? error.message : ERROR_MESSAGES.comment.DELETE_FAILED
+        error instanceof Error ? error.message : RESPONSE_MESSAGES.comment.DELETE_FAILED
       );
     }
   };

@@ -7,7 +7,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import Button from "@/components/Button";
 import { PlusCircle } from "lucide-react";
 import { logger } from "@/utils/logger";
-import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { isSuperAdminByRole } from "@/utils/role";
 import { UserRole } from "@/types";
 import { useLoading } from "@/hooks";
@@ -25,11 +25,11 @@ export default function CategoriesPage() {
       if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
         setCategories(categoriesResponse.data);
       } else {
-        setError(ERROR_MESSAGES.category.DEFAULT);
+        setError(RESPONSE_MESSAGES.category.DEFAULT);
       }
     } catch (error) {
       logger().error("Error loading categories:", error);
-      setError(ERROR_MESSAGES.category.DEFAULT);
+      setError(RESPONSE_MESSAGES.category.DEFAULT);
     } finally {
       setIsLoading(false);
     }

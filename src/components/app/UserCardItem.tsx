@@ -7,7 +7,7 @@ import { Admin, Student, ApprovalStatus } from "@/types";
 import DateBadge from "./Badge/DateBadge";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import toast from "react-hot-toast";
-import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 
 interface UserCardItemProps {
   student?: Student;
@@ -56,7 +56,7 @@ const UserCardItem = ({
         await onDelete();
       }
     } catch {
-      toast.error(ERROR_MESSAGES.comment.DELETE_FAILED);
+      toast.error(RESPONSE_MESSAGES.comment.DELETE_FAILED);
     } finally {
       setIsDeleting(false);
       setIsDeleteModalOpen(false);
@@ -65,7 +65,7 @@ const UserCardItem = ({
   
   const handleDelete = () => {
     if (!admin && onDelete) {
-      toast.error(ERROR_MESSAGES.comment.FORBIDDEN);
+      toast.error(RESPONSE_MESSAGES.comment.FORBIDDEN);
       return;
     }
     setIsDeleting(false);
