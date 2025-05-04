@@ -16,8 +16,8 @@ import {
   Bookmark,
   PenSquare,
 } from "lucide-react";
-import { UserRole } from "@/types/api/auth";
 import Divider from "@/components/Divider";
+import { UserRole } from "@/types";
 
 interface AppMenuSidebarProps {
   isOpen: boolean;

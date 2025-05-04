@@ -1,5 +1,5 @@
 import { MessageSquareIcon } from "lucide-react";
-import { Thread } from "@/types/api/thread";
+import { Thread } from "@/types";
 import CommentItem from "./CommentItem";
 import { updateComment, deleteComment } from "@/services/threadService";
 import toast from "react-hot-toast";

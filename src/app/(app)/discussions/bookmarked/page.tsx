@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Thread } from '@/types/api/thread';
+import { Thread } from "@/types";
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { fetchBookmarkedThreads, deleteThread } from '@/services/threadService';

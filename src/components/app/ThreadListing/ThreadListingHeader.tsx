@@ -2,7 +2,7 @@ import Divider from "@/components/Divider";
 import DiscussionsBadge from "../Badge/DiscussionsBadge";
 import Button from "@/components/Button";
 import { ArrowUpDown, MessageSquare } from "lucide-react";
-import { Thread } from "@/types/api/thread";
+import { Thread } from "@/types";
 import Select from "@/components/Select";
 import { useEffect, useState } from "react";
 import { fetchCategories } from "@/services/threadService";

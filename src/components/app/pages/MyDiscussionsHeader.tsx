@@ -4,7 +4,7 @@ import Button from "@/components/Button";
 import { ArrowUpDown, MessageSquare } from "lucide-react";
 import DiscussionsBadge from "../Badge/DiscussionsBadge";
 import SearchField from "@/components/App/SearchField";
-import { Thread } from "@/types/api/thread";
+import { Thread } from "@/types";
 import Divider from "@/components/Divider";
 import Select from "@/components/Select";
 import { useEffect, useState } from "react";

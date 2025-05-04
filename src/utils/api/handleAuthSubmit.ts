@@ -1,4 +1,4 @@
-import { AuthResult, LoginCredentials } from "@/types/api/auth";
+import { AuthResult, LoginCredentials } from "@/types";
 import { handleAuthError } from "./handleAuthError";
 
 export interface AuthSubmitConfig {

@@ -2,7 +2,7 @@
 
 import { createContext, useState, useMemo, useEffect } from "react";
 import axios from '@/api/axios';
-import { AuthState, AuthContextType, AuthResponse } from '@/types/api/auth';
+import { AuthState, AuthContextType, AuthResponse } from "@/types";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

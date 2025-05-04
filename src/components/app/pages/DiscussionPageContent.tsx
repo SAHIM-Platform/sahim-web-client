@@ -6,7 +6,7 @@ import SimilarThreads from "@/components/App/SimilarThreads";
 import Textarea from "@/components/Textarea";
 import Button from "@/components/Button";
 import { useState, ChangeEvent, useEffect, useCallback } from "react";
-import { Thread } from "@/types/api/thread";
+import { Thread } from "@/types";
 import { toast } from "react-hot-toast";
 import { createComment, fetchThreadById, fetchThreads, deleteThread } from "@/services/threadService";
 import ErrorAlert from "@/components/Form/ErrorAlert";

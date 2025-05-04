@@ -2,7 +2,7 @@
 
 import axios from '@/api/axios';
 import useAuth from './useAuth';
-import { AuthResponse, UserRole } from '@/types/api/auth';
+import { AuthResponse, UserRole } from "@/types";
 
 const useRefreshToken = () => {
   const { setAuth } = useAuth();

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import useAuth from "./useAuth";
-import { UserRole } from "@/types/api/auth";
+import { UserRole } from "@/types";
 
 /**
  * Hook for handling authentication-based redirects
