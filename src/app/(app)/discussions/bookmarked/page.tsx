@@ -6,7 +6,7 @@ import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { fetchBookmarkedThreads, deleteThread } from '@/services/threadService';
 import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
-import { isAuthLoadingOrRedirecting } from '@/utils/loading';
+import { useLoading } from '@/hooks/useLoading';
 import { logger } from '@/utils/logger';
 import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import toast from 'react-hot-toast';
@@ -14,6 +14,7 @@ import RetryAgain from '@/components/App/RetryAgain';
 import ItemNotFound from '@/components/App/NotFound/ItemNotFound';
 
 const BookmarksPageContent = () => {
+  const { isAuthLoadingOrRedirecting } = useLoading();
   const [bookmarkedThreads, setBookmarkedThreads] = useState<Thread[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
@@ -21,7 +22,7 @@ const BookmarksPageContent = () => {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const isLoading = isAuthLoadingOrRedirecting();
+  const isLoading = isAuthLoadingOrRedirecting;
 
   const fetchInitialBookmarks = useCallback(async () => {
     setPage(1);

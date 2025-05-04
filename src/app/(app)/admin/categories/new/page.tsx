@@ -9,13 +9,14 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
 import { createCategory } from "@/services/admin/categoryService";
 import toast from "react-hot-toast";
-import { isAuthOrAdminRoleGuardLoading } from "@/utils/loading";
+import { useLoading } from "@/hooks/useLoading";
 import { logger } from "@/utils/logger";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
 
 export default function NewCategoryPage() {
   const router = useRouter();
+  const { isAdminGuardLoading } = useLoading();
   
   useAdminRoleGuard();
   
@@ -25,7 +26,7 @@ export default function NewCategoryPage() {
     name: "",
   });
 
-  if (isAuthOrAdminRoleGuardLoading()) {
+  if (isAdminGuardLoading) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 

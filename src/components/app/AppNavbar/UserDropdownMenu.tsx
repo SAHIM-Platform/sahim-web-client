@@ -6,13 +6,14 @@ import Link from "next/link";
 import { cn } from "@/utils/utils";
 import Divider from "@/components/Divider";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
-import { getCurrentUserInfo } from "@/utils/getCurrentUserInfo";
+import { useCurrentUserInfo } from "@/hooks/useCurrentUserInfo";
 import { FrontendRoutes } from "@/data/routes";
 
 function UserDropdownMenu() {
   const { logout, error, isLoading } = useLogout();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { photoPath, username } = useCurrentUserInfo();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -36,8 +37,8 @@ function UserDropdownMenu() {
         className="flex items-center gap-2 focus:outline-none"
       >
         <UserInfo
-          photoPath={getCurrentUserInfo().photoPath}
-          name={getCurrentUserInfo().username}
+          photoPath={photoPath}
+          name={username}
           hideDetailsOnSmallScreens={true}
         >
           <ChevronDown className={cn(

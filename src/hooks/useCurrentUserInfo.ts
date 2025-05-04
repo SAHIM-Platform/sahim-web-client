@@ -1,7 +1,7 @@
 import useAuth from "@/hooks/useAuth";
 import { ApprovalStatus, UserRole } from "@/types";
 
-export function getCurrentUserInfo () {
+export function useCurrentUserInfo() {
   const { auth } = useAuth();
   const userName = auth.user?.name || "مستخدم";
   const username = auth.user?.username;

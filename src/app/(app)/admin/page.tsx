@@ -3,19 +3,20 @@
 import { FrontendRoutes } from '@/data/routes';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { isAuthOrSuperAdminRoleGuardLoading } from '@/utils/loading';
+import { useLoading } from '@/hooks/useLoading';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import useSuperAdminRoleGuard from '@/hooks/useSuperAdminRoleGuard';
 
 export default function AdminPage() {
   const router = useRouter();
+  const { isSuperAdminGuardLoading } = useLoading();
   useSuperAdminRoleGuard();
 
   useEffect(() => {
     router.push(FrontendRoutes.ADMINS);
   }, [router]);
 
-  if (isAuthOrSuperAdminRoleGuardLoading()) {
+  if (isSuperAdminGuardLoading) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 

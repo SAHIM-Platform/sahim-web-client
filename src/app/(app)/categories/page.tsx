@@ -6,12 +6,14 @@ import { fetchCategories } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Button from "@/components/Button";
 import { PlusCircle } from "lucide-react";
-import { isAuthLoadingOrRedirecting } from "@/utils/loading";
+import { useLoading } from "@/hooks/useLoading";
 import { logger } from "@/utils/logger";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import { isSuperAdminByRole } from "@/utils/role";
 import { UserRole } from "@/types";
+
 export default function CategoriesPage() {
+  const { isAuthLoadingOrRedirecting } = useLoading();
   const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>("");
@@ -37,7 +39,7 @@ export default function CategoriesPage() {
     loadCategories();
   }, []);
 
-  if (isAuthLoadingOrRedirecting()) {
+  if (isAuthLoadingOrRedirecting) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 

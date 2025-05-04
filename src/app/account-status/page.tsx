@@ -10,14 +10,15 @@ import AccountStatusCard from "@/components/App/AccountStatus/AccountStatusCard"
 import AccountStatusActions from "@/components/App/AccountStatus/AccountStatusActions";
 import AccountStatusFooter from "@/components/App/AccountStatus/AccountStatusFooter";
 import { ApprovalStatus } from "@/types";
-import { isAuthOrStudentRoleGuardLoading } from "@/utils/loading";
+import { useLoading } from "@/hooks/useLoading";
 
 export default function AccountStatusPage() {
   const { auth } = useAuth();
   const { logout, isLoading: isLoggingOut } = useLogout();
   const router = useRouter();
+  const { isStudentGuardLoading } = useLoading();
 
-  if (isAuthOrStudentRoleGuardLoading()) {
+  if (isStudentGuardLoading) {
     return (
       <LoadingSpinner size="xl" color="primary" fullScreen={true} />
     );

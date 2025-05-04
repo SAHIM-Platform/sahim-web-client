@@ -9,12 +9,13 @@ import { fetchUserThreads } from '@/services/threadService';
 import Button from '@/components/Button';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import MyDiscussionsHeader from '@/components/App/pages/MyDiscussionsHeader';
-import { isAuthLoadingOrRedirecting } from '@/utils/loading';
+import { useLoading } from '@/hooks/useLoading';
 import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import RetryAgain from '@/components/App/RetryAgain';
 
 export default function MyDiscussionsPage() {
   const router = useRouter();
+  const { isAuthLoadingOrRedirecting } = useLoading();
   const [threads, setThreads] = useState<Thread[]>([]);
   const [isLoadingThreads, setIsLoadingThreads] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -121,7 +122,7 @@ export default function MyDiscussionsPage() {
     onLoadMore: fetchMoreThreads,
   });
   
-  if (isAuthLoadingOrRedirecting()) {
+  if (isAuthLoadingOrRedirecting) {
     return <LoadingSpinner size="xl" fullScreen={true} />;
   }
 
