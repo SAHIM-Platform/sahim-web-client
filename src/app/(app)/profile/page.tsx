@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import Divider from '@/components/Divider';
 import { Edit2, Save, X, Trash2, Mail, Hash, Shield, Building2, GraduationCap } from 'lucide-react';
-import { Profile, userRoleLabels, UserRole } from '@/types';
+import { Profile, userRoleLabels } from '@/types';
 import UserPhoto from '@/components/UserPhoto';
 import { userService } from '@/services/userService';
 import validateProfileForm from '@/utils/api/profile/validateProfileForm';
@@ -18,6 +18,7 @@ import Modal from '@/components/Modal/Modal';
 import { AuthMethod } from '@/utils/api/signup/validateSignupForm';
 import Image from 'next/image';
 import { useAuth, useAuthRedirect } from '@/hooks';
+import { isSuperAdminByRole } from '@/utils/role';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -390,7 +391,7 @@ export default function ProfilePage() {
         )}
       </div>
 
-      {profile.role !== UserRole.SUPER_ADMIN && (
+      {!isSuperAdminByRole(profile.role) && (
         <>
           <Divider label="" />
           <div className="space-y-6 bg-red-50/50 border-2 border-red-200/60 rounded-xl p-8">

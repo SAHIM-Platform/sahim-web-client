@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks";
-import { ApprovalStatus } from "@/types";
-import { UserRole } from "@/types";
+import { isStudentByRole } from "@/utils/role";
+import { isStudentApproved } from "@/utils/isStudentApproved";
 
 /**
  * Hook for protecting routes based on student approval status
@@ -29,11 +29,12 @@ export function useStudentApprovalGuard(): boolean {
       return;
     }
 
-    const isStudent = auth.user?.role === UserRole.STUDENT;
-    const isApproved = auth.user?.approvalStatus === ApprovalStatus.APPROVED;
+    const isStudent = isStudentByRole(auth.user?.role);
+    const isApproved = isStudentApproved(auth.user?.approvalStatus);
     const isAccountStatusPage = pathname === "/account-status";
+    const shouldRedirectToAccountStatus = isStudent && !isApproved && !isAccountStatusPage;
 
-    if (isStudent && !isApproved && !isAccountStatusPage) {
+    if (shouldRedirectToAccountStatus) {
       router.push("/account-status");
       return;
     }

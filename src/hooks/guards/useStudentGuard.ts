@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks";
-import { UserRole } from "@/types";
+import { isStudentByRole } from "@/utils/role";
 
 /**
  * Hook for protecting routes that should only be accessible to students
@@ -28,8 +28,7 @@ export function useStudentGuard(): boolean {
       return;
     }
 
-    const isStudent = auth.user?.role === UserRole.STUDENT;
-    if (!isStudent) {
+    if (!isStudentByRole(auth.user?.role)) {
       router.push("/explore");
       return;
     }
