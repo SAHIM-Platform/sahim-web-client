@@ -7,24 +7,25 @@ import Select from "@/components/Select";
 import Button from "@/components/Button";
 import Textarea from "@/components/Textarea";
 import { X } from "lucide-react";
-import ThumbnailPreview from "@/components/app/ThumbnailPreview";
-import { useImageValidation } from "@/hooks/useImageValidation";
-import useAxios from "@/hooks/useAxios";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import ThumbnailPreview from "@/components/App/ThumbnailPreview";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import { fetchCategories, createThread } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import useAuth from "@/hooks/useAuth";
-import useAuthRedirect from "@/hooks/UseAuthRedirect";
 import validateThreadForm from "@/utils/api/thread/validateThreadForm";
+import { FrontendRoutes } from "@/data/routes";
+import { logger } from "@/utils/logger";
+import RetryAgain from "@/components/App/RetryAgain";
+import { toast } from "react-hot-toast";
+import { useAuth, useAuthRedirect, useAxios, useImageValidation } from "@/hooks";
 
 export default function NewDiscussionPage() {
   const router = useRouter();
   useAxios(); // Keep for side effects
   const { auth } = useAuth();
   const isLoading = useAuthRedirect();
-  
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [error, setError] = useState<string>("");
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
@@ -44,11 +45,11 @@ export default function NewDiscussionPage() {
         if (response.data && Array.isArray(response.data)) {
           setCategories(response.data);
         } else {
-          setError(ERROR_MESSAGES.thread.DEFAULT);
+          setError(RESPONSE_MESSAGES.thread.DEFAULT);
           setCategories([]);
         }
       } catch {
-        setError(ERROR_MESSAGES.thread.DEFAULT);
+        setError(RESPONSE_MESSAGES.thread.DEFAULT);
         setCategories([]);
       } finally {
         setIsLoadingCategories(false);
@@ -109,13 +110,16 @@ export default function NewDiscussionPage() {
       const result = await createThread(payload);
       
       if (result.success && result.data) {
-        router.push(`/discussions/${result.data.thread_id}`);
+        toast.success(RESPONSE_MESSAGES.thread.CREATE_SUCCESS);
+        setIsRedirecting(true);
+        router.push(`${FrontendRoutes.DISCUSSIONS}/${result.data.thread_id}`);
       } else {
-        setError(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
+        setError(result.error?.message || RESPONSE_MESSAGES.thread.DEFAULT);
       }
     } catch (err: unknown) {
-      console.error("Error creating thread:", err);
-      const errorMessage = err instanceof Error ? err.message : ERROR_MESSAGES.thread.DEFAULT;
+      toast.error(RESPONSE_MESSAGES.thread.CREATE_FAILED);
+      logger().error("Error creating thread:", err);
+      const errorMessage = err instanceof Error ? err.message : RESPONSE_MESSAGES.thread.DEFAULT;
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -128,22 +132,16 @@ export default function NewDiscussionPage() {
 
   const areAllRequiredFieldsFilled = formData.title && formData.category_id && formData.content;
 
-  if (auth.loading || isLoading || isLoadingCategories) {
+  if (auth.loading || isLoading || isLoadingCategories || isRedirecting) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
   if (error && !isSubmitting) {
     return (
-      <div className="space-y-4">
-        <ErrorAlert message={error} />
-        <Button
-          onClick={() => window.location.reload()}
-          variant="outline"
-          color="secondary"
-        >
-          إعادة المحاولة
-        </Button>
-      </div>
+      <RetryAgain 
+      error={error}
+        handleRetry={() => window.location.reload()}
+      />
     );
   }
 

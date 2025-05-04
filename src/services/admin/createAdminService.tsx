@@ -1,8 +1,8 @@
 import axiosInstance from '@/api/axios';
 import { AdminFormData } from '@/utils/api/admin/validateCreateAdminForm';
 import { AxiosError, isAxiosError } from "axios";
-import { APIError } from '@/types/auth';
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import { APIError } from "@/types";
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 
 interface AdminCreationResponse {
   message: string;
@@ -48,7 +48,7 @@ async function createAdminService(data: AdminFormData): Promise<AdminCreationRes
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.admin.VALIDATION_ERROR,
+            message: RESPONSE_MESSAGES.admin.VALIDATION_ERROR,
             code: 'VALIDATION_ERROR'
           }
         };
@@ -59,7 +59,7 @@ async function createAdminService(data: AdminFormData): Promise<AdminCreationRes
         return {
           success: false,
           error: {
-            message: isEmailConflict ? ERROR_MESSAGES.admin.DUPLICATE_EMAIL : ERROR_MESSAGES.admin.DUPLICATE_USERNAME,
+            message: isEmailConflict ? RESPONSE_MESSAGES.admin.DUPLICATE_EMAIL : RESPONSE_MESSAGES.admin.DUPLICATE_USERNAME,
             code: 'DUPLICATE_USER'
           }
         };
@@ -69,7 +69,7 @@ async function createAdminService(data: AdminFormData): Promise<AdminCreationRes
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.FORBIDDEN,
+            message: RESPONSE_MESSAGES.auth.FORBIDDEN,
             code: 'FORBIDDEN'
           }
         };
@@ -79,7 +79,7 @@ async function createAdminService(data: AdminFormData): Promise<AdminCreationRes
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            message: RESPONSE_MESSAGES.auth.UNAUTHORIZED,
             code: 'UNAUTHORIZED'
           }
         };
@@ -90,7 +90,7 @@ async function createAdminService(data: AdminFormData): Promise<AdminCreationRes
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.admin.SERVER_ERROR,
+            message: RESPONSE_MESSAGES.admin.SERVER_ERROR,
             code: 'SERVER_ERROR'
           }
         };
@@ -100,7 +100,7 @@ async function createAdminService(data: AdminFormData): Promise<AdminCreationRes
       return {
         success: false,
         error: {
-          message: errorData?.message || ERROR_MESSAGES.admin.DEFAULT,
+          message: errorData?.message || RESPONSE_MESSAGES.admin.DEFAULT,
           code: errorData?.error || 'ADMIN_CREATION_ERROR'
         }
       };
@@ -110,7 +110,7 @@ async function createAdminService(data: AdminFormData): Promise<AdminCreationRes
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.admin.DEFAULT,
+        message: RESPONSE_MESSAGES.admin.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };

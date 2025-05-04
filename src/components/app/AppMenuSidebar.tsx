@@ -3,7 +3,7 @@
 import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import {
   Tags,
   UserCheck,
@@ -16,8 +16,8 @@ import {
   Bookmark,
   PenSquare,
 } from "lucide-react";
-import { UserRole } from "@/types/auth";
 import Divider from "@/components/Divider";
+import { isAdminOrSuperAdminByRole, isSuperAdminByRole } from "@/utils/role";
 
 interface AppMenuSidebarProps {
   isOpen: boolean;
@@ -27,8 +27,6 @@ interface AppMenuSidebarProps {
 function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
   const pathname = usePathname();
   const { auth } = useAuth();
-  const isAdmin = auth?.user?.role === UserRole.ADMIN;
-  const isSuperAdmin = auth?.user?.role === UserRole.SUPER_ADMIN;
 
   const generalLinks = [
     {
@@ -60,7 +58,7 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
 
   const roleSpecificLinks = [
     // Admin and Super Admin Links
-    ...(isAdmin || isSuperAdmin
+    ...(isAdminOrSuperAdminByRole(auth?.user?.role)
       ? [
         {
           label: "أضف تصنيف",
@@ -76,7 +74,7 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
       : []),
 
     // Super Admin Only Links
-    ...(isSuperAdmin
+    ...(isSuperAdminByRole(auth?.user?.role)
       ? [
           {
             label: "المشرفين",

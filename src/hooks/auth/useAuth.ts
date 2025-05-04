@@ -3,12 +3,12 @@
 import { useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/context/AuthProvider';
-import { AuthResult, LoginCredentials, UserRole } from '@/types/auth';
+import { AuthResult, LoginCredentials, UserRole } from "@/types";
 import loginService from '@/services/auth/loginService';
 import { SignupFormData } from '@/utils/api/signup/validateSignupForm';
 import signupService from '@/services/auth/signupService';
 
-const useAuth = () => {
+export function useAuth() {
   const authContext = useContext(AuthContext);
   const router = useRouter();
 
@@ -131,5 +131,3 @@ const useAuth = () => {
     isAuthenticated: !!auth.accessToken,
   };
 };
-
-export default useAuth;

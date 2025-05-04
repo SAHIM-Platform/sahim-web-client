@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import useAuth from "./useAuth";
-import { UserRole } from "@/types/auth";
+import { useAuth } from "@/hooks";
+import { UserRole } from "@/types";
 
 /**
  * Hook for handling authentication-based redirects
@@ -18,7 +18,7 @@ import { UserRole } from "@/types/auth";
  * 
  * @returns {boolean} isLoading - true while checking authentication and redirects
  */
-const useAuthRedirect = (): boolean => {
+export function useAuthRedirect(): boolean {
   const router = useRouter();
   const pathName = usePathname();
   const { isAuthenticated, auth } = useAuth();
@@ -38,9 +38,9 @@ const useAuthRedirect = (): boolean => {
         return;
       }
     } else {
-      if (pathName.startsWith("/explore") || 
-          pathName.startsWith("/discussion") || 
-          pathName === "/account-status") {
+      if (pathName.startsWith("/explore") ||
+        pathName.startsWith("/discussion") ||
+        pathName === "/account-status") {
         router.push("/login");
         return;
       }
@@ -50,5 +50,3 @@ const useAuthRedirect = (): boolean => {
 
   return isLoading;
 };
-
-export default useAuthRedirect;

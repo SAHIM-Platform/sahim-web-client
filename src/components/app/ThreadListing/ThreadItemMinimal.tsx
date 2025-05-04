@@ -1,6 +1,6 @@
 import { MessageSquare } from "lucide-react";
 import Link from "next/link";
-import { ThreadMinimal } from "@/types/thread";
+import { ThreadMinimal } from "@/types";
 import UserInfo from "../UserInfo";
 
 interface ThreadItemMinimalProps extends ThreadMinimal {

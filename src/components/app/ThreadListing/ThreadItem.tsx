@@ -10,13 +10,13 @@ import CategoryBadge from "../Badge/CategoryBadge";
 import BookmarkToggle from "@/components/BookmarkToggle";
 import { voteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
-import { Thread } from "@/types/thread";
+import { Thread } from "@/types";
 import Divider from "@/components/Divider";
 import EditThreadModal from "../../Modal/EditThreadModal";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import ShareModal from "@/components/Modal/ShareModal";
-import MarkdownRenderer from '@/components/app/MarkdownRenderer';
+import MarkdownRenderer from '@/components/App/MarkdownRenderer';
 
 export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
   title: string;

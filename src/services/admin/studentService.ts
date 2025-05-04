@@ -1,7 +1,7 @@
 import axiosInstance from '@/api/axios';
 import { Student, ApprovalStatus, APIError, ValidationErrorResponse } from '@/types';
 import { AxiosError, isAxiosError } from 'axios';
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 
 export interface StudentsResponse {
   data: Student[];
@@ -47,7 +47,7 @@ export const fetchStudents = async (status?: ApprovalStatus): Promise<StudentRes
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.student.DEFAULT,
+        message: RESPONSE_MESSAGES.student.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -62,7 +62,7 @@ export const fetchStudents = async (status?: ApprovalStatus): Promise<StudentRes
         return {
           success: false,
           error: {
-            message: errorData.message || ERROR_MESSAGES.student.VALIDATION_ERROR,
+            message: errorData.message || RESPONSE_MESSAGES.student.VALIDATION_ERROR,
             code: errorData.code || 'VALIDATION_ERROR'
           }
         };
@@ -72,7 +72,7 @@ export const fetchStudents = async (status?: ApprovalStatus): Promise<StudentRes
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.student.NOT_FOUND,
+            message: RESPONSE_MESSAGES.student.NOT_FOUND,
             code: 'NOT_FOUND'
           }
         };
@@ -82,7 +82,7 @@ export const fetchStudents = async (status?: ApprovalStatus): Promise<StudentRes
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.student.DEFAULT,
+        message: RESPONSE_MESSAGES.student.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -102,7 +102,7 @@ export const searchStudents = async (filters: SearchFilters): Promise<Student[]>
     if (filters.status && !filters.query) {
       const result = await fetchStudents(filters.status);
       if (!result.success || !result.data) {
-        throw new Error(result.error?.message || ERROR_MESSAGES.search.DEFAULT);
+        throw new Error(result.error?.message || RESPONSE_MESSAGES.search.DEFAULT);
       }
       return result.data.data;
     }
@@ -128,7 +128,7 @@ export const searchStudents = async (filters: SearchFilters): Promise<Student[]>
     });
 
     if (!response.data) {
-      throw new Error(ERROR_MESSAGES.search.DEFAULT);
+      throw new Error(RESPONSE_MESSAGES.search.DEFAULT);
     }
 
     return response.data;
@@ -165,7 +165,7 @@ export const approveStudent = async (studentId: number): Promise<StudentActionRe
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.student.DEFAULT,
+        message: RESPONSE_MESSAGES.student.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -180,7 +180,7 @@ export const approveStudent = async (studentId: number): Promise<StudentActionRe
         return {
           success: false,
           error: {
-            message: errorData.message || ERROR_MESSAGES.student.VALIDATION_ERROR,
+            message: errorData.message || RESPONSE_MESSAGES.student.VALIDATION_ERROR,
             code: errorData.error || 'VALIDATION_ERROR'
           }
         };
@@ -190,7 +190,7 @@ export const approveStudent = async (studentId: number): Promise<StudentActionRe
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.student.DEFAULT,
+        message: RESPONSE_MESSAGES.student.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -211,7 +211,7 @@ export const rejectStudent = async (studentId: number): Promise<StudentActionRes
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.student.DEFAULT,
+        message: RESPONSE_MESSAGES.student.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -226,7 +226,7 @@ export const rejectStudent = async (studentId: number): Promise<StudentActionRes
         return {
           success: false,
           error: {
-            message: errorData.message || ERROR_MESSAGES.student.VALIDATION_ERROR,
+            message: errorData.message || RESPONSE_MESSAGES.student.VALIDATION_ERROR,
             code: errorData.error || 'VALIDATION_ERROR'
           }
         };
@@ -236,7 +236,7 @@ export const rejectStudent = async (studentId: number): Promise<StudentActionRes
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.student.DEFAULT,
+        message: RESPONSE_MESSAGES.student.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };

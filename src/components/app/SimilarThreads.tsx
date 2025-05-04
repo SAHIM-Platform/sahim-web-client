@@ -1,7 +1,7 @@
 import { Fragment, RefObject } from "react";
 import ThreadItemMinimal from "./ThreadListing/ThreadItemMinimal";
 import Divider from "../Divider";
-import { Thread } from "@/types/thread";
+import { Thread } from "@/types";
 import LoadingSpinner from "../LoadingSpinner";
 
 interface SimilarThreadsProps {

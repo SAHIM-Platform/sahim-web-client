@@ -6,11 +6,11 @@ import ThreadItemMinimal from "./ThreadListing/ThreadItemMinimal";
 import { Fragment, useState, useEffect } from "react";
 import { cn } from "@/utils/utils";
 import { fetchThreads, fetchCategories } from "@/services/threadService";
-import { Thread } from "@/types/thread";
+import { Thread } from "@/types";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CategoriesListing from "./CategoriesListing";
 import Link from "next/link";
-import { LATEST_THREADS_LIMIT } from "@/utils/constant";
+import { LATEST_THREADS_LIMIT } from "@/utils/constants/ITEMS_LIMITS";
 
 interface AppInfoSidebarProps {
   isOpen: boolean;

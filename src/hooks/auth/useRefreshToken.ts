@@ -1,10 +1,10 @@
 'use client'
 
 import axios from '@/api/axios';
-import useAuth from './useAuth';
-import { AuthResponse, UserRole } from '@/types/auth';
+import { useAuth } from '@/hooks';
+import { AuthResponse, UserRole } from "@/types";
 
-const useRefreshToken = () => {
+export function useRefreshToken() {
   const { setAuth } = useAuth();
 
   const refresh = async () => {
@@ -42,5 +42,3 @@ const useRefreshToken = () => {
 
   return refresh;
 };
-
-export default useRefreshToken;

@@ -9,7 +9,7 @@ import { Eye, EyeOff, Lock } from "lucide-react";
 import validateCreateAdminForm, { AdminFormData } from "@/utils/api/admin/validateCreateAdminForm";
 import createAdminService from "@/services/admin/createAdminService";
 import { logger } from "@/utils/logger";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
 import { clearFieldError } from "@/utils/formUtils";
 
@@ -53,11 +53,11 @@ function NewAdminForm() {
         router.push(FrontendRoutes.ADMINS);
       } else {
         logger().error('Admin creation failed:', result.error);
-        setError(result.error?.message || ERROR_MESSAGES.admin.CREATION_ERROR);
+        setError(result.error?.message || RESPONSE_MESSAGES.admin.CREATION_ERROR);
       }
     } catch (error) {
       logger().error("Admin creation error:", error);
-      setError(ERROR_MESSAGES.admin.CREATION_ERROR);
+      setError(RESPONSE_MESSAGES.admin.CREATION_ERROR);
     } finally {
       setIsSubmitting(false);
     }

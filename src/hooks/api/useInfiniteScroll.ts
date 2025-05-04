@@ -6,7 +6,7 @@ interface UseInfiniteScrollOptions {
   onLoadMore: () => void;
 }
 
-export default function useInfiniteScroll({ hasMore, isLoading, onLoadMore }: UseInfiniteScrollOptions) {
+export function useInfiniteScroll({ hasMore, isLoading, onLoadMore }: UseInfiniteScrollOptions) {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const targetRef = useRef<HTMLDivElement | null>(null);
 

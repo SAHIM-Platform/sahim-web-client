@@ -1,7 +1,7 @@
 import DateBadge from "./Badge/DateBadge";
 import UserPhoto from "../UserPhoto";
 import { getDisplayName } from "@/utils/getDisplayName";
-
+import { UserRole } from "@/types";
 interface UserInfoProps {
   name?: string;
   photoPath?: string;
@@ -10,10 +10,12 @@ interface UserInfoProps {
   children?: React.ReactNode;
   hideDetailsOnSmallScreens?: boolean;
   size?: "default" | "sm";
+  role?: UserRole;
 }
 
 function UserInfo({
   name,
+  role,
   photoPath,
   photoAlt,
   date,
@@ -32,6 +34,7 @@ function UserInfo({
             size={isSmall ? 24 : 32}
             className="ring-2 ring-white"
             photoPath={photoPath}
+            role={role}
           />
         )}
         {(name || photoAlt) && (

@@ -1,21 +1,21 @@
 'use client';
 
-import ThreadItem from "@/components/app/ThreadListing/ThreadItem";
+import ThreadItem from "@/components/App/ThreadListing/ThreadItem";
 import { useRouter } from "next/navigation";
-import SimilarThreads from "@/components/app/SimilarThreads";
+import SimilarThreads from "@/components/App/SimilarThreads";
 import Textarea from "@/components/Textarea";
 import Button from "@/components/Button";
 import { useState, ChangeEvent, useEffect, useCallback } from "react";
-import { Thread } from "@/types/thread";
+import { Thread } from "@/types";
 import { toast } from "react-hot-toast";
 import { createComment, fetchThreadById, fetchThreads, deleteThread } from "@/services/threadService";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import CommentListing from "@/components/app/Comment/CommentListing";
-import useAuth from "@/hooks/useAuth";
-import useAuthRedirect from "@/hooks/UseAuthRedirect";
-import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import CommentListing from "@/components/App/Comment/CommentListing";
 import { RefreshCw } from "lucide-react";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
+import ItemNotFound from "../NotFound/ItemNotFound";
+import { useAuth, useAuthRedirect, useInfiniteScroll } from "@/hooks";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const router = useRouter();
@@ -238,7 +238,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   }
 
   if (!thread) {
-    return <ErrorAlert message="لم يتم العثور على المناقشة المطلوبة" />;
+    return <ItemNotFound description={RESPONSE_MESSAGES.thread.NOT_FOUND} />;
   }
 
   console.log('DiscussionPageContent - Thread Author:', {

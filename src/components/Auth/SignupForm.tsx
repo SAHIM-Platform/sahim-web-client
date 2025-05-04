@@ -9,10 +9,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Eye, EyeOff, User, Lock, GraduationCap, Building2, GraduationCap as GraduationCap2, ChevronLeft, ChevronRight, UserCheck } from "lucide-react";
 import { departmentLabels, Level } from "@/types";
-import useAuth from "@/hooks/useAuth";
+import { useAuth, useGoogleLogin } from "@/hooks";
 import validateSignupForm, { SignupFormData } from "@/utils/api/signup/validateSignupForm";
 import ErrorAlert from "../Form/ErrorAlert";
-import { useGoogleLogin } from "@/hooks/useGoogleLogin";
 
 const steps = [
   {

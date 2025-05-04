@@ -5,12 +5,12 @@ import Button from "@/components/Button";
 import { useRef, useState, useEffect } from "react";
 import Divider from "@/components/Divider";
 import Textarea from "@/components/Textarea";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import toast from "react-hot-toast";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import { voteComment } from "@/services/threadService";
-import MarkdownRenderer from '@/components/app/MarkdownRenderer';
+import MarkdownRenderer from '@/components/App/MarkdownRenderer';
 
 export interface CommentItemProps {
   id: string;
@@ -92,12 +92,12 @@ function CommentItem({
         setLocalVoteCount(result.votesCount);
         setLocalUserVote(result.userVote);
       } else {
-        throw new Error(ERROR_MESSAGES.comment.DEFAULT);
+        throw new Error(RESPONSE_MESSAGES.comment.DEFAULT);
       }
     } catch (error) {
       setLocalUserVote(previousVote);
       setLocalVoteCount(previousCount);
-      toast.error(error instanceof Error ? error.message : ERROR_MESSAGES.comment.DEFAULT);
+      toast.error(error instanceof Error ? error.message : RESPONSE_MESSAGES.comment.DEFAULT);
     } finally {
       setIsVoting(false);
     }
@@ -111,7 +111,7 @@ function CommentItem({
   const handleEdit = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!isOwner) {
-      toast.error(ERROR_MESSAGES.comment.FORBIDDEN);
+      toast.error(RESPONSE_MESSAGES.comment.FORBIDDEN);
       return;
     }
     setIsDropdownOpen(false);
@@ -121,7 +121,7 @@ function CommentItem({
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (!isOwner) {
-      toast.error(ERROR_MESSAGES.comment.FORBIDDEN);
+      toast.error(RESPONSE_MESSAGES.comment.FORBIDDEN);
       return;
     }
     setIsDropdownOpen(false);
@@ -135,7 +135,7 @@ function CommentItem({
         await onDelete();
       }
     } catch {
-      toast.error(ERROR_MESSAGES.comment.DELETE_FAILED);
+      toast.error(RESPONSE_MESSAGES.comment.DELETE_FAILED);
     } finally {
       setIsDeleting(false);
       setIsDeleteModalOpen(false);
@@ -150,7 +150,7 @@ function CommentItem({
         setIsEditing(false);
       }
     } catch {
-      toast.error(ERROR_MESSAGES.comment.UPDATE_FAILED);
+      toast.error(RESPONSE_MESSAGES.comment.UPDATE_FAILED);
     } finally {
       setIsSubmitting(false);
     }
@@ -165,7 +165,12 @@ function CommentItem({
     <div className="flex gap-1 items-start" data-comment-id={id}>
       <div className="bg-white rounded-xl border border-gray-200 px-6 pt-6 pb-3 w-full relative transition-all duration-200">
         <div className="flex justify-between items-start">
-          <UserInfo name={auth.user?.name} date={timestamp} photoPath={auth.user?.photoPath} />
+          <UserInfo 
+            name={auth.user?.name} 
+            date={timestamp} 
+            photoPath={auth.user?.photoPath} 
+            role={auth.user?.role}
+          />
           
           {isOwner && (
             <div className="relative" ref={dropdownRef}>

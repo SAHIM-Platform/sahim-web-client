@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import useAuth from "./useAuth";
-import { UserRole } from "@/types/auth";
+import { useAuth } from "@/hooks";
+import { isStudentByRole } from "@/utils/role";
 
 /**
  * Hook for protecting routes that should only be accessible to students
@@ -17,7 +17,7 @@ import { UserRole } from "@/types/auth";
  * 
  * @returns {boolean} isLoading - true while checking authentication and role
  */
-const useStudentGuard = (): boolean => {
+export function useStudentGuard(): boolean {
   const router = useRouter();
   const { isAuthenticated, auth } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
@@ -28,8 +28,7 @@ const useStudentGuard = (): boolean => {
       return;
     }
 
-    const isStudent = auth.user?.role === UserRole.STUDENT;
-    if (!isStudent) {
+    if (!isStudentByRole(auth.user?.role)) {
       router.push("/explore");
       return;
     }
@@ -39,5 +38,3 @@ const useStudentGuard = (): boolean => {
 
   return isLoading;
 };
-
-export default useStudentGuard; 

@@ -6,16 +6,16 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
 import { createCategory } from "@/services/admin/categoryService";
 import toast from "react-hot-toast";
-import { isAuthOrAdminRoleGuardLoading } from "@/utils/loading";
 import { logger } from "@/utils/logger";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
+import { useAdminRoleGuard, useLoading } from "@/hooks";
 
 export default function NewCategoryPage() {
   const router = useRouter();
+  const { isAdminGuardLoading } = useLoading();
   
   useAdminRoleGuard();
   
@@ -25,7 +25,7 @@ export default function NewCategoryPage() {
     name: "",
   });
 
-  if (isAuthOrAdminRoleGuardLoading()) {
+  if (isAdminGuardLoading) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
@@ -38,14 +38,14 @@ export default function NewCategoryPage() {
       const result = await createCategory(formData.name.trim());
 
       if (result.success) {
-        toast.success(ERROR_MESSAGES.category.CREATED_SUCCESSFULLY);
+        toast.success(RESPONSE_MESSAGES.category.CREATED_SUCCESSFULLY);
         router.push(FrontendRoutes.CATEGORIES);
       } else {
-        setError(result.error?.message || ERROR_MESSAGES.category.CREATE_FAILED);
+        setError(result.error?.message || RESPONSE_MESSAGES.category.CREATE_FAILED);
       }
     } catch (error) {
       logger().error("Error creating category:", error);
-      setError(ERROR_MESSAGES.category.CREATE_FAILED);
+      setError(RESPONSE_MESSAGES.category.CREATE_FAILED);
     } finally {
       setIsSubmitting(false);
     }

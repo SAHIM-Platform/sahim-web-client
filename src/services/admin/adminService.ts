@@ -1,7 +1,7 @@
 import axiosInstance from '@/api/axios';
 import { Admin } from '@/types';
 import { AxiosError, isAxiosError } from 'axios';
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 
 interface AdminResponse {
   id: number;
@@ -53,7 +53,7 @@ export const adminService = {
           return {
             success: false,
             error: {
-              message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+              message: RESPONSE_MESSAGES.auth.UNAUTHORIZED,
               code: 'UNAUTHORIZED'
             }
           };
@@ -63,7 +63,7 @@ export const adminService = {
           return {
             success: false,
             error: {
-              message: ERROR_MESSAGES.auth.FORBIDDEN,
+              message: RESPONSE_MESSAGES.auth.FORBIDDEN,
               code: 'FORBIDDEN'
             }
           };
@@ -73,7 +73,7 @@ export const adminService = {
       return {
         success: false,
         error: {
-          message: ERROR_MESSAGES.thread.SERVER_ERROR,
+          message: RESPONSE_MESSAGES.thread.SERVER_ERROR,
           code: 'SERVER_ERROR'
         }
       };
@@ -92,7 +92,7 @@ export const adminService = {
           return {
             success: false,
             error: {
-              message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+              message: RESPONSE_MESSAGES.auth.UNAUTHORIZED,
               code: 'UNAUTHORIZED'
             }
           };
@@ -102,7 +102,7 @@ export const adminService = {
           return {
             success: false,
             error: {
-              message: ERROR_MESSAGES.auth.FORBIDDEN,
+              message: RESPONSE_MESSAGES.auth.FORBIDDEN,
               code: 'FORBIDDEN'
             }
           };
@@ -112,7 +112,7 @@ export const adminService = {
           return {
             success: false,
             error: {
-              message: ERROR_MESSAGES.adminListing.NOT_FOUND,
+              message: RESPONSE_MESSAGES.adminListing.NOT_FOUND,
               code: 'NOT_FOUND'
             }
           };
@@ -122,7 +122,7 @@ export const adminService = {
       return {
         success: false,
         error: {
-          message: ERROR_MESSAGES.adminListing.DELETE_FAILED,
+          message: RESPONSE_MESSAGES.adminListing.DELETE_FAILED,
           code: 'SERVER_ERROR'
         }
       };

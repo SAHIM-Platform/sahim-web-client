@@ -102,3 +102,8 @@ export interface BookmarkedThreadsResult {
   data?: ThreadResponse;
   error?: ThreadError;
 }
+
+export interface Category {
+  id: string;
+  name: string;
+}

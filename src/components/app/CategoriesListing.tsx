@@ -3,27 +3,28 @@
 import { Hash, Edit, Trash2, Check, X } from "lucide-react";
 import LoadingSpinner from "../LoadingSpinner";
 import { useState } from "react";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import Button from "../Button";
 import Input from "../Input";
 import { updateCategory, deleteCategory } from "@/services/admin/categoryService";
 import { toast } from "react-hot-toast";
 import ConfirmModal from "../Modal/ConfirmModal";
-
+import ErrorAlert from "../Form/ErrorAlert";
 interface CategoriesListingProps {
   allowManagement?: boolean;
   categories: { category_id: number; name: string; }[];
   isLoading: boolean;
   onCategoriesChange: () => Promise<void>;
   maxChars?: number;
+  error?: string;
 }
-
 function CategoriesListing({ 
   allowManagement = false,
   categories,
   isLoading,
   onCategoriesChange,
-  maxChars = 20
+  maxChars = 20,
+  error
 }: CategoriesListingProps) {
   const { auth } = useAuth();
   const [editingCategory, setEditingCategory] = useState<number | null>(null);
@@ -34,12 +35,10 @@ function CategoriesListing({
 
   const isSuperAdmin = auth.user?.role === 'SUPER_ADMIN';
   const showManagementIcons = allowManagement && isSuperAdmin;
-
   const handleEditClick = (categoryId: number, currentName: string) => {
     setEditingCategory(categoryId);
     setEditValue(currentName);
   };
-
   const handleSaveEdit = async (categoryId: number) => {
     if (!editValue.trim()) {
       toast.error("لا يمكن أن يكون اسم التصنيف فارغاً");
@@ -61,17 +60,14 @@ function CategoriesListing({
       setEditingCategory(null);
     }
   };
-
   const handleCancelEdit = () => {
     setEditingCategory(null);
     setEditValue("");
   };
-
   const handleDeleteClick = (categoryId: number) => {
     setCategoryToDelete(categoryId);
     setDeleteModalOpen(true);
   };
-
   const handleConfirmDelete = async () => {
     if (!categoryToDelete) return;
 
@@ -100,6 +96,8 @@ function CategoriesListing({
         <div className="flex justify-center py-4">
           <LoadingSpinner size="sm" color="primary" />
         </div>
+      ) : error ? (
+        error && <ErrorAlert message={error} />
       ) : categories.length === 0 ? (
         <p className="text-sm text-gray-500 px-3 py-2">لا توجد تصنيفات متاحة</p>
       ) : (

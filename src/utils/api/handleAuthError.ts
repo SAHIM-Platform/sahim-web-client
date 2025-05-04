@@ -1,6 +1,6 @@
-import { AuthError } from '@/types/auth';
-import ERROR_MESSAGES from './ERROR_MESSAGES';
-import FIELD_ERROR_MAPPING from './FIELD_ERROR_MAPPING';
+import { AuthError } from "@/types";
+import RESPONSE_MESSAGES from '../constants/RESPONSE_MESSAGES';
+import FIELD_ERROR_MAPPING from '../constants/FIELD_ERROR_MAPPING';
 
 /**
  * Generic handler for authentication errors
@@ -20,7 +20,7 @@ export function handleAuthError(
   }
 
   const errorCode = error.code || "UNKNOWN_ERROR";
-  const messages = ERROR_MESSAGES['login'];
+  const messages = RESPONSE_MESSAGES['login'];
   const fieldMappings = FIELD_ERROR_MAPPING['login'];
 
   if (errorCode === "VALIDATION_ERROR") {

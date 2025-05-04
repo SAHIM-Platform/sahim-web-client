@@ -1,18 +1,19 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Thread } from '@/types/thread';
-import toast from 'react-hot-toast';
-import useInfiniteScroll from '@/hooks/useInfiniteScroll';
-import ErrorAlert from '@/components/Form/ErrorAlert';
-import Button from '@/components/Button';
-import { RefreshCw } from 'lucide-react';
+import { Thread } from "@/types";
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { fetchBookmarkedThreads, deleteThread } from '@/services/threadService';
-import ThreadItem from '@/components/app/ThreadListing/ThreadItem';
-import useAuthRedirect from '@/hooks/UseAuthRedirect';
+import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
+import { logger } from '@/utils/logger';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
+import toast from 'react-hot-toast';
+import RetryAgain from '@/components/App/RetryAgain';
+import ItemNotFound from '@/components/App/NotFound/ItemNotFound';
+import { useInfiniteScroll, useLoading } from '@/hooks';
 
 const BookmarksPageContent = () => {
+  const { isAuthLoadingOrRedirecting } = useLoading();
   const [bookmarkedThreads, setBookmarkedThreads] = useState<Thread[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
@@ -20,7 +21,7 @@ const BookmarksPageContent = () => {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const isLoading = useAuthRedirect();
+  const isLoading = isAuthLoadingOrRedirecting;
 
   const fetchInitialBookmarks = useCallback(async () => {
     setPage(1);
@@ -36,21 +37,18 @@ const BookmarksPageContent = () => {
           ...thread,
           author: {
             ...thread.author,
-            photoPath: thread.author.photoPath || '/public/avatars/defaults/super-admin.webp'
+            photoPath: thread.author.photoPath
           }
         }));
         setBookmarkedThreads(processedThreads);
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage(2);
       } else {
-        const errorMessage = 'حدث خطأ أثناء تحميل المحفوظات. يرجى المحاولة مرة أخرى';
-        setError(errorMessage);
-        toast.error(errorMessage);
+        setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
       }
-    } catch {
-      const errorMessage = 'حدث خطأ أثناء تحميل المحفوظات. يرجى المحاولة مرة أخرى';
-      setError(errorMessage);
-      toast.error(errorMessage);
+    } catch (error) {
+      logger().error("Error loading bookmarks:", error);
+      setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
     } finally {
       setIsInitialLoading(false);
     }
@@ -68,17 +66,18 @@ const BookmarksPageContent = () => {
           ...thread,
           author: {
             ...thread.author,
-            photoPath: thread.author.photoPath || '/public/avatars/defaults/super-admin.webp'
+            photoPath: thread.author.photoPath
           }
         }));
         setBookmarkedThreads((prev) => [...prev, ...newBookmarkedThreads]);
         setHasMore(result.data.meta.page < result.data.meta.totalPages);
         setPage((prev) => prev + 1);
       } else {
-        toast.error('حدث خطأ أثناء تحميل المزيد من المحفوظات. يرجى المحاولة مرة أخرى');
+        setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
       }
-    } catch {
-      toast.error('حدث خطأ أثناء تحميل المزيد من المحفوظات. يرجى المحاولة مرة أخرى');
+    } catch (error) {
+      logger().error("Error loading more bookmarks:", error);
+      setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
     } finally {
       setIsFetchingMore(false);
     }
@@ -99,13 +98,14 @@ const BookmarksPageContent = () => {
       const result = await deleteThread(threadId);
 
       if (result.success) {
-        toast.success('تم حذف المناقشة بنجاح');
+        toast.success(RESPONSE_MESSAGES.BOOKMARK.DELETE_SUCCESS);
         setBookmarkedThreads(prev => prev.filter(thread => thread.thread_id !== threadId));
       } else {
-        toast.error('حدث خطأ أثناء حذف المناقشة. يرجى المحاولة مرة أخرى');
+        toast.error(RESPONSE_MESSAGES.BOOKMARK.NOT_FOUND);
       }
     } catch {
-      toast.error('حدث خطأ أثناء حذف المناقشة. يرجى المحاولة مرة أخرى');
+      logger().error("Error deleting thread:", error);
+      toast.error(RESPONSE_MESSAGES.BOOKMARK.NOT_FOUND);
     }
   };
 
@@ -115,38 +115,23 @@ const BookmarksPageContent = () => {
     }
   }, [isLoading, fetchInitialBookmarks]);
 
-  if (isLoading) {
+  if (isLoading || isInitialLoading) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
-  }
-
-  if (isInitialLoading) {
-    return <LoadingSpinner size="xl" color="primary" fullScreen />;
   }
 
   if (error) {
     return (
-      <div className="space-y-4">
-        <ErrorAlert message={error} />
-        <Button
-          onClick={handleRetry}
-          variant="outline"
-          icon={<RefreshCw className="w-4" />}
-          color="secondary"
-        >
-          إعادة المحاولة
-        </Button>
-      </div>
+      <RetryAgain
+        error={error}
+        handleRetry={handleRetry}
+      />
     );
   }
 
   return (
     <div className="space-y-5">
       {bookmarkedThreads.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-[14px] sm:text-[15px]">
-            لا توجد مواضيع محفوظة حالياً
-          </p>
-        </div>
+        <ItemNotFound description={RESPONSE_MESSAGES.BOOKMARK.NOT_FOUND} />
       ) : (
         <>
           <div className="flex flex-col gap-5">

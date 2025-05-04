@@ -1,9 +1,9 @@
 import axiosInstance from '@/api/axios';
-import { ThreadResult, ThreadResponse, SingleThreadResult, Thread, BookmarkedThreadsResult } from '@/types/thread';
+import { ThreadResult, ThreadResponse, SingleThreadResult, Thread, BookmarkedThreadsResult } from "@/types";
 import { AxiosError, isAxiosError } from 'axios';
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
-import { THREADS_LIMIT } from '@/utils/constant';
+import { THREADS_LIMIT } from '@/utils/constants/ITEMS_LIMITS';
 
 
 interface VoteResponse {
@@ -62,14 +62,14 @@ export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Pro
 
     // Validate response data structure
     if (!response.data || typeof response.data !== 'object') {
-      throw new Error(ERROR_MESSAGES.thread.VALIDATION_ERROR);
+      throw new Error(RESPONSE_MESSAGES.thread.VALIDATION_ERROR);
     }
 
     const { success, updatedVotes } = response.data;
 
     // Validate required fields
     if (typeof success !== 'boolean' || !updatedVotes) {
-      throw new Error(ERROR_MESSAGES.thread.VALIDATION_ERROR);
+      throw new Error(RESPONSE_MESSAGES.thread.VALIDATION_ERROR);
     }
 
     // Return transformed data
@@ -85,19 +85,19 @@ export async function voteThread(threadId: number, voteType: "UP" | "DOWN"): Pro
       const axiosError = error as AxiosError;
       
       if (axiosError.response?.status === 401) {
-        throw new Error(ERROR_MESSAGES.auth.UNAUTHORIZED);
+        throw new Error(RESPONSE_MESSAGES.auth.UNAUTHORIZED);
       }
       
       if (axiosError.response?.status === 404) {
-        throw new Error(ERROR_MESSAGES.thread.NOT_FOUND);
+        throw new Error(RESPONSE_MESSAGES.thread.NOT_FOUND);
       }
       
       if (axiosError.response?.status === 400) {
-        throw new Error(ERROR_MESSAGES.thread.VALIDATION_ERROR);
+        throw new Error(RESPONSE_MESSAGES.thread.VALIDATION_ERROR);
       }
     }
     
-    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
   }
 }
 
@@ -111,7 +111,7 @@ export async function createComment(threadId: number, content: string): Promise<
       return response.data;
     }
 
-    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
   } catch (error) {
     console.error('Error creating comment:', error);
 
@@ -119,15 +119,15 @@ export async function createComment(threadId: number, content: string): Promise<
       const axiosError = error as AxiosError;
 
       if (axiosError.response?.status === 400) {
-        throw new Error(ERROR_MESSAGES.thread.VALIDATION_ERROR);
+        throw new Error(RESPONSE_MESSAGES.thread.VALIDATION_ERROR);
       }
 
       if (axiosError.response?.status === 404) {
-        throw new Error(ERROR_MESSAGES.thread.NOT_FOUND);
+        throw new Error(RESPONSE_MESSAGES.thread.NOT_FOUND);
       }
     }
 
-    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
   }
 }
 
@@ -147,7 +147,7 @@ export async function updateComment(
       return response.data;
     }
 
-    throw new Error(ERROR_MESSAGES.comment.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.comment.DEFAULT);
   } catch (error) {
     console.error('Error updating comment:', error);
 
@@ -155,19 +155,19 @@ export async function updateComment(
       const axiosError = error as AxiosError;
 
       if (axiosError.response?.status === 400) {
-        throw new Error(ERROR_MESSAGES.comment.VALIDATION_ERROR);
+        throw new Error(RESPONSE_MESSAGES.comment.VALIDATION_ERROR);
       }
 
       if (axiosError.response?.status === 401) {
-        throw new Error(ERROR_MESSAGES.auth.UNAUTHORIZED);
+        throw new Error(RESPONSE_MESSAGES.auth.UNAUTHORIZED);
       }
 
       if (axiosError.response?.status === 404) {
-        throw new Error(ERROR_MESSAGES.comment.NOT_FOUND);
+        throw new Error(RESPONSE_MESSAGES.comment.NOT_FOUND);
       }
     }
 
-    throw new Error(ERROR_MESSAGES.comment.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.comment.DEFAULT);
   }
 }
 
@@ -188,15 +188,15 @@ export async function deleteComment(
       const axiosError = error as AxiosError;
 
       if (axiosError.response?.status === 401) {
-        throw new Error(ERROR_MESSAGES.auth.UNAUTHORIZED);
+        throw new Error(RESPONSE_MESSAGES.auth.UNAUTHORIZED);
       }
 
       if (axiosError.response?.status === 404) {
-        throw new Error(ERROR_MESSAGES.comment.NOT_FOUND);
+        throw new Error(RESPONSE_MESSAGES.comment.NOT_FOUND);
       }
     }
 
-    throw new Error(ERROR_MESSAGES.comment.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.comment.DEFAULT);
   }
 }
 
@@ -212,14 +212,14 @@ export async function voteComment(
 
     // Validate response data structure
     if (!response.data || typeof response.data !== 'object') {
-      throw new Error(ERROR_MESSAGES.comment.VALIDATION_ERROR);
+      throw new Error(RESPONSE_MESSAGES.comment.VALIDATION_ERROR);
     }
 
     const { success, updatedVotes } = response.data;
 
     // Validate required fields
     if (typeof success !== 'boolean' || !updatedVotes) {
-      throw new Error(ERROR_MESSAGES.comment.VALIDATION_ERROR);
+      throw new Error(RESPONSE_MESSAGES.comment.VALIDATION_ERROR);
     }
 
     // Return transformed data
@@ -235,19 +235,19 @@ export async function voteComment(
       const axiosError = error as AxiosError;
       
       if (axiosError.response?.status === 401) {
-        throw new Error(ERROR_MESSAGES.auth.UNAUTHORIZED);
+        throw new Error(RESPONSE_MESSAGES.auth.UNAUTHORIZED);
       }
       
       if (axiosError.response?.status === 404) {
-        throw new Error(ERROR_MESSAGES.comment.NOT_FOUND);
+        throw new Error(RESPONSE_MESSAGES.comment.NOT_FOUND);
       }
       
       if (axiosError.response?.status === 400) {
-        throw new Error(ERROR_MESSAGES.comment.VALIDATION_ERROR);
+        throw new Error(RESPONSE_MESSAGES.comment.VALIDATION_ERROR);
       }
     }
     
-    throw new Error(ERROR_MESSAGES.comment.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.comment.DEFAULT);
   }
 }
 
@@ -287,7 +287,7 @@ export const fetchThreads = async ({
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -303,7 +303,7 @@ export const fetchThreads = async ({
         return {
           success: false,
           error: {
-            message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            message: errorData.message || RESPONSE_MESSAGES.thread.VALIDATION_ERROR,
             code: errorData.code || 'VALIDATION_ERROR'
           }
         };
@@ -313,7 +313,7 @@ export const fetchThreads = async ({
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            message: RESPONSE_MESSAGES.thread.NOT_FOUND,
             code: 'NOT_FOUND'
           }
         };
@@ -322,7 +322,7 @@ export const fetchThreads = async ({
       return {
         success: false,
         error: {
-          message: ERROR_MESSAGES.thread.SERVER_ERROR,
+          message: RESPONSE_MESSAGES.thread.SERVER_ERROR,
           code: 'SERVER_ERROR'
         }
       };
@@ -331,7 +331,7 @@ export const fetchThreads = async ({
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -352,7 +352,7 @@ export const fetchThreadById = async (threadId: number): Promise<SingleThreadRes
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -368,7 +368,7 @@ export const fetchThreadById = async (threadId: number): Promise<SingleThreadRes
         return {
           success: false,
           error: {
-            message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            message: errorData.message || RESPONSE_MESSAGES.thread.VALIDATION_ERROR,
             code: errorData.code || 'VALIDATION_ERROR'
           }
         };
@@ -379,7 +379,7 @@ export const fetchThreadById = async (threadId: number): Promise<SingleThreadRes
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            message: RESPONSE_MESSAGES.thread.NOT_FOUND,
             code: 'NOT_FOUND'
           }
         };
@@ -389,7 +389,7 @@ export const fetchThreadById = async (threadId: number): Promise<SingleThreadRes
       return {
         success: false,
         error: {
-          message: ERROR_MESSAGES.thread.SERVER_ERROR,
+          message: RESPONSE_MESSAGES.thread.SERVER_ERROR,
           code: 'SERVER_ERROR'
         }
       };
@@ -399,7 +399,7 @@ export const fetchThreadById = async (threadId: number): Promise<SingleThreadRes
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -443,7 +443,7 @@ export const searchThreads = async ({
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -459,7 +459,7 @@ export const searchThreads = async ({
         return {
           success: false,
           error: {
-            message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            message: errorData.message || RESPONSE_MESSAGES.thread.VALIDATION_ERROR,
             code: errorData.code || 'VALIDATION_ERROR'
           }
         };
@@ -469,7 +469,7 @@ export const searchThreads = async ({
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            message: RESPONSE_MESSAGES.thread.NOT_FOUND,
             code: 'NOT_FOUND'
           }
         };
@@ -478,7 +478,7 @@ export const searchThreads = async ({
       return {
         success: false,
         error: {
-          message: ERROR_MESSAGES.thread.SERVER_ERROR,
+          message: RESPONSE_MESSAGES.thread.SERVER_ERROR,
           code: 'SERVER_ERROR'
         }
       };
@@ -487,7 +487,7 @@ export const searchThreads = async ({
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -515,7 +515,7 @@ export const updateThread = async (
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -530,7 +530,7 @@ export const updateThread = async (
         return {
           success: false,
           error: {
-            message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            message: errorData.message || RESPONSE_MESSAGES.thread.VALIDATION_ERROR,
             code: errorData.code || 'VALIDATION_ERROR'
           }
         };
@@ -540,7 +540,7 @@ export const updateThread = async (
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            message: RESPONSE_MESSAGES.auth.UNAUTHORIZED,
             code: 'UNAUTHORIZED'
           }
         };
@@ -550,7 +550,7 @@ export const updateThread = async (
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.thread.FORBIDDEN,
+            message: RESPONSE_MESSAGES.thread.FORBIDDEN,
             code: 'FORBIDDEN'
           }
         };
@@ -560,7 +560,7 @@ export const updateThread = async (
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            message: RESPONSE_MESSAGES.thread.NOT_FOUND,
             code: 'NOT_FOUND'
           }
         };
@@ -570,7 +570,7 @@ export const updateThread = async (
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -595,11 +595,11 @@ export const fetchCategories = async (): Promise<CategoryResponse> => {
       const axiosError = error as AxiosError;
 
       if (axiosError.response?.status === 404) {
-        throw new Error(ERROR_MESSAGES.thread.NOT_FOUND);
+        throw new Error(RESPONSE_MESSAGES.thread.NOT_FOUND);
       }
     }
 
-    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
   }
 };
 
@@ -628,7 +628,7 @@ export const deleteThread = async (threadId: number): Promise<DeleteThreadResult
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            message: RESPONSE_MESSAGES.auth.UNAUTHORIZED,
             code: 'UNAUTHORIZED'
           }
         };
@@ -639,7 +639,7 @@ export const deleteThread = async (threadId: number): Promise<DeleteThreadResult
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.thread.FORBIDDEN,
+            message: RESPONSE_MESSAGES.thread.FORBIDDEN,
             code: 'FORBIDDEN'
           }
         };
@@ -650,7 +650,7 @@ export const deleteThread = async (threadId: number): Promise<DeleteThreadResult
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            message: RESPONSE_MESSAGES.thread.NOT_FOUND,
             code: 'NOT_FOUND'
           }
         };
@@ -660,7 +660,7 @@ export const deleteThread = async (threadId: number): Promise<DeleteThreadResult
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -684,7 +684,7 @@ export const bookmarkThread = async (threadId: number): Promise<BookmarkResult> 
       };
     }
 
-    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
   } catch (error) {
     console.error('Error bookmarking thread:', error);
 
@@ -701,15 +701,15 @@ export const bookmarkThread = async (threadId: number): Promise<BookmarkResult> 
       }
 
       if (axiosError.response?.status === 401) {
-        throw new Error(ERROR_MESSAGES.auth.UNAUTHORIZED);
+        throw new Error(RESPONSE_MESSAGES.auth.UNAUTHORIZED);
       }
 
       if (axiosError.response?.status === 404) {
-        throw new Error(ERROR_MESSAGES.thread.NOT_FOUND);
+        throw new Error(RESPONSE_MESSAGES.thread.NOT_FOUND);
       }
     }
 
-    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
   }
 };
 
@@ -724,7 +724,7 @@ export const unbookmarkThread = async (threadId: number): Promise<BookmarkResult
       };
     }
 
-    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
   } catch (error) {
     console.error('Error unbookmarking thread:', error);
 
@@ -741,15 +741,15 @@ export const unbookmarkThread = async (threadId: number): Promise<BookmarkResult
       }
 
       if (axiosError.response?.status === 401) {
-        throw new Error(ERROR_MESSAGES.auth.UNAUTHORIZED);
+        throw new Error(RESPONSE_MESSAGES.auth.UNAUTHORIZED);
       }
 
       if (axiosError.response?.status === 404) {
-        throw new Error(ERROR_MESSAGES.thread.NOT_FOUND);
+        throw new Error(RESPONSE_MESSAGES.thread.NOT_FOUND);
       }
     }
 
-    throw new Error(ERROR_MESSAGES.thread.DEFAULT);
+    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
   }
 };
 
@@ -782,7 +782,7 @@ export const fetchBookmarkedThreads = async ({
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR',
       },
     };
@@ -798,7 +798,7 @@ export const fetchBookmarkedThreads = async ({
         return {
           success: false,
           error: {
-            message: errorData.message || ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            message: errorData.message || RESPONSE_MESSAGES.thread.VALIDATION_ERROR,
             code: errorData.code || 'VALIDATION_ERROR',
           },
         };
@@ -809,7 +809,7 @@ export const fetchBookmarkedThreads = async ({
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            message: RESPONSE_MESSAGES.auth.UNAUTHORIZED,
             code: 'UNAUTHORIZED',
           },
         };
@@ -820,7 +820,7 @@ export const fetchBookmarkedThreads = async ({
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.thread.NOT_FOUND,
+            message: RESPONSE_MESSAGES.thread.NOT_FOUND,
             code: 'NOT_FOUND',
           },
         };
@@ -830,7 +830,7 @@ export const fetchBookmarkedThreads = async ({
       return {
         success: false,
         error: {
-          message: ERROR_MESSAGES.thread.SERVER_ERROR,
+          message: RESPONSE_MESSAGES.thread.SERVER_ERROR,
           code: 'SERVER_ERROR',
         },
       };
@@ -840,7 +840,7 @@ export const fetchBookmarkedThreads = async ({
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR',
       },
     };
@@ -877,7 +877,7 @@ export const createThread = async (threadData: {
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -891,7 +891,7 @@ export const createThread = async (threadData: {
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.thread.VALIDATION_ERROR,
+            message: RESPONSE_MESSAGES.thread.VALIDATION_ERROR,
             code: 'VALIDATION_ERROR'
           }
         };
@@ -901,7 +901,7 @@ export const createThread = async (threadData: {
         return {
           success: false,
           error: {
-            message: ERROR_MESSAGES.auth.UNAUTHORIZED,
+            message: RESPONSE_MESSAGES.auth.UNAUTHORIZED,
             code: 'UNAUTHORIZED'
           }
         };
@@ -911,7 +911,7 @@ export const createThread = async (threadData: {
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };
@@ -975,7 +975,7 @@ export const fetchUserThreads = async ({
       return {
         success: false,
         error: {
-          message: axiosError.response?.data?.message || ERROR_MESSAGES.thread.DEFAULT,
+          message: axiosError.response?.data?.message || RESPONSE_MESSAGES.thread.DEFAULT,
           code: 'SERVER_ERROR'
         }
       };
@@ -984,7 +984,7 @@ export const fetchUserThreads = async ({
     return {
       success: false,
       error: {
-        message: ERROR_MESSAGES.thread.DEFAULT,
+        message: RESPONSE_MESSAGES.thread.DEFAULT,
         code: 'UNKNOWN_ERROR'
       }
     };

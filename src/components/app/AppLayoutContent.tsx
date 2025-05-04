@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import AppNavbar from "./AppNavbar/AppNavbar";
-import { useSearchShortcuts } from "@/hooks/useSearchShortcuts";
 import AppMenuSidebar from "./AppMenuSidebar";
 import AppInfoSidebar from "./AppInfoSidebar";
 import Container from "../Container";
+import { useSearchShortcuts } from "@/hooks";
 
 export default function AppLayoutContent({
   children,

@@ -41,7 +41,8 @@ export function isAdminOrSuperAdmin(user: Profile) {
  * @param role - The role to check.
  * @returns True if the role is that of a student, false otherwise.
  */
-export function isStudentByRole(role: string) {
+export function isStudentByRole(role: string | undefined) {
+  if (!role) return false;
   return role === UserRole.STUDENT;
 }
 
@@ -50,7 +51,8 @@ export function isStudentByRole(role: string) {
  * @param role - The role to check.
  * @returns True if the role is that of an admin, false otherwise.
  */
-export function isAdminByRole(role: string) {
+export function isAdminByRole(role: UserRole | undefined) {
+  if (!role) return false;
   return role === UserRole.ADMIN;
 }
 
@@ -59,7 +61,8 @@ export function isAdminByRole(role: string) {
  * @param role - The role to check.
  * @returns True if the role is that of a super admin, false otherwise.
  */
-export function isSuperAdminByRole(role: string) {
+export function isSuperAdminByRole(role: UserRole | undefined) {
+  if (!role) return false;
   return role === UserRole.SUPER_ADMIN;
 }
 
@@ -68,6 +71,7 @@ export function isSuperAdminByRole(role: string) {
  * @param role - The role to check.
  * @returns True if the role is that of an admin or a super admin, false otherwise.
  */
-export function isAdminOrSuperAdminByRole(role: string) {
+export function isAdminOrSuperAdminByRole(role: UserRole | undefined) {
+  if (!role) return false;
   return isAdminByRole(role) || isSuperAdminByRole(role);
 }

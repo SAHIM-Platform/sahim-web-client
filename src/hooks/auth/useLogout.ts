@@ -1,13 +1,12 @@
 "use client";
 
 import { logoutService } from "@/services/auth/logoutService";
-import useAuth from "./useAuth";
 import { useRouter } from "next/navigation";
-import useAxios from "./useAxios";
 import { useState } from "react";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
+import { useAuth, useAxios } from "@/hooks";
 
-const useLogout = () => {
+export function useLogout() {
   const { setAuth } = useAuth();
   useAxios();
   const router = useRouter();
@@ -22,7 +21,7 @@ const useLogout = () => {
       const response = await logoutService();
 
       if (!response.success) {
-        setError(response.error?.message || ERROR_MESSAGES.logout.DEFAULT);
+        setError(response.error?.message || RESPONSE_MESSAGES.logout.DEFAULT);
         return;
       }
 
@@ -35,7 +34,7 @@ const useLogout = () => {
 
     } catch (error) {
       console.error("Logout failed:", error);
-      setError(ERROR_MESSAGES.logout.DEFAULT);
+      setError(RESPONSE_MESSAGES.logout.DEFAULT);
     } finally {
       setIsLoading(false);
     }
@@ -43,5 +42,3 @@ const useLogout = () => {
 
   return { logout, error, isLoading };
 };
-
-export default useLogout;

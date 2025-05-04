@@ -3,10 +3,10 @@ import Input from "@/components/Input";
 import Select from "@/components/Select";
 import Button from "@/components/Button";
 import Textarea from "@/components/Textarea";
-import { Thread } from "@/types/thread";
-import ThumbnailPreview from "@/components/app/ThumbnailPreview";
-import { useImageValidation } from "@/hooks/useImageValidation";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import { Thread } from "@/types";
+import ThumbnailPreview from "@/components/App/ThumbnailPreview";
+import { useImageValidation } from "@/hooks";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import Modal from "@/components/Modal/Modal";
 import { X } from "lucide-react";
@@ -57,11 +57,11 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
           if (response.data && Array.isArray(response.data)) {
             setCategories(response.data);
           } else {
-            setError(ERROR_MESSAGES.thread.DEFAULT);
+            setError(RESPONSE_MESSAGES.thread.DEFAULT);
             setCategories([]);
           }
         } catch {
-          setError(ERROR_MESSAGES.thread.DEFAULT);
+          setError(RESPONSE_MESSAGES.thread.DEFAULT);
           setCategories([]);
         } finally {
           setIsLoadingCategories(false);
@@ -126,11 +126,11 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
         onSuccess?.(result.data);
         onClose();
       } else {
-        setError(result.error?.message || ERROR_MESSAGES.thread.DEFAULT);
+        setError(result.error?.message || RESPONSE_MESSAGES.thread.DEFAULT);
       }
     } catch (err: unknown) {
       console.error("Error updating thread:", err);
-      const errorMessage = err instanceof Error ? err.message : ERROR_MESSAGES.thread.DEFAULT;
+      const errorMessage = err instanceof Error ? err.message : RESPONSE_MESSAGES.thread.DEFAULT;
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);

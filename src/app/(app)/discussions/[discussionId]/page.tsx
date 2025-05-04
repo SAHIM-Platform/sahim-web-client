@@ -1,9 +1,11 @@
 "use client";
 
-import DiscussionPageContent from "@/components/app/pages/DiscussionPageContent";
+import ItemNotFound from "@/components/App/NotFound/ItemNotFound";
+import DiscussionPageContent from "@/components/App/pages/DiscussionPageContent";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import useAuthRedirect from "@/hooks/UseAuthRedirect";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { use } from "react";
+import { useLoading } from "@/hooks";
 
 interface DiscussionPageProps {
   params: Promise<{ discussionId: string }>;
@@ -11,17 +13,15 @@ interface DiscussionPageProps {
 
 export default function DiscussionPage({ params }: DiscussionPageProps) {
   const { discussionId } = use(params);
-  const isLoading = useAuthRedirect();
+  const { isAuthLoadingOrRedirecting } = useLoading();
 
-  if (isLoading) {
+  if (isAuthLoadingOrRedirecting) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
   if (!discussionId) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-gray-500">هذه المناقشة غير موجودة</p>
-      </div>
+      <ItemNotFound description={RESPONSE_MESSAGES.thread.NOT_FOUND} />
     )
   }
 

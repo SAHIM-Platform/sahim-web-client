@@ -5,14 +5,14 @@ import toast from "react-hot-toast";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorAlert from "./Form/ErrorAlert";
 import Button from "./Button";
-import SearchField from "./app/SearchField";
+import SearchField from "./App/SearchField";
 import Divider from "./Divider";
-import UsersBadge from "./app/Badge/UsersBadge";
-import UserCardItem from "./app/UserCardItem";
+import UsersBadge from "./App/Badge/UsersBadge";
+import UserCardItem from "./App/UserCardItem";
 import { ArrowUpDown, RefreshCw, UserPlus } from "lucide-react";
 import { Admin } from "@/types";
 import { adminService } from "@/services/admin/adminService";
-import ERROR_MESSAGES from "@/utils/api/ERROR_MESSAGES";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 
 export default function AdminsListing() {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +29,7 @@ export default function AdminsListing() {
       const result = await adminService.getAdmins();
       
       if (!result.success) {
-        const errorMessage = ERROR_MESSAGES.adminListing.DEFAULT;
+        const errorMessage = RESPONSE_MESSAGES.adminListing.DEFAULT;
         setError(errorMessage);
         toast.error(errorMessage);
         return;
@@ -37,8 +37,8 @@ export default function AdminsListing() {
 
       setAdmins(result.data || []);
     } catch {
-      setError(ERROR_MESSAGES.adminListing.LOAD_FAILED);
-      toast.error(ERROR_MESSAGES.adminListing.LOAD_FAILED);
+      setError(RESPONSE_MESSAGES.adminListing.LOAD_FAILED);
+      toast.error(RESPONSE_MESSAGES.adminListing.LOAD_FAILED);
     } finally {
       setIsLoading(false);
     }
@@ -52,14 +52,14 @@ export default function AdminsListing() {
       const result = await adminService.deleteAdmin(id);
 
       if (!result.success) {
-        toast.error(ERROR_MESSAGES.adminListing.DELETE_FAILED);
+        toast.error(RESPONSE_MESSAGES.adminListing.DELETE_FAILED);
         return;
       }
 
       toast.success("تم حذف المشرف بنجاح");
       setAdmins(admins.filter(admin => admin.id !== id));
     } catch {
-      toast.error(ERROR_MESSAGES.adminListing.DELETE_FAILED);
+      toast.error(RESPONSE_MESSAGES.adminListing.DELETE_FAILED);
     } finally {
       setIsDeleting(false);
     }

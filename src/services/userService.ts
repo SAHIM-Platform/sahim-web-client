@@ -1,6 +1,6 @@
 import axiosInstance from '@/api/axios';
 import { AxiosError, isAxiosError } from 'axios';
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
 import { Profile } from '@/types';
 
@@ -41,7 +41,7 @@ export const userService = {
       return {
         success: true,
         data: {
-          message: ERROR_MESSAGES.profile.UPDATE_SUCCESS,
+          message: RESPONSE_MESSAGES.profile.UPDATE_SUCCESS,
           user: response.data
         }
       };
@@ -55,7 +55,7 @@ export const userService = {
           return {
             success: false,
             error: {
-              message: errorData.message || ERROR_MESSAGES.profile.VALIDATION_ERROR,
+              message: errorData.message || RESPONSE_MESSAGES.profile.VALIDATION_ERROR,
               fields: errorData.fields || (errorData.field ? [errorData.field] : []),
               code: errorData.code || 'VALIDATION_ERROR'
             }
@@ -67,7 +67,7 @@ export const userService = {
           return {
             success: false,
             error: {
-              message: ERROR_MESSAGES.profile.DUPLICATE_USERNAME,
+              message: RESPONSE_MESSAGES.profile.DUPLICATE_USERNAME,
               fields: ['username'],
               code: 'DUPLICATE_USERNAME'
             }
@@ -78,7 +78,7 @@ export const userService = {
       return {
         success: false,
         error: {
-          message: ERROR_MESSAGES.profile.UPDATE_FAILED,
+          message: RESPONSE_MESSAGES.profile.UPDATE_FAILED,
           code: 'UPDATE_FAILED'
         }
       };
@@ -107,7 +107,7 @@ export const userService = {
           return {
             success: false,
             error: {
-              message: ERROR_MESSAGES.profile.INVALID_PASSWORD,
+              message: RESPONSE_MESSAGES.profile.INVALID_PASSWORD,
               fields: ['password'],
               code: 'INVALID_PASSWORD'
             }
@@ -119,7 +119,7 @@ export const userService = {
           return {
             success: false,
             error: {
-              message: ERROR_MESSAGES.profile.SUPER_ADMIN_DELETE,
+              message: RESPONSE_MESSAGES.profile.SUPER_ADMIN_DELETE,
               code: 'SUPER_ADMIN_DELETE'
             }
           };
@@ -131,7 +131,7 @@ export const userService = {
           return {
             success: false,
             error: {
-              message: errorData.message || ERROR_MESSAGES.profile.VALIDATION_ERROR,
+              message: errorData.message || RESPONSE_MESSAGES.profile.VALIDATION_ERROR,
               fields: errorData.fields || (errorData.field ? [errorData.field] : []),
               code: errorData.code || 'VALIDATION_ERROR'
             }
@@ -142,7 +142,7 @@ export const userService = {
       return {
         success: false,
         error: {
-          message: ERROR_MESSAGES.profile.DELETE_FAILED,
+          message: RESPONSE_MESSAGES.profile.DELETE_FAILED,
           code: 'DELETE_FAILED'
         }
       };
@@ -157,7 +157,7 @@ export const userService = {
       return {
         success: true,
         data: {
-          message: ERROR_MESSAGES.profile.FETCH_SUCCESS,
+          message: RESPONSE_MESSAGES.profile.FETCH_SUCCESS,
           user: response.data
         }
       };
@@ -175,7 +175,7 @@ export const userService = {
         return {
           success: false,
           error: {
-            message: axiosError.response?.data?.message || ERROR_MESSAGES.profile.DEFAULT,
+            message: axiosError.response?.data?.message || RESPONSE_MESSAGES.profile.DEFAULT,
             code: 'SERVER_ERROR'
           }
         };
@@ -184,7 +184,7 @@ export const userService = {
       return {
         success: false,
         error: {
-          message: ERROR_MESSAGES.profile.DEFAULT,
+          message: RESPONSE_MESSAGES.profile.DEFAULT,
           code: 'SERVER_ERROR'
         }
       };

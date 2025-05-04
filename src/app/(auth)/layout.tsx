@@ -2,8 +2,7 @@
 
 import Container from '@/components/Container';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import useAuth from '@/hooks/useAuth';
-import useAuthRedirect from '@/hooks/UseAuthRedirect';
+import { useAuth, useAuthRedirect } from '@/hooks';
 
 export default function AuthLayout({
   children,

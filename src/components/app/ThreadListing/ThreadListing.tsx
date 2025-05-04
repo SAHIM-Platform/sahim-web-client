@@ -5,12 +5,12 @@ import ThreadListingHeader from "./ThreadListingHeader";
 import { useState, useEffect, useCallback } from "react";
 import { fetchThreads, deleteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
-import { Thread } from "@/types/thread";
+import { Thread } from "@/types";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import { RefreshCw } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Button from "@/components/Button";
-import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import { useInfiniteScroll } from "@/hooks";
 
 interface ThreadListingProps {
   emptyMessage?: string;

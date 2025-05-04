@@ -1,4 +1,4 @@
-const ERROR_MESSAGES = {
+const RESPONSE_MESSAGES = {
     GLOBAL: {
         DEFAULT: "حدث خطأ أثناء معالجة الطلب",
         TRY_AGAIN: "حاول مرة أخرى",
@@ -58,6 +58,7 @@ const ERROR_MESSAGES = {
         VALIDATION_ERROR: "يرجى التحقق من المعلومات المدخلة والمحاولة مرة أخرى",
         FORBIDDEN: "لا يمكنك تعديل أو حذف هذه المناقشة",
         CREATE_FAILED: "فشل إنشاء المناقشة، يرجى المحاولة مرة أخرى",
+        CREATE_SUCCESS: "تم إنشاء المناقشة بنجاح",
         UPDATE_FAILED: "فشل تحديث المناقشة، يرجى المحاولة مرة أخرى",
         DELETE_FAILED: "فشل حذف المناقشة، يرجى المحاولة مرة أخرى",
         LOADING_MORE: "حدث خطأ أثناء تحميل المزيد من المناقشات",
@@ -124,7 +125,13 @@ const ERROR_MESSAGES = {
         DEFAULT: "حدث خطأ أثناء محاولة تحميل الطلاب",
         VALIDATION_ERROR: "يرجى التحقق من المعلومات المدخلة والمحاولة مرة أخرى",
         NOT_FOUND: 'لم يتم العثور على طلاب',
+    },
+    BOOKMARK: {
+        DEFAULT: "حدث خطأ أثناء تحميل المحفوظات. يرجى المحاولة مرة أخرى",
+        NOT_FOUND: "لا توجد مناقشات محفوظة حالياً",
+        DELETE_FAILED: "حدث خطأ أثناء حذف المناقشة. يرجى المحاولة مرة أخرى",
+        DELETE_SUCCESS: "تم حذف المناقشة بنجاح",
     }
 };
 
-export default ERROR_MESSAGES;
+export default RESPONSE_MESSAGES;

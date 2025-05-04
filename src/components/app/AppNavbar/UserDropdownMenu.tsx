@@ -1,20 +1,18 @@
 import { ChevronDown, User, LogOut, MessageSquare } from "lucide-react";
 import UserInfo from "../UserInfo";
-import useLogout from "@/hooks/useLogout";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/utils/utils";
 import Divider from "@/components/Divider";
-import useAuth from "@/hooks/useAuth";
+import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
+import { FrontendRoutes } from "@/data/routes";
+import { useCurrentUserInfo, useLogout } from "@/hooks";
 
 function UserDropdownMenu() {
   const { logout, error, isLoading } = useLogout();
-  const { auth } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Get user information from auth state
-  const userName = auth.user?.name || "مستخدم";
+  const { photoPath, username, role } = useCurrentUserInfo();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,8 +36,9 @@ function UserDropdownMenu() {
         className="flex items-center gap-2 focus:outline-none"
       >
         <UserInfo
-          photoPath={auth.user?.photoPath}
-          name={userName}
+          role={role}
+          photoPath={photoPath}
+          name={username}
           hideDetailsOnSmallScreens={true}
         >
           <ChevronDown className={cn(
@@ -59,7 +58,7 @@ function UserDropdownMenu() {
       >
         <div>
           <Link
-            href="/my-discussions"
+            href={FrontendRoutes.MY_DISCUSSIONS}
             onClick={handleItemClick}
             className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
           >
@@ -69,7 +68,7 @@ function UserDropdownMenu() {
         </div>
         <div>
           <Link
-            href="/profile"
+            href={FrontendRoutes.PROFILE}
             onClick={handleItemClick}
             className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
           >
@@ -90,7 +89,7 @@ function UserDropdownMenu() {
           {isLoading ? "جاري تسجيل الخروج..." : "تسجيل الخروج"}
         </button>
         {error && (
-          <p className="px-4 pb-2 text-xs text-red-600">{error}</p>
+          <p className="px-4 pb-2 text-xs text-red-600">{RESPONSE_MESSAGES.logout.DEFAULT}</p>
         )}
       </div>
     </div>

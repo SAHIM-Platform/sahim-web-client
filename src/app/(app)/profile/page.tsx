@@ -2,23 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import useAuth from '@/hooks/useAuth';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import ErrorAlert from '@/components/Form/ErrorAlert';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import toast from 'react-hot-toast';
-import useAuthRedirect from '@/hooks/UseAuthRedirect';
-import ERROR_MESSAGES from '@/utils/api/ERROR_MESSAGES';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import Divider from '@/components/Divider';
 import { Edit2, Save, X, Trash2, Mail, Hash, Shield, Building2, GraduationCap } from 'lucide-react';
-import { Profile, userRoleLabels, UserRole } from '@/types';
+import { Profile, userRoleLabels } from '@/types';
 import UserPhoto from '@/components/UserPhoto';
 import { userService } from '@/services/userService';
 import validateProfileForm from '@/utils/api/profile/validateProfileForm';
 import Modal from '@/components/Modal/Modal';
 import { AuthMethod } from '@/utils/api/signup/validateSignupForm';
 import Image from 'next/image';
+import { useAuth, useAuthRedirect } from '@/hooks';
+import { isSuperAdminByRole } from '@/utils/role';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -54,12 +54,12 @@ export default function ProfilePage() {
             photoPath: result.data.user.photoPath || '',
           });
         } else {
-          setError(result.error?.message || ERROR_MESSAGES.profile.DEFAULT);
-          toast.error(result.error?.message || ERROR_MESSAGES.profile.DEFAULT);
+          setError(result.error?.message || RESPONSE_MESSAGES.profile.DEFAULT);
+          toast.error(result.error?.message || RESPONSE_MESSAGES.profile.DEFAULT);
         }
       } catch {
-        setError(ERROR_MESSAGES.profile.DEFAULT);
-        toast.error(ERROR_MESSAGES.profile.DEFAULT);
+        setError(RESPONSE_MESSAGES.profile.DEFAULT);
+        toast.error(RESPONSE_MESSAGES.profile.DEFAULT);
       } finally {
         setIsLoadingProfile(false);
       }
@@ -226,7 +226,7 @@ export default function ProfilePage() {
         {!isEditing ? (
           <div className="flex flex-col gap-10 bg-white rounded-xl border border-gray-200 p-8">
             <div className="flex items-center gap-6">
-              <UserPhoto photoPath={profile.photoPath || ''} name={profile.name} size={80} />
+              <UserPhoto photoPath={profile.photoPath || ''} name={profile.name} size={80} role={profile.role} />
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900">{profile.name}</h2>
                 <p className="text-sm text-gray-500 mt-1">@{profile.username}</p>
@@ -391,7 +391,7 @@ export default function ProfilePage() {
         )}
       </div>
 
-      {profile.role !== UserRole.SUPER_ADMIN && (
+      {!isSuperAdminByRole(profile.role) && (
         <>
           <Divider label="" />
           <div className="space-y-6 bg-red-50/50 border-2 border-red-200/60 rounded-xl p-8">

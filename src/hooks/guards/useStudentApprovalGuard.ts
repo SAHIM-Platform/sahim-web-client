@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import useAuth from "./useAuth";
-import { ApprovalStatus } from "@/types";
-import { UserRole } from "@/types";
+import { useAuth } from "@/hooks";
+import { isStudentByRole } from "@/utils/role";
+import { isStudentApproved } from "@/utils/isStudentApproved";
 
 /**
  * Hook for protecting routes based on student approval status
@@ -17,7 +17,7 @@ import { UserRole } from "@/types";
  * 
  * @returns {boolean} isLoading - true while checking approval status
  */
-const useStudentApprovalGuard = (): boolean => {
+export function useStudentApprovalGuard(): boolean {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, auth } = useAuth();
@@ -29,11 +29,12 @@ const useStudentApprovalGuard = (): boolean => {
       return;
     }
 
-    const isStudent = auth.user?.role === UserRole.STUDENT;
-    const isApproved = auth.user?.approvalStatus === ApprovalStatus.APPROVED;
+    const isStudent = isStudentByRole(auth.user?.role);
+    const isApproved = isStudentApproved(auth.user?.approvalStatus);
     const isAccountStatusPage = pathname === "/account-status";
+    const shouldRedirectToAccountStatus = isStudent && !isApproved && !isAccountStatusPage;
 
-    if (isStudent && !isApproved && !isAccountStatusPage) {
+    if (shouldRedirectToAccountStatus) {
       router.push("/account-status");
       return;
     }
@@ -43,5 +44,3 @@ const useStudentApprovalGuard = (): boolean => {
 
   return isLoading;
 };
-
-export default useStudentApprovalGuard; 
