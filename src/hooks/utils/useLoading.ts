@@ -1,8 +1,10 @@
-import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
-import useAuth from "@/hooks/useAuth";
-import useAuthRedirect from "@/hooks/UseAuthRedirect";
-import useStudentApprovalGuard from "@/hooks/useStudentApprovalGuard";
-import useSuperAdminRoleGuard from "@/hooks/useSuperAdminRoleGuard";
+import {
+  useAuth,
+  useAuthRedirect,
+  useAdminRoleGuard,
+  useSuperAdminRoleGuard,
+  useStudentApprovalGuard
+} from "@/hooks";
 
 /**
  * A hook that provides various loading states related to authentication and role guards.

@@ -1,11 +1,10 @@
 'use client'
 
 import { useEffect } from 'react';
-import useAuth from './useAuth';
+import { useAuth, useRefreshToken } from '@/hooks';
 import axiosInstance from '@/api/axios';
-import useRefreshToken from './useRefreshToken';
 
-const useAxios = () => {
+export function useAxios() {
   const refresh = useRefreshToken();
   const { auth } = useAuth();
 
@@ -46,5 +45,3 @@ const useAxios = () => {
 
   return axiosInstance;
 };
-
-export default useAxios;

@@ -1,13 +1,12 @@
 "use client";
 
 import { logoutService } from "@/services/auth/logoutService";
-import useAuth from "./useAuth";
 import { useRouter } from "next/navigation";
-import useAxios from "./useAxios";
 import { useState } from "react";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
+import { useAuth, useAxios } from "@/hooks";
 
-const useLogout = () => {
+export function useLogout() {
   const { setAuth } = useAuth();
   useAxios();
   const router = useRouter();
@@ -43,5 +42,3 @@ const useLogout = () => {
 
   return { logout, error, isLoading };
 };
-
-export default useLogout;

@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import useAuth from '@/hooks/useAuth';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import ErrorAlert from '@/components/Form/ErrorAlert';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import toast from 'react-hot-toast';
-import useAuthRedirect from '@/hooks/UseAuthRedirect';
 import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import Divider from '@/components/Divider';
 import { Edit2, Save, X, Trash2, Mail, Hash, Shield, Building2, GraduationCap } from 'lucide-react';
@@ -19,6 +17,7 @@ import validateProfileForm from '@/utils/api/profile/validateProfileForm';
 import Modal from '@/components/Modal/Modal';
 import { AuthMethod } from '@/utils/api/signup/validateSignupForm';
 import Image from 'next/image';
+import { useAuth, useAuthRedirect } from '@/hooks';
 
 export default function ProfilePage() {
   const router = useRouter();

@@ -1,15 +1,15 @@
-import  useAuth  from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 
-export const useGoogleLogin = () => {
+export function useGoogleLogin() {
   const { setAuth } = useAuth();
 
   const handleGoogleSubmit = () => {
     // Clear any existing auth state
     setAuth({
-        accessToken: undefined,
-        user: undefined,
-        loading: true
-        }
+      accessToken: undefined,
+      user: undefined,
+      loading: true
+    }
     );
     // Start Google auth flow
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google/login`;

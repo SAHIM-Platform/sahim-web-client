@@ -3,7 +3,7 @@
 import { Hash, Edit, Trash2, Check, X } from "lucide-react";
 import LoadingSpinner from "../LoadingSpinner";
 import { useState } from "react";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import Button from "../Button";
 import Input from "../Input";
 import { updateCategory, deleteCategory } from "@/services/admin/categoryService";

@@ -7,11 +7,10 @@ import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
 import { Thread } from "@/types";
 import { fetchUserThreads } from '@/services/threadService';
 import Button from '@/components/Button';
-import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import MyDiscussionsHeader from '@/components/App/pages/MyDiscussionsHeader';
-import { useLoading } from '@/hooks/useLoading';
 import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import RetryAgain from '@/components/App/RetryAgain';
+import { useInfiniteScroll, useLoading } from '@/hooks';
 
 export default function MyDiscussionsPage() {
   const router = useRouter();

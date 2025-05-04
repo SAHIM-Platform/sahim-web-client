@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from 'react';
-import useAuth from '@/hooks/useAuth';
+import { useAuth, useGoogleLogin } from '@/hooks';
 import validateLoginForm from '@/utils/api/login/validateLoginForm';
 import ErrorAlert from '../Form/ErrorAlert';
 import Divider from '../Divider';
@@ -11,7 +11,6 @@ import { Eye, EyeOff, User, Lock, ChevronLeft } from 'lucide-react';
 import Input from '../Input';
 import Link from 'next/link';
 import { FormData } from '@/types';
-import { useGoogleLogin } from '@/hooks/useGoogleLogin';
 
 const formData: FormData = {
   fields: [

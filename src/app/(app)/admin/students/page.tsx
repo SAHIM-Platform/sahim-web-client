@@ -1,9 +1,8 @@
 'use client';
 
 import StudentsListing from "@/components/StudentsListing";
-import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { useLoading } from "@/hooks/useLoading";
+import { useAdminRoleGuard, useLoading } from "@/hooks";
 
 export default function AdminStudentsPage() {
 	const { isAdminGuardLoading } = useLoading();

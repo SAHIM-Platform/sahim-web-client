@@ -5,7 +5,7 @@ import Button from "@/components/Button";
 import { useRef, useState, useEffect } from "react";
 import Divider from "@/components/Divider";
 import Textarea from "@/components/Textarea";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import toast from "react-hot-toast";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";

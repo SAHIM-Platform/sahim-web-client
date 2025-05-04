@@ -2,8 +2,7 @@
 
 import NewAdminForm from "@/components/App/Form/NewAdminForm";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import useSuperAdminRoleGuard from "@/hooks/useSuperAdminRoleGuard";
-import { useLoading } from "@/hooks/useLoading";
+import { useLoading, useSuperAdminRoleGuard } from "@/hooks";
 
 export default function NewAdminPage() {
   const { isSuperAdminGuardLoading } = useLoading();

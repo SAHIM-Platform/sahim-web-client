@@ -1,7 +1,7 @@
 "use client";
 import ThreadListing from "@/components/App/ThreadListing/ThreadListing";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { useLoading } from "@/hooks/useLoading";
+import { useLoading } from "@/hooks";
 
 export default function ExplorePage() {
   const { isAuthLoadingOrRedirecting } = useLoading();

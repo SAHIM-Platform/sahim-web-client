@@ -8,19 +8,16 @@ import Button from "@/components/Button";
 import Textarea from "@/components/Textarea";
 import { X } from "lucide-react";
 import ThumbnailPreview from "@/components/App/ThumbnailPreview";
-import { useImageValidation } from "@/hooks/useImageValidation";
-import useAxios from "@/hooks/useAxios";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import { fetchCategories, createThread } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import useAuth from "@/hooks/useAuth";
-import useAuthRedirect from "@/hooks/UseAuthRedirect";
 import validateThreadForm from "@/utils/api/thread/validateThreadForm";
 import { FrontendRoutes } from "@/data/routes";
 import { logger } from "@/utils/logger";
 import RetryAgain from "@/components/App/RetryAgain";
 import { toast } from "react-hot-toast";
+import { useAuth, useAuthRedirect, useAxios, useImageValidation } from "@/hooks";
 
 export default function NewDiscussionPage() {
   const router = useRouter();

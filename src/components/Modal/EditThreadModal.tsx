@@ -5,7 +5,7 @@ import Button from "@/components/Button";
 import Textarea from "@/components/Textarea";
 import { Thread } from "@/types";
 import ThumbnailPreview from "@/components/App/ThumbnailPreview";
-import { useImageValidation } from "@/hooks/useImageValidation";
+import { useImageValidation } from "@/hooks";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import Modal from "@/components/Modal/Modal";

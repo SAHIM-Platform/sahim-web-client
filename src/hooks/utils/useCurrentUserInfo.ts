@@ -1,4 +1,4 @@
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import { ApprovalStatus, UserRole } from "@/types";
 
 export function useCurrentUserInfo() {

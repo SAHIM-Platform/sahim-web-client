@@ -10,7 +10,7 @@ import ErrorAlert from "@/components/Form/ErrorAlert";
 import { RefreshCw } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Button from "@/components/Button";
-import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import { useInfiniteScroll } from "@/hooks";
 
 interface ThreadListingProps {
   emptyMessage?: string;

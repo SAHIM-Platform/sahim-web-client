@@ -1,13 +1,12 @@
 import { ChevronDown, User, LogOut, MessageSquare } from "lucide-react";
 import UserInfo from "../UserInfo";
-import useLogout from "@/hooks/useLogout";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/utils/utils";
 import Divider from "@/components/Divider";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
-import { useCurrentUserInfo } from "@/hooks/useCurrentUserInfo";
 import { FrontendRoutes } from "@/data/routes";
+import { useCurrentUserInfo, useLogout } from "@/hooks";
 
 function UserDropdownMenu() {
   const { logout, error, isLoading } = useLogout();

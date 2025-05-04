@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import { Thread } from "@/types";
 import Divider from "@/components/Divider";
 import EditThreadModal from "../../Modal/EditThreadModal";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import ShareModal from "@/components/Modal/ShareModal";
 import MarkdownRenderer from '@/components/App/MarkdownRenderer';

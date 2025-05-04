@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import useAuth from "./useAuth";
+import { useAuth } from "@/hooks";
 import { UserRole } from "@/types";
 
 /**
@@ -17,7 +17,7 @@ import { UserRole } from "@/types";
  * 
  * @returns {boolean} isLoading - true while checking authentication and role
  */
-const useStudentGuard = (): boolean => {
+export function useStudentGuard(): boolean {
   const router = useRouter();
   const { isAuthenticated, auth } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
@@ -39,5 +39,3 @@ const useStudentGuard = (): boolean => {
 
   return isLoading;
 };
-
-export default useStudentGuard; 

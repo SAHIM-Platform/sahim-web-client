@@ -12,12 +12,10 @@ import { createComment, fetchThreadById, fetchThreads, deleteThread } from "@/se
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CommentListing from "@/components/App/Comment/CommentListing";
-import useAuth from "@/hooks/useAuth";
-import useAuthRedirect from "@/hooks/UseAuthRedirect";
-import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import { RefreshCw } from "lucide-react";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import ItemNotFound from "../NotFound/ItemNotFound";
+import { useAuth, useAuthRedirect, useInfiniteScroll } from "@/hooks";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const router = useRouter();

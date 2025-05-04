@@ -1,16 +1,14 @@
 "use client";
 
-import useAuth from "@/hooks/useAuth";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useRouter } from "next/navigation";
 import Container from "@/components/Container";
-import useLogout from "@/hooks/useLogout";
 import AccountStatusNavbar from "@/components/App/AccountStatus/AccountStatusNavbar";
 import AccountStatusCard from "@/components/App/AccountStatus/AccountStatusCard";
 import AccountStatusActions from "@/components/App/AccountStatus/AccountStatusActions";
 import AccountStatusFooter from "@/components/App/AccountStatus/AccountStatusFooter";
 import { ApprovalStatus } from "@/types";
-import { useLoading } from "@/hooks/useLoading";
+import { useAuth, useLoading, useLogout } from "@/hooks";
 
 export default function AccountStatusPage() {
   const { auth } = useAuth();

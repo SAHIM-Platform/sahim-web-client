@@ -6,7 +6,7 @@ import ErrorAlert from "@/components/Form/ErrorAlert";
 import { GraduationCap, Building2, GraduationCap as GraduationCap2, UserCheck } from "lucide-react";
 import { departmentLabels, Level, Department } from "@/types";
 import validateSignupForm, { AuthMethod, SignupFormData } from "@/utils/api/signup/validateSignupForm";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import { useRouter } from "next/navigation";
 
 interface CompleteSignupFormData {

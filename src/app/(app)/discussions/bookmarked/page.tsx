@@ -2,16 +2,15 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { Thread } from "@/types";
-import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { fetchBookmarkedThreads, deleteThread } from '@/services/threadService';
 import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
-import { useLoading } from '@/hooks/useLoading';
 import { logger } from '@/utils/logger';
 import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import toast from 'react-hot-toast';
 import RetryAgain from '@/components/App/RetryAgain';
 import ItemNotFound from '@/components/App/NotFound/ItemNotFound';
+import { useInfiniteScroll, useLoading } from '@/hooks';
 
 const BookmarksPageContent = () => {
   const { isAuthLoadingOrRedirecting } = useLoading();

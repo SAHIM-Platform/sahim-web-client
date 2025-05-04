@@ -3,7 +3,7 @@
 import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import {
   Tags,
   UserCheck,

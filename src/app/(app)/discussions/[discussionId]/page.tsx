@@ -4,8 +4,8 @@ import ItemNotFound from "@/components/App/NotFound/ItemNotFound";
 import DiscussionPageContent from "@/components/App/pages/DiscussionPageContent";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
-import { useLoading } from "@/hooks/useLoading";
 import { use } from "react";
+import { useLoading } from "@/hooks";
 
 interface DiscussionPageProps {
   params: Promise<{ discussionId: string }>;

@@ -1,8 +1,8 @@
 'use client';
 
 import AdminsListing from "@/components/AdminsListing";
-import useSuperAdminRoleGuard from "@/hooks/useSuperAdminRoleGuard";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useSuperAdminRoleGuard } from "@/hooks";
 
 export default function AdminAdminsPage() {
   const isLoading = useSuperAdminRoleGuard();

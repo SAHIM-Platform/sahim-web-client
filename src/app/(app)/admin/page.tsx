@@ -3,9 +3,8 @@
 import { FrontendRoutes } from '@/data/routes';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useLoading } from '@/hooks/useLoading';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import useSuperAdminRoleGuard from '@/hooks/useSuperAdminRoleGuard';
+import { useLoading, useSuperAdminRoleGuard } from '@/hooks';
 
 export default function AdminPage() {
   const router = useRouter();

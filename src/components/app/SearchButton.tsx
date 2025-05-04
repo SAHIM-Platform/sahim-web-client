@@ -7,8 +7,8 @@ import SearchModal from "../Modal/SearchModal";
 import { searchThreads } from "@/services/threadService";
 import { Thread } from "@/types";
 import toast from "react-hot-toast";
-import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import { THREADS_LIMIT } from "@/utils/constant";
+import { useInfiniteScroll } from "@/hooks";
 
 interface SearchButtonProps {
   isSearchFocused: boolean;

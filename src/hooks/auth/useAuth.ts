@@ -8,7 +8,7 @@ import loginService from '@/services/auth/loginService';
 import { SignupFormData } from '@/utils/api/signup/validateSignupForm';
 import signupService from '@/services/auth/signupService';
 
-const useAuth = () => {
+export function useAuth() {
   const authContext = useContext(AuthContext);
   const router = useRouter();
 
@@ -131,5 +131,3 @@ const useAuth = () => {
     isAuthenticated: !!auth.accessToken,
   };
 };
-
-export default useAuth;

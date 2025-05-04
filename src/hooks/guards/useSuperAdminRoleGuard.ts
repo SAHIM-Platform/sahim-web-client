@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import useAuthRedirect from "./UseAuthRedirect";
-import useAuth from "./useAuth";
+import { useAuth, useAuthRedirect } from "@/hooks";
 
-const useSuperAdminRoleGuard = (): boolean => {
+export function useSuperAdminRoleGuard(): boolean {
   const router = useRouter();
   const { auth } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
@@ -23,5 +22,3 @@ const useSuperAdminRoleGuard = (): boolean => {
 
   return isLoading;
 };
-
-export default useSuperAdminRoleGuard;

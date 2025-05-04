@@ -1,6 +1,6 @@
 'use client';
 
-import useAuth from '@/hooks/useAuth';
+import { useAuth } from '@/hooks';
 import Button from '@/components/Button';
 
 export default function NotFound() {

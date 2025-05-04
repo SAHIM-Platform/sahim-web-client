@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import useAuth from "./useAuth";
+import { useAuth } from "@/hooks";
 import { ApprovalStatus } from "@/types";
 import { UserRole } from "@/types";
 
@@ -17,7 +17,7 @@ import { UserRole } from "@/types";
  * 
  * @returns {boolean} isLoading - true while checking approval status
  */
-const useStudentApprovalGuard = (): boolean => {
+export function useStudentApprovalGuard(): boolean {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, auth } = useAuth();
@@ -43,5 +43,3 @@ const useStudentApprovalGuard = (): boolean => {
 
   return isLoading;
 };
-
-export default useStudentApprovalGuard; 

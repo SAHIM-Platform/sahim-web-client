@@ -6,11 +6,11 @@ import { fetchCategories } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Button from "@/components/Button";
 import { PlusCircle } from "lucide-react";
-import { useLoading } from "@/hooks/useLoading";
 import { logger } from "@/utils/logger";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import { isSuperAdminByRole } from "@/utils/role";
 import { UserRole } from "@/types";
+import { useLoading } from "@/hooks";
 
 export default function CategoriesPage() {
   const { isAuthLoadingOrRedirecting } = useLoading();

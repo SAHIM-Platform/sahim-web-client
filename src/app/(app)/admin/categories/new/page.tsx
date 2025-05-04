@@ -6,13 +6,12 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import useAdminRoleGuard from "@/hooks/useAdminRoleGuard";
 import { createCategory } from "@/services/admin/categoryService";
 import toast from "react-hot-toast";
-import { useLoading } from "@/hooks/useLoading";
 import { logger } from "@/utils/logger";
 import ERROR_MESSAGES from "@/utils/constants/ERROR_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
+import { useAdminRoleGuard, useLoading } from "@/hooks";
 
 export default function NewCategoryPage() {
   const router = useRouter();
