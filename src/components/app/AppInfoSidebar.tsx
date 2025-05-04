@@ -10,7 +10,7 @@ import { Thread } from "@/types";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CategoriesListing from "./CategoriesListing";
 import Link from "next/link";
-import { LATEST_THREADS_LIMIT } from "@/utils/constant";
+import { LATEST_THREADS_LIMIT } from "@/utils/constants/ITEMS_LIMITS";
 
 interface AppInfoSidebarProps {
   isOpen: boolean;

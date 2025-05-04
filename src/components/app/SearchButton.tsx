@@ -7,7 +7,7 @@ import SearchModal from "../Modal/SearchModal";
 import { searchThreads } from "@/services/threadService";
 import { Thread } from "@/types";
 import toast from "react-hot-toast";
-import { THREADS_LIMIT } from "@/utils/constant";
+import { THREADS_LIMIT } from "@/utils/constants/ITEMS_LIMITS";
 import { useInfiniteScroll } from "@/hooks";
 
 interface SearchButtonProps {

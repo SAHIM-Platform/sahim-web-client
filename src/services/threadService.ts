@@ -3,7 +3,7 @@ import { ThreadResult, ThreadResponse, SingleThreadResult, Thread, BookmarkedThr
 import { AxiosError, isAxiosError } from 'axios';
 import ERROR_MESSAGES from '@/utils/constants/ERROR_MESSAGES';
 import { ValidationErrorResponse } from '@/types';
-import { THREADS_LIMIT } from '@/utils/constant';
+import { THREADS_LIMIT } from '@/utils/constants/ITEMS_LIMITS';
 
 
 interface VoteResponse {
