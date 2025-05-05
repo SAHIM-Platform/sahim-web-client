@@ -18,7 +18,7 @@ import Modal from '@/components/Modal/Modal';
 import { AuthMethod } from '@/utils/api/signup/validateSignupForm';
 import Image from 'next/image';
 import { useAuth, useAuthRedirect } from '@/hooks';
-import { isSuperAdminByRole } from '@/utils/role';
+import { isAdminOrSuperAdminByRole, isSuperAdminByRole } from '@/utils/role';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -273,17 +273,19 @@ export default function ProfilePage() {
                 icon={Shield}
               />
             </div>
-
-            <div className="pt-2">
-              <Button
-                type="button"
-                onClick={() => setIsEditing(true)}
-                icon={<Edit2 className="w-4 h-4" />}
-                iconPosition="start"
-              >
-                تعديل المعلومات
-              </Button>
-            </div>
+            
+            {!isSuperAdminByRole(profile.role) && (
+              <div className="pt-2">
+                <Button
+                  type="button"
+                  onClick={() => setIsEditing(true)}
+                  icon={<Edit2 className="w-4 h-4" />}
+                  iconPosition="start"
+                >
+                  تعديل المعلومات
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8 bg-white rounded-xl border border-gray-100 p-8 shadow-sm">
