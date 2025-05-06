@@ -33,10 +33,8 @@ export default function NewCategoryPage() {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
-    
     try {
-      const result = await createCategory(formData.name.trim());
-
+      const result = await createCategory(formData.name.trim());      
       if (result.success) {
         toast.success(RESPONSE_MESSAGES.category.CREATED_SUCCESSFULLY);
         router.push(FrontendRoutes.CATEGORIES);
