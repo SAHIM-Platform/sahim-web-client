@@ -10,7 +10,6 @@ import { X } from "lucide-react";
 import ThumbnailPreview from "@/components/App/ThumbnailPreview";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
-import { fetchCategories, createThread } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import validateThreadForm from "@/utils/api/thread/validateThreadForm";
 import { FrontendRoutes } from "@/data/routes";
@@ -18,6 +17,8 @@ import { logger } from "@/utils/logger";
 import RetryAgain from "@/components/App/RetryAgain";
 import { toast } from "react-hot-toast";
 import { useAuth, useAuthRedirect, useAxios, useImageValidation } from "@/hooks";
+import { fetchCategories } from "@/services/thread/categoryService";
+import { createThread } from "@/services/thread/threadService";
 
 export default function NewDiscussionPage() {
   const router = useRouter();
@@ -113,8 +114,8 @@ export default function NewDiscussionPage() {
         toast.success(RESPONSE_MESSAGES.thread.CREATE_SUCCESS);
         setIsRedirecting(true);
         router.push(`${FrontendRoutes.DISCUSSIONS}/${result.data.thread_id}`);
-      } else {
-        setError(result.error?.message || RESPONSE_MESSAGES.thread.DEFAULT);
+      } else if (!result.success) {
+        setError(result.error.message || RESPONSE_MESSAGES.thread.DEFAULT);
       }
     } catch (err: unknown) {
       toast.error(RESPONSE_MESSAGES.thread.CREATE_FAILED);

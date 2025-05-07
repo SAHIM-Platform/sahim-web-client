@@ -9,8 +9,8 @@ import { useAuth } from "@/hooks";
 import toast from "react-hot-toast";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
-import { voteComment } from "@/services/threadService";
 import MarkdownRenderer from '@/components/App/MarkdownRenderer';
+import { voteComment } from "@/services/thread/voteService";
 
 export interface CommentItemProps {
   id: string;
@@ -87,12 +87,12 @@ function CommentItem({
     try {
       setIsVoting(true);
       const result = await voteComment(threadId, parseInt(id), voteType);
-      
+  
       if (result.success) {
-        setLocalVoteCount(result.votesCount);
-        setLocalUserVote(result.userVote);
+        setLocalVoteCount(result.data.score);
+        setLocalUserVote(result.data.user_vote);
       } else {
-        throw new Error(RESPONSE_MESSAGES.comment.DEFAULT);
+        throw new Error(result.error.message || RESPONSE_MESSAGES.comment.DEFAULT);
       }
     } catch (error) {
       setLocalUserVote(previousVote);

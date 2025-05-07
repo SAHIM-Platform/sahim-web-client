@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
 import { Thread } from "@/types";
-import { fetchUserThreads } from '@/services/threadService';
 import Button from '@/components/Button';
 import MyDiscussionsHeader from '@/components/App/pages/MyDiscussionsHeader';
 import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import RetryAgain from '@/components/App/RetryAgain';
 import { useInfiniteScroll, useLoading } from '@/hooks';
+import { fetchUserThreads } from '@/services/thread/threadService';
 
 export default function MyDiscussionsPage() {
   const router = useRouter();
@@ -52,13 +52,12 @@ export default function MyDiscussionsPage() {
         category_id: selectedCategory ?? undefined,
       });
 
-      if (result.success && result.data) {
-        setThreads(result.data.data);
-        setHasMore(result.data.meta.page < result.data.meta.totalPages);
+      if (result.success) {
+        setThreads(result.data);
+        setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
         setPage(2);
       } else {
-        const errorMessage = result.error?.message || RESPONSE_MESSAGES.thread.DEFAULT;
-        setError(errorMessage);
+        setError(result.error.message || RESPONSE_MESSAGES.thread.DEFAULT);
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : RESPONSE_MESSAGES.thread.DEFAULT;
@@ -84,13 +83,12 @@ export default function MyDiscussionsPage() {
         category_id: selectedCategory ?? undefined,
       });
 
-      if (result.success && result.data) {
-        const newThreads = result.data.data;
-        setThreads((prev) => [...prev, ...newThreads]);
-        setHasMore(result.data.meta.page < result.data.meta.totalPages);
+      if (result.success) {
+        setThreads((prev) => [...prev, ...result.data]);
+        setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
         setPage((prev) => prev + 1);
       } else {
-        setError(result.error?.message || RESPONSE_MESSAGES.thread.DEFAULT);
+        setError(result.error.message || RESPONSE_MESSAGES.thread.DEFAULT);
       }
     } catch {
       setError(RESPONSE_MESSAGES.thread.LOADING_MORE);
@@ -176,6 +174,7 @@ export default function MyDiscussionsPage() {
               >
                 <ThreadItem
                   {...thread}
+                  thumbnail_url={thread.thumbnail_url || undefined}
                   onEdit={() => router.push(`/discussions/${thread.thread_id}/edit`)}
                   onDelete={() => router.push(`/discussions/${thread.thread_id}`)}
                 />

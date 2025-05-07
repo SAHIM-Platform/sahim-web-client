@@ -5,12 +5,13 @@ import Divider from "../Divider";
 import ThreadItemMinimal from "./ThreadListing/ThreadItemMinimal";
 import { Fragment, useState, useEffect } from "react";
 import { cn } from "@/utils/utils";
-import { fetchThreads, fetchCategories } from "@/services/threadService";
 import { Thread } from "@/types";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CategoriesListing from "./CategoriesListing";
 import Link from "next/link";
 import { LATEST_THREADS_LIMIT } from "@/utils/constants/ITEMS_LIMITS";
+import { fetchThreads } from "@/services/thread/threadService";
+import { fetchCategories } from "@/services/thread/categoryService";
 
 interface AppInfoSidebarProps {
   isOpen: boolean;
@@ -61,8 +62,7 @@ function SidebarContent() {
         // Load latest discussions
         const result = await fetchThreads({ page: 1, limit: LATEST_THREADS_LIMIT});
         if (result.success && result.data) {
-          const threads = result.data.data;
-          setLatestDiscussions(threads);
+          setLatestDiscussions(result.data);
         }
 
         // Load categories
@@ -129,7 +129,7 @@ function SidebarContent() {
                 <ThreadItemMinimal
                   thread_id={thread.thread_id}
                   title={thread.title}
-                  commentsCount={thread._count.comments}
+                  commentsCount={thread._count?.comments || 0}
                   created_at={thread.created_at}
                   authorName={thread.author?.name ?? "مستخدم"}
                   authorPhotoPath={thread.author?.photoPath}

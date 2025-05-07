@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { Bookmark } from "lucide-react";
 import { cn } from "@/utils/utils";
 import toast from "react-hot-toast";
-import { bookmarkThread, unbookmarkThread } from "@/services/threadService";
+import { bookmarkThread, unbookmarkThread } from "@/services/thread/bookmarkService";
 
 interface BookmarkToggleProps {
   threadId: number;

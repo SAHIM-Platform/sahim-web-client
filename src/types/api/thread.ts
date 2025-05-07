@@ -2,8 +2,8 @@
 export interface ThreadAuthor {
   id: number;
   username: string;
-  name: string | null;
-  photoPath: string | null;
+  name: string;
+  photoPath?: string;
 }
 
 // ---------- Category ----------
@@ -77,3 +77,13 @@ export interface VoteResponse {
 
 // ---------- Category List ----------
 export type ThreadCategoryList = ThreadCategory[];
+
+// ---------- Minimal Thread ----------
+export type ThreadMinimal = {
+  thread_id: Thread['thread_id'];
+  title: Thread['title'];
+  created_at: Thread['created_at'];
+  commentsCount: number;
+  authorName: Thread['author']['name']; 
+  authorPhotoPath: Thread['author']['photoPath']; 
+};

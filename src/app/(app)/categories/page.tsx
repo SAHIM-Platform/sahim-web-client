@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import CategoriesListing from "@/components/App/CategoriesListing";
-import { fetchCategories } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Button from "@/components/Button";
 import { PlusCircle } from "lucide-react";
@@ -11,6 +10,7 @@ import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { isSuperAdminByRole } from "@/utils/role";
 import { UserRole } from "@/types";
 import { useLoading } from "@/hooks";
+import { fetchCategories } from "@/services/thread/categoryService";
 
 export default function CategoriesPage() {
   const { isAuthLoadingOrRedirecting } = useLoading();

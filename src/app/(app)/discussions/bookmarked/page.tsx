@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Thread } from "@/types";
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { fetchBookmarkedThreads, deleteThread } from '@/services/threadService';
 import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
 import { logger } from '@/utils/logger';
 import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
@@ -11,6 +10,8 @@ import toast from 'react-hot-toast';
 import RetryAgain from '@/components/App/RetryAgain';
 import ItemNotFound from '@/components/App/NotFound/ItemNotFound';
 import { useInfiniteScroll, useLoading } from '@/hooks';
+import { fetchBookmarkedThreads } from '@/services/thread/bookmarkService';
+import { deleteThread } from '@/services/thread/threadService';
 
 const BookmarksPageContent = () => {
   const { isAuthLoadingOrRedirecting } = useLoading();
@@ -33,7 +34,7 @@ const BookmarksPageContent = () => {
       const result = await fetchBookmarkedThreads({ page: 1, limit });
 
       if (result.success && result.data) {
-        const processedThreads = result.data.data.map(thread => ({
+        const processedThreads = result.data.data.map((thread: Thread) => ({
           ...thread,
           author: {
             ...thread.author,
@@ -62,7 +63,7 @@ const BookmarksPageContent = () => {
       const result = await fetchBookmarkedThreads({ page, limit });
 
       if (result.success && result.data) {
-        const newBookmarkedThreads = result.data.data.map(thread => ({
+        const newBookmarkedThreads = result.data.data.map((thread: Thread) => ({
           ...thread,
           author: {
             ...thread.author,
@@ -139,6 +140,7 @@ const BookmarksPageContent = () => {
               <ThreadItem
                 key={thread.thread_id}
                 {...thread}
+                thumbnail_url={thread.thumbnail_url || undefined}
                 onDelete={() => handleDeleteThread(thread.thread_id)}
               />
             ))}
