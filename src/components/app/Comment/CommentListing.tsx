@@ -1,9 +1,9 @@
 import { MessageSquareIcon } from "lucide-react";
-import { Thread } from "@/types";
+import { CreateCommentPayload, Thread } from "@/types";
 import CommentItem from "./CommentItem";
-import { updateComment, deleteComment } from "@/services/threadService";
 import toast from "react-hot-toast";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
+import { deleteComment, updateComment } from "@/services/thread/commentService";
 
 interface CommentListingProps {
   thread: Thread;
@@ -11,7 +11,7 @@ interface CommentListingProps {
 }
 
 function CommentListing({ thread, refreshThread }: CommentListingProps) {
-  const handleEditComment = async (commentId: number, newContent: string) => {
+  const handleEditComment = async (commentId: number, newContent: CreateCommentPayload) => {
     try {
       await updateComment(thread.thread_id, commentId, newContent);
       await refreshThread();
@@ -57,13 +57,24 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
           content={comment.content}
           timestamp={comment.created_at}
           votes={comment.votes}
-          onEdit={(newContent) => handleEditComment(comment.comment_id, newContent)}
+          onEdit={(newContent: CreateCommentPayload) => handleEditComment(comment.comment_id, newContent)}
           onDelete={() => handleDeleteComment(comment.comment_id)}
           threadId={thread.thread_id}
         />
       ))}
     </div>
   );
+
+
+
+
+
+
+
+
+
+
+  
 }
 
 export default CommentListing;

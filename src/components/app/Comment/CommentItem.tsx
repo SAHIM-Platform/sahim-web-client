@@ -11,16 +11,14 @@ import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import MarkdownRenderer from '@/components/App/MarkdownRenderer';
 import { voteComment } from "@/services/thread/voteService";
+import { CreateCommentPayload, FormattedVote } from "@/types";
 
 export interface CommentItemProps {
   id: string;
   content: string;
   timestamp: string;
-  votes: {
-    score: number;
-    user_vote: "UP" | "DOWN" | null;
-  };
-  onEdit?: (newContent: string) => Promise<void>;
+  votes?: FormattedVote;
+  onEdit?: (newContent: CreateCommentPayload) => Promise<void>;
   onDelete?: () => Promise<void>;
   threadId: number;
 }
@@ -38,8 +36,8 @@ function CommentItem({
   const isOwner = auth.user?.id?.toString() === auth.user?.id?.toString();
 
   // Voting state
-  const initialVoteCount = useRef(votes.score ?? 0);
-  const initialUserVote = useRef(votes.user_vote);
+  const initialVoteCount = useRef(votes?.score ?? 0);
+  const initialUserVote = useRef(votes?.user_vote);
   const [localVoteCount, setLocalVoteCount] = useState(initialVoteCount.current);
   const [localUserVote, setLocalUserVote] = useState<"UP" | "DOWN" | null>(initialUserVote.current ?? null);
   const [isVoting, setIsVoting] = useState(false);
@@ -56,11 +54,11 @@ function CommentItem({
 
   // Update initial values when props change
   useEffect(() => {
-    initialVoteCount.current = votes.score ?? 0;
-    initialUserVote.current = votes.user_vote;
-    setLocalVoteCount(votes.score ?? 0);
-    setLocalUserVote(votes.user_vote ?? null);
-  }, [votes.score, votes.user_vote]);
+    initialVoteCount.current = votes?.score ?? 0;
+    initialUserVote.current = votes?.user_vote;
+    setLocalVoteCount(votes?.score ?? 0);
+    setLocalUserVote(votes?.user_vote ?? null);
+  }, [votes?.score, votes?.user_vote]);
 
   // Handle click outside to close dropdown
   useEffect(() => {

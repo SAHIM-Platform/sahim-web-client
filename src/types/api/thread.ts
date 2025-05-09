@@ -13,6 +13,11 @@ export interface ThreadCategory {
   author_user_id: number | null;
 }
 
+export interface CategoryResponse {
+  category_id: number;
+  name: string;
+}
+
 // ---------- Votes ----------
 export interface VoteCounts {
   up: number;
@@ -25,6 +30,15 @@ export interface FormattedVote {
   counts: VoteCounts;
 }
 
+export interface VoteResponse {
+  score: number;
+  user_vote: 'UP' | 'DOWN' | null;
+  counts: {
+    up: number;
+    down: number;
+  };
+}
+
 // ---------- Comments ----------
 export interface ThreadComment {
   comment_id: number;
@@ -32,6 +46,10 @@ export interface ThreadComment {
   created_at: string; // or Date if parsed later
   author: ThreadAuthor;
   votes?: FormattedVote;
+}
+
+export interface CreateCommentPayload {
+  content: string;
 }
 
 // ---------- Main Thread ----------

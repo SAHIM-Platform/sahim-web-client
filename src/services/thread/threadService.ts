@@ -1,4 +1,3 @@
-import { AxiosError, isAxiosError } from 'axios';
 import axiosInstance from '@/api/axios';
 import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import {
@@ -9,66 +8,7 @@ import {
   UpdateThreadPayload,
   CreateThreadResponse,
 } from '@/types';
-
-const handleError = <T>(
-  error: unknown,
-  fallbackMessage: string
-): ApiResult<T> => {
-  console.error('API Error:', error);
-
-  if (isAxiosError(error)) {
-    const axiosError = error as AxiosError<{ message?: string; statusCode?: number }>;
-    const status = axiosError.response?.status ?? axiosError.response?.data?.statusCode;
-    const backendMessage = axiosError.response?.data?.message;
-
-    let message = backendMessage || fallbackMessage;
-    let code = 'UNKNOWN_ERROR';
-
-    switch (status) {
-      case 400:
-        message = RESPONSE_MESSAGES.GLOBAL.VALIDATION_ERROR;
-        code = 'VALIDATION_ERROR';
-        break;
-      case 401:
-        message = RESPONSE_MESSAGES.GLOBAL.UNAUTHORIZED;
-        code = 'UNAUTHORIZED';
-        break;
-      case 403:
-        message = RESPONSE_MESSAGES.GLOBAL.FORBIDDEN;
-        code = 'FORBIDDEN';
-        break;
-      case 404:
-        message = RESPONSE_MESSAGES.GLOBAL.NOT_FOUND;
-        code = 'NOT_FOUND';
-        break;
-      case 409:
-        message = backendMessage || RESPONSE_MESSAGES.GLOBAL.CONFLICT;
-        code = 'CONFLICT';
-        break;
-      case 500:
-      default:
-        code = 'SERVER_ERROR';
-    }
-
-    return {
-      success: false,
-      error: {
-        message,
-        code,
-        status,
-      },
-    };
-  }
-
-  return {
-    success: false,
-    error: {
-      message: fallbackMessage,
-      code: 'UNKNOWN_ERROR',
-    },
-  };
-};
-
+import { handleServiceError } from '@/utils/api/service/handleServiceError';
 
 export const fetchThreads = async ({
   sort = 'latest',
@@ -104,7 +44,7 @@ export const fetchThreads = async ({
       statusCode: response.data.statusCode,
     };
   } catch (error) {
-    return handleError<Thread[]>(
+    return handleServiceError<Thread[]>(
       error,
       RESPONSE_MESSAGES.thread.DEFAULT
     );
@@ -127,7 +67,7 @@ export const fetchThreadById = async (
       statusCode: response.data.statusCode,
     };
   } catch (error) {
-    return handleError<Thread>(
+    return handleServiceError<Thread>(
       error,
       RESPONSE_MESSAGES.thread.NOT_FOUND
     );
@@ -171,7 +111,7 @@ export const searchThreads = async ({
       statusCode: response.data.statusCode,
     };
   } catch (error) {
-    return handleError<Thread[]>(
+    return handleServiceError<Thread[]>(
       error,
       RESPONSE_MESSAGES.search.DEFAULT
     );
@@ -194,7 +134,7 @@ export const createThread = async (
       statusCode: response.data.statusCode,
     };
   } catch (error) {
-    return handleError<CreateThreadResponse>(
+    return handleServiceError<CreateThreadResponse>(
       error,
       RESPONSE_MESSAGES.thread.CREATE_FAILED
     );
@@ -218,7 +158,7 @@ export const updateThread = async (
       statusCode: response.data.statusCode,
     };
   } catch (error) {
-    return handleError<Thread>(
+    return handleServiceError<Thread>(
       error,
       RESPONSE_MESSAGES.thread.UPDATE_FAILED
     );
@@ -240,7 +180,7 @@ export const deleteThread = async (
       statusCode: response.data.statusCode,
     };
   } catch (error) {
-    return handleError<null>(
+    return handleServiceError<null>(
       error,
       RESPONSE_MESSAGES.thread.DELETE_FAILED
     );
@@ -287,7 +227,7 @@ export const fetchUserThreads = async ({
       statusCode: response.data.statusCode,
     };
   } catch (error) {
-    return handleError<Thread[]>(
+    return handleServiceError<Thread[]>(
       error,
       RESPONSE_MESSAGES.thread.DEFAULT
     );

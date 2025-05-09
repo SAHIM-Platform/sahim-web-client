@@ -1,102 +1,81 @@
-import { isAxiosError, AxiosError } from "axios";
-import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
-import { CommentResponse } from "@/types";
-import axiosInstance from "@/api/axios";
+import axiosInstance from '@/api/axios';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
+import { handleServiceError } from '@/utils/api/service/handleServiceError';
+import {
+  ApiResult,
+  ApiResponse,
+  ThreadComment,
+  CreateCommentPayload,
+} from '@/types';
 
-export async function createComment(threadId: number, content: string): Promise<CommentResponse> {
-  try {
-    const response = await axiosInstance.post<CommentResponse>(`/threads/${threadId}/comments`, {
-      content
-    });
-
-    if (response.data) {
-      return response.data;
-    }
-
-    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
-  } catch (error) {
-    console.error('Error creating comment:', error);
-
-    if (isAxiosError(error)) {
-      const axiosError = error as AxiosError;
-
-      if (axiosError.response?.status === 400) {
-        throw new Error(RESPONSE_MESSAGES.thread.VALIDATION_ERROR);
-      }
-
-      if (axiosError.response?.status === 404) {
-        throw new Error(RESPONSE_MESSAGES.thread.NOT_FOUND);
-      }
-    }
-
-    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
-  }
-}
-
-export async function updateComment(
+export const createComment = async (
   threadId: number,
-  commentId: number,
-  content: string
-): Promise<CommentResponse> {
+  payload: CreateCommentPayload
+): Promise<ApiResult<ThreadComment>> => {
   try {
-    const response = await axiosInstance.patch<CommentResponse>(
-      `/threads/${threadId}/comments/${commentId}`,
-      { content }
+    const response = await axiosInstance.post<ApiResponse<ThreadComment>>(
+      `/threads/${threadId}/comments`,
+      payload
     );
 
-    if (response.data) {
-      return response.data;
-    }
-
-    throw new Error(RESPONSE_MESSAGES.comment.DEFAULT);
+    return {
+      success: true,
+      data: response.data.data,
+      message: response.data.message,
+      statusCode: response.data.statusCode,
+    };
   } catch (error) {
-    console.error('Error updating comment:', error);
-
-    if (isAxiosError(error)) {
-      const axiosError = error as AxiosError;
-
-      if (axiosError.response?.status === 400) {
-        throw new Error(RESPONSE_MESSAGES.comment.VALIDATION_ERROR);
-      }
-
-      if (axiosError.response?.status === 401) {
-        throw new Error(RESPONSE_MESSAGES.auth.UNAUTHORIZED);
-      }
-
-      if (axiosError.response?.status === 404) {
-        throw new Error(RESPONSE_MESSAGES.comment.NOT_FOUND);
-      }
-    }
-
-    throw new Error(RESPONSE_MESSAGES.comment.DEFAULT);
+    return handleServiceError<ThreadComment>(
+      error,
+      RESPONSE_MESSAGES.comment.CREATE_FAILED
+    );
   }
-}
+};
 
-export async function deleteComment(
+export const updateComment = async (
+  threadId: number,
+  commentId: number,
+  payload: CreateCommentPayload
+): Promise<ApiResult<ThreadComment>> => {
+  try {
+    const response = await axiosInstance.patch<ApiResponse<ThreadComment>>(
+      `/threads/${threadId}/comments/${commentId}`,
+      payload
+    );
+
+    return {
+      success: true,
+      data: response.data.data,
+      message: response.data.message,
+      statusCode: response.data.statusCode,
+    };
+  } catch (error) {
+    return handleServiceError<ThreadComment>(
+      error,
+      RESPONSE_MESSAGES.comment.UPDATE_FAILED
+    );
+  }
+};
+
+export const deleteComment = async (
   threadId: number,
   commentId: number
-): Promise<{ success: boolean }> {
+): Promise<ApiResult<null>> => {
   try {
-    const response = await axiosInstance.delete(
+    const response = await axiosInstance.delete<ApiResponse<null>>(
       `/threads/${threadId}/comments/${commentId}`
     );
 
-    return { success: response.status === 200 };
+    return {
+      success: true,
+      data: response.data.data,
+      message: response.data.message,
+      statusCode: response.data.statusCode,
+    };
   } catch (error) {
-    console.error('Error deleting comment:', error);
-
-    if (isAxiosError(error)) {
-      const axiosError = error as AxiosError;
-
-      if (axiosError.response?.status === 401) {
-        throw new Error(RESPONSE_MESSAGES.auth.UNAUTHORIZED);
-      }
-
-      if (axiosError.response?.status === 404) {
-        throw new Error(RESPONSE_MESSAGES.comment.NOT_FOUND);
-      }
-    }
-
-    throw new Error(RESPONSE_MESSAGES.comment.DEFAULT);
+    return handleServiceError<null>(
+      error,
+      RESPONSE_MESSAGES.comment.DELETE_FAILED
+    );
   }
-}
+};

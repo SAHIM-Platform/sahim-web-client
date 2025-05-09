@@ -5,8 +5,8 @@ import { ArrowUpDown, MessageSquare } from "lucide-react";
 import { Thread } from "@/types";
 import Select from "@/components/Select";
 import { useEffect, useState } from "react";
-import { fetchCategories } from "@/services/threadService";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { fetchCategories } from "@/services/thread/categoryService";
 
 interface ThreadListingHeaderProps {
   processedThreads: Thread[];
@@ -35,7 +35,7 @@ function ThreadListingHeader({
         setIsLoading(true);
         setError(null);
         const categoriesResponse = await fetchCategories();
-        if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
+        if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
           setCategories(categoriesResponse.data);
         } else {
           throw new Error("Invalid categories response format");

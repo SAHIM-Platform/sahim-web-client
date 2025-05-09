@@ -1,178 +1,90 @@
-import { BookmarkedThreadsResult, BookmarkResult, ThreadResponse, ValidationErrorResponse } from "@/types";
-import { AxiosError, isAxiosError } from "axios";
-import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
-import { THREADS_LIMIT } from "@/utils/constants/ITEMS_LIMITS";
-import axiosInstance from "@/api/axios";
+import axiosInstance from '@/api/axios';
+import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
+import { handleServiceError } from '@/utils/api/service/handleServiceError';
+import {
+  ApiResult,
+  ApiResponse,
+  Thread,
+} from '@/types';
 
-export const bookmarkThread = async (threadId: number): Promise<BookmarkResult> => {
+// Bookmark a thread
+export const bookmarkThread = async (
+  threadId: number
+): Promise<ApiResult<null>> => {
   try {
-    const response = await axiosInstance.post(`/threads/${threadId}/bookmark`);
+    const response = await axiosInstance.post<ApiResponse<null>>(
+      `/threads/${threadId}/bookmark`
+    );
 
-    if (response.data?.success) {
-      return {
-        success: true,
-        message: response.data.message
-      };
-    }
-
-    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
+    return {
+      success: true,
+      data: response.data.data,
+      message: response.data.message,
+      statusCode: response.data.statusCode,
+    };
   } catch (error) {
-    console.error('Error bookmarking thread:', error);
-
-    if (isAxiosError(error)) {
-      const axiosError = error as AxiosError;
-
-      if (axiosError.response?.status === 403) {
-        const message = (axiosError.response.data as { message?: string })?.message ?? 'Forbidden';
-        return {
-          success: false,
-          message,
-          error: 'FORBIDDEN'
-        };
-      }
-
-      if (axiosError.response?.status === 401) {
-        throw new Error(RESPONSE_MESSAGES.auth.UNAUTHORIZED);
-      }
-
-      if (axiosError.response?.status === 404) {
-        throw new Error(RESPONSE_MESSAGES.thread.NOT_FOUND);
-      }
-    }
-
-    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
+    return handleServiceError<null>(
+      error,
+      RESPONSE_MESSAGES.BOOKMARK.ADD_FAILED || RESPONSE_MESSAGES.thread.DEFAULT
+    );
   }
 };
 
-export const unbookmarkThread = async (threadId: number): Promise<BookmarkResult> => {
+// Unbookmark a thread
+export const unbookmarkThread = async (
+  threadId: number
+): Promise<ApiResult<null>> => {
   try {
-    const response = await axiosInstance.delete(`/threads/${threadId}/bookmark`);
+    const response = await axiosInstance.delete<ApiResponse<null>>(
+      `/threads/${threadId}/bookmark`
+    );
 
-    if (response.data?.success) {
-      return {
-        success: true,
-        message: response.data.message
-      };
-    }
-
-    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
+    return {
+      success: true,
+      data: response.data.data,
+      message: response.data.message,
+      statusCode: response.data.statusCode,
+    };
   } catch (error) {
-    console.error('Error unbookmarking thread:', error);
-
-    if (isAxiosError(error)) {
-      const axiosError = error as AxiosError;
-
-      if (axiosError.response?.status === 403) {
-        const message = (axiosError.response.data as { message?: string })?.message ?? 'Forbidden';
-        return {
-          success: false,
-          message,
-          error: 'FORBIDDEN'
-        };
-      }
-
-      if (axiosError.response?.status === 401) {
-        throw new Error(RESPONSE_MESSAGES.auth.UNAUTHORIZED);
-      }
-
-      if (axiosError.response?.status === 404) {
-        throw new Error(RESPONSE_MESSAGES.thread.NOT_FOUND);
-      }
-    }
-
-    throw new Error(RESPONSE_MESSAGES.thread.DEFAULT);
+    return handleServiceError<null>(
+      error,
+      RESPONSE_MESSAGES.BOOKMARK.REMOVE_FAILED || RESPONSE_MESSAGES.thread.DEFAULT
+    );
   }
 };
 
+// Fetch bookmarked threads
 export const fetchBookmarkedThreads = async ({
-  sort = "latest",
-  page = 0,
-  limit = THREADS_LIMIT,
+  sort = 'latest',
+  page = 1,
+  limit = 10,
 }: {
   sort?: string;
   page?: number;
   limit?: number;
-}): Promise<BookmarkedThreadsResult> => {
-
-  const params = new URLSearchParams({
-    page: String(page),
-    limit: String(limit),
-    sort,
-  });
+}): Promise<ApiResult<Thread[]>> => {
   try {
-    const response = await axiosInstance.get<ThreadResponse>(`/users/me/bookmarks?${params}`);
+    const params = new URLSearchParams({
+      sort,
+      page: String(page),
+      limit: String(limit),
+    });
 
-    if (response.data && response.data.data) {
-      return {
-        success: true,
-        data: response.data,
-      };
-    }
+    const response = await axiosInstance.get<ApiResponse<Thread[]>>(
+      `/users/me/bookmarks?${params.toString()}`
+    );
 
     return {
-      success: false,
-      error: {
-        message: RESPONSE_MESSAGES.thread.DEFAULT,
-        code: 'UNKNOWN_ERROR',
-      },
+      success: true,
+      data: response.data.data,
+      meta: response.data.meta,
+      message: response.data.message,
+      statusCode: response.data.statusCode,
     };
   } catch (error) {
-    console.error('Error fetching bookmarked threads:', error);
-
-    if (isAxiosError(error)) {
-      const axiosError = error as AxiosError;
-      
-      // Handle validation errors
-      if (axiosError.response?.status === 400) {
-        const errorData = axiosError.response.data as ValidationErrorResponse;
-        return {
-          success: false,
-          error: {
-            message: errorData.message || RESPONSE_MESSAGES.thread.VALIDATION_ERROR,
-            code: errorData.code || 'VALIDATION_ERROR',
-          },
-        };
-      }
-
-      // Handle unauthorized errors
-      if (axiosError.response?.status === 401) {
-        return {
-          success: false,
-          error: {
-            message: RESPONSE_MESSAGES.auth.UNAUTHORIZED,
-            code: 'UNAUTHORIZED',
-          },
-        };
-      }
-
-      // Handle not found errors
-      if (axiosError.response?.status === 404) {
-        return {
-          success: false,
-          error: {
-            message: RESPONSE_MESSAGES.thread.NOT_FOUND,
-            code: 'NOT_FOUND',
-          },
-        };
-      }
-
-      // Handle server errors
-      return {
-        success: false,
-        error: {
-          message: RESPONSE_MESSAGES.thread.SERVER_ERROR,
-          code: 'SERVER_ERROR',
-        },
-      };
-    }
-
-    // Handle unexpected errors
-    return {
-      success: false,
-      error: {
-        message: RESPONSE_MESSAGES.thread.DEFAULT,
-        code: 'UNKNOWN_ERROR',
-      },
-    };
+    return handleServiceError<Thread[]>(
+      error,
+      RESPONSE_MESSAGES.thread.DEFAULT
+    );
   }
 };
