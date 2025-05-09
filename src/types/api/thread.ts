@@ -1,9 +1,17 @@
+import { Department } from ".";
+import { UserRole } from "./user";
+
 // ---------- Author ----------
 export interface ThreadAuthor {
   id: number;
   username: string;
   name: string;
   photoPath?: string;
+  role?: UserRole;
+  isDeleted?: boolean;
+  student?: null | {
+    department: Department
+  };
 }
 
 // ---------- Category ----------
