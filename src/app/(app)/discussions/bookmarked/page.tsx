@@ -33,19 +33,12 @@ const BookmarksPageContent = () => {
     try {
       const result = await fetchBookmarkedThreads({ page: 1, limit });
 
-      if (result.success && result.data) {
-        const processedThreads = result.data.data.map((thread: Thread) => ({
-          ...thread,
-          author: {
-            ...thread.author,
-            photoPath: thread.author.photoPath
-          }
-        }));
-        setBookmarkedThreads(processedThreads);
-        setHasMore(result.data.meta.page < result.data.meta.totalPages);
+      if (result.success) {
+        setBookmarkedThreads(result.data);
+        setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
         setPage(2);
       } else {
-        setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
+        setError(result.error.message || RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
       }
     } catch (error) {
       logger().error("Error loading bookmarks:", error);
@@ -62,19 +55,12 @@ const BookmarksPageContent = () => {
     try {
       const result = await fetchBookmarkedThreads({ page, limit });
 
-      if (result.success && result.data) {
-        const newBookmarkedThreads = result.data.data.map((thread: Thread) => ({
-          ...thread,
-          author: {
-            ...thread.author,
-            photoPath: thread.author.photoPath
-          }
-        }));
-        setBookmarkedThreads((prev) => [...prev, ...newBookmarkedThreads]);
-        setHasMore(result.data.meta.page < result.data.meta.totalPages);
+      if (result.success) {
+        setBookmarkedThreads((prev) => [...prev, ...result.data]);
+        setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
         setPage((prev) => prev + 1);
       } else {
-        setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
+        setError(result.error.message || RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
       }
     } catch (error) {
       logger().error("Error loading more bookmarks:", error);
