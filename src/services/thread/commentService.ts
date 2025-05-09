@@ -22,7 +22,7 @@ export const createComment = async (
       success: true,
       data: response.data.data,
       message: response.data.message,
-      statusCode: response.data.statusCode,
+      statusCode: response.status,
     };
   } catch (error) {
     return handleServiceError<ThreadComment>(
@@ -47,7 +47,7 @@ export const updateComment = async (
       success: true,
       data: response.data.data,
       message: response.data.message,
-      statusCode: response.data.statusCode,
+      statusCode: response.status,
     };
   } catch (error) {
     return handleServiceError<ThreadComment>(
@@ -70,7 +70,7 @@ export const deleteComment = async (
       success: true,
       data: response.data.data,
       message: response.data.message,
-      statusCode: response.data.statusCode,
+      statusCode: response.status,
     };
   } catch (error) {
     return handleServiceError<null>(

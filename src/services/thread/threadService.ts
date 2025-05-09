@@ -41,7 +41,7 @@ export const fetchThreads = async ({
       data: response.data.data,
       meta: response.data.meta,
       message: response.data.message,
-      statusCode: response.data.statusCode,
+      statusCode: response.status,
     };
   } catch (error) {
     return handleServiceError<Thread[]>(
@@ -64,7 +64,7 @@ export const fetchThreadById = async (
       data: response.data.data,
       meta: response.data.meta,
       message: response.data.message,
-      statusCode: response.data.statusCode,
+      statusCode: response.status,
     };
   } catch (error) {
     return handleServiceError<Thread>(
@@ -108,7 +108,7 @@ export const searchThreads = async ({
       data: response.data.data,
       meta: response.data.meta,
       message: response.data.message,
-      statusCode: response.data.statusCode,
+      statusCode: response.status,
     };
   } catch (error) {
     return handleServiceError<Thread[]>(
@@ -131,7 +131,7 @@ export const createThread = async (
       success: true,
       data: response.data.data,
       message: response.data.message,
-      statusCode: response.data.statusCode,
+      statusCode: response.status,
     };
   } catch (error) {
     return handleServiceError<CreateThreadResponse>(
@@ -155,7 +155,7 @@ export const updateThread = async (
       success: true,
       data: response.data.data,
       message: response.data.message,
-      statusCode: response.data.statusCode,
+      statusCode: response.status,
     };
   } catch (error) {
     return handleServiceError<Thread>(
@@ -177,7 +177,7 @@ export const deleteThread = async (
       success: true,
       data: response.data.data,
       message: response.data.message,
-      statusCode: response.data.statusCode,
+      statusCode: response.status,
     };
   } catch (error) {
     return handleServiceError<null>(
@@ -224,7 +224,7 @@ export const fetchUserThreads = async ({
       data: response.data.data,
       meta: response.data.meta,
       message: response.data.message,
-      statusCode: response.data.statusCode,
+      statusCode: response.status,
     };
   } catch (error) {
     return handleServiceError<Thread[]>(
