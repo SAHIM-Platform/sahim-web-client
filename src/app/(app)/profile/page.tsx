@@ -18,13 +18,12 @@ import Modal from '@/components/Modal/Modal';
 import { AuthMethod } from '@/utils/api/signup/validateSignupForm';
 import Image from 'next/image';
 import { useAuth, useAuthRedirect } from '@/hooks';
-import { isAdminOrSuperAdminByRole, isSuperAdminByRole } from '@/utils/role';
+import { isSuperAdminByRole } from '@/utils/role';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { auth, setAuth } = useAuth();
   const isLoading = useAuthRedirect();
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>('');
   const [isEditing, setIsEditing] = useState(false);
