@@ -60,21 +60,11 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
           onEdit={(newContent: CreateCommentPayload) => handleEditComment(comment.comment_id, newContent)}
           onDelete={() => handleDeleteComment(comment.comment_id)}
           threadId={thread.thread_id}
+          author={comment.author}
         />
       ))}
     </div>
   );
-
-
-
-
-
-
-
-
-
-
-  
 }
 
 export default CommentListing;
