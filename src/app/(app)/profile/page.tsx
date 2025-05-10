@@ -64,9 +64,9 @@ export default function ProfilePage() {
         setIsLoadingProfile(false);
       }
     };
-
+  
     fetchProfile();
-  }, [router]);
+  }, [router]);  
 
   if (auth.loading || isLoading || isLoadingProfile) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
@@ -93,13 +93,15 @@ export default function ProfilePage() {
 
       const result = await userService.updateProfile(formData);
 
-      if (result.success && result.data?.user) {
-        setProfile(result.data.user);
-        setAuth((prev) => ({
+      if (result.success && result.data && result.data.user) {
+        const { user } = result.data;
+        setProfile(user);
+        setAuth(prev => ({
           ...prev,
           user: {
             ...prev.user!,
-            ...(result.data?.user || {}),
+            ...user,
+            id: Number(user.id),
           },
         }));
 

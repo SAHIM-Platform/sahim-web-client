@@ -5,7 +5,7 @@ import { ApprovalStatus } from ".";
 export interface AuthState {
   accessToken?: string;
   user?: {
-    id: string;
+    id: number;
     name: string;
     username: string;
     role: UserRole;
@@ -27,19 +27,25 @@ export interface LoginCredentials {
 
 export interface AuthResponse {
   message: string;
-  accessToken: string;
-  user: {
-    id: string;
-    name: string;
-    username: string;
-    role: UserRole;
-    photoPath: string;
-    approvalStatus?: ApprovalStatus;
+  data: {
+    accessToken: string;
+    user: {
+      id: number;
+      name: string;
+      username: string;
+      role: UserRole;
+      photoPath: string;
+      approvalStatus?: ApprovalStatus;
+    };
   };
 }
 
-export interface LogoutResponse {
-  message: string;
+export interface LogoutResponse { 
+  success: boolean;
+  data?: {
+    message: string;
+  };
+  error?: AuthError;
 }
 
 export interface AuthError {
@@ -48,9 +54,20 @@ export interface AuthError {
   code?: string;
 }
 
-export interface AuthResult<T = AuthResponse> {
+export interface AuthResult {
   success: boolean;
-  data?: T;
+  data?: {
+    message: string;
+    accessToken: string;
+    user: {
+      id: number;
+      name: string;
+      username: string;
+      role: UserRole;
+      photoPath: string;
+      approvalStatus?: ApprovalStatus;
+    };
+  };
   error?: AuthError;
 }
 

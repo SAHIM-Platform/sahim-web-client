@@ -10,7 +10,11 @@ export function useRefreshToken() {
   const refresh = async () => {
     try {
       const response = await axios.post<AuthResponse>('/auth/refresh');
-      const { accessToken, user } = response.data;
+      const { accessToken, user } = response.data.data;
+
+      if (!user) {
+        throw new Error('No user data in refresh response');
+      }
 
       setAuth({
         accessToken,
@@ -25,7 +29,7 @@ export function useRefreshToken() {
         accessToken: !!accessToken,
         user: {
           ...user,
-          approvalStatus: user.role === 'STUDENT' ? user.approvalStatus : undefined
+          approvalStatus: user.role === UserRole.STUDENT ? user.approvalStatus : undefined
         }
       });
 

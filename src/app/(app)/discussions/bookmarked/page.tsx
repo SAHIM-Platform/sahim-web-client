@@ -3,17 +3,18 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Thread } from "@/types";
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { fetchBookmarkedThreads, deleteThread } from '@/services/threadService';
 import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
 import { logger } from '@/utils/logger';
 import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import toast from 'react-hot-toast';
 import RetryAgain from '@/components/App/RetryAgain';
 import ItemNotFound from '@/components/App/NotFound/ItemNotFound';
-import { useInfiniteScroll, useLoading } from '@/hooks';
+import { useInfiniteScroll, useAuthLoading } from '@/hooks';
+import { fetchBookmarkedThreads } from '@/services/thread/bookmarkService';
+import { deleteThread } from '@/services/thread/threadService';
 
 const BookmarksPageContent = () => {
-  const { isAuthLoadingOrRedirecting } = useLoading();
+  const { isAuthLoadingOrRedirecting } = useAuthLoading();
   const [bookmarkedThreads, setBookmarkedThreads] = useState<Thread[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
@@ -32,19 +33,12 @@ const BookmarksPageContent = () => {
     try {
       const result = await fetchBookmarkedThreads({ page: 1, limit });
 
-      if (result.success && result.data) {
-        const processedThreads = result.data.data.map(thread => ({
-          ...thread,
-          author: {
-            ...thread.author,
-            photoPath: thread.author.photoPath
-          }
-        }));
-        setBookmarkedThreads(processedThreads);
-        setHasMore(result.data.meta.page < result.data.meta.totalPages);
+      if (result.success) {
+        setBookmarkedThreads(result.data);
+        setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
         setPage(2);
       } else {
-        setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
+        setError(result.error.message || RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
       }
     } catch (error) {
       logger().error("Error loading bookmarks:", error);
@@ -61,19 +55,12 @@ const BookmarksPageContent = () => {
     try {
       const result = await fetchBookmarkedThreads({ page, limit });
 
-      if (result.success && result.data) {
-        const newBookmarkedThreads = result.data.data.map(thread => ({
-          ...thread,
-          author: {
-            ...thread.author,
-            photoPath: thread.author.photoPath
-          }
-        }));
-        setBookmarkedThreads((prev) => [...prev, ...newBookmarkedThreads]);
-        setHasMore(result.data.meta.page < result.data.meta.totalPages);
+      if (result.success) {
+        setBookmarkedThreads((prev) => [...prev, ...result.data]);
+        setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
         setPage((prev) => prev + 1);
       } else {
-        setError(RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
+        setError(result.error.message || RESPONSE_MESSAGES.BOOKMARK.DEFAULT);
       }
     } catch (error) {
       logger().error("Error loading more bookmarks:", error);
@@ -139,6 +126,7 @@ const BookmarksPageContent = () => {
               <ThreadItem
                 key={thread.thread_id}
                 {...thread}
+                thumbnail_url={thread.thumbnail_url || undefined}
                 onDelete={() => handleDeleteThread(thread.thread_id)}
               />
             ))}

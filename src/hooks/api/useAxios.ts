@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useAuth, useRefreshToken } from '@/hooks';
 import axiosInstance from '@/api/axios';
+import { logger } from '@/utils/logger';
 
 export function useAxios() {
   const refresh = useRefreshToken();
@@ -12,6 +13,13 @@ export function useAxios() {
     const interceptors = {
       request: axiosInstance.interceptors.request.use(
         config => {
+          logger().info('API Request:', {
+            method: config.method?.toUpperCase(),
+            url: config.url,
+            headers: config.headers,
+            data: config.data
+          });
+
           if (!config.headers['Authorization']) {
             config.headers['Authorization'] = `Bearer ${auth?.accessToken}`;
           }
@@ -21,16 +29,28 @@ export function useAxios() {
       ),
       response: axiosInstance.interceptors.response.use(
         response => {
-          console.log('API Response:', response);
+          logger().info('API Response:', {
+            status: response.status,
+            url: response.config.url,
+            data: response.data
+          });
           return response;
         },
         async error => {
           const prevRequest = error?.config;
-          if (error?.response?.status === 401 && !prevRequest?.sent) {
+          
+          // Prevent infinite refresh token loop
+          if (error?.response?.status === 401 && !prevRequest?.sent && !prevRequest?.url?.includes('/auth/refresh')) {
             prevRequest.sent = true;
-            const newAccessToken = await refresh();
-            prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-            return axiosInstance(prevRequest);
+            try {
+              const { accessToken } = await refresh();
+              if (accessToken) {
+                prevRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+                return axiosInstance(prevRequest);
+              }
+            } catch (refreshError) {
+              console.error('Token refresh failed:', refreshError);
+            }
           }
           return Promise.reject(error);
         }

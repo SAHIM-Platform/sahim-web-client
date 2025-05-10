@@ -30,8 +30,8 @@ export function useLogout() {
         loading: false,
         user: undefined
       });
-      router.push("/login");
 
+      router.push("/login");
     } catch (error) {
       console.error("Logout failed:", error);
       setError(RESPONSE_MESSAGES.logout.DEFAULT);

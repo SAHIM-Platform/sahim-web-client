@@ -24,14 +24,14 @@ async function signupService(data: SignupFormData): Promise<AuthResult> {
     const response = await axiosInstance.post('/auth/signup', signupData);
     console.log('Signup response:', response.data);
 
-    // there is accessToken? consider it success
-    if (response.data && response.data.accessToken) {
+    // Check if we have the required data
+    if (response.data?.data?.accessToken && response.data?.data?.user) {
       return {
         success: true,
         data: {
           message: response.data.message,
-          accessToken: response.data.accessToken,
-          user: response.data.user
+          accessToken: response.data.data.accessToken,
+          user: response.data.data.user
         }
       };
     } else {
