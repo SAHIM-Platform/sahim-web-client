@@ -11,6 +11,7 @@ interface UserInfoProps {
   hideDetailsOnSmallScreens?: boolean;
   size?: "default" | "sm";
   role?: UserRole;
+  isDeleted?: boolean;
 }
 
 function UserInfo({
@@ -22,37 +23,34 @@ function UserInfo({
   children,
   hideDetailsOnSmallScreens = false,
   size = "default",
+  isDeleted = false,
 }: UserInfoProps) {
   const isSmall = size === "sm";
+  const displayName = isDeleted ? "مستخدم محذوف" : name || photoAlt || '';
+  const displayPhotoPath = isDeleted ? undefined : photoPath;
 
   return (
     <div className={`flex items-center gap-3`}>
       <div className={`flex items-center ${!isSmall ? 'gap-3' : 'gap-2'}`}>
-        {(name || photoAlt) && (
-          <UserPhoto
-            name={name || photoAlt || ''}
-            size={isSmall ? 24 : 32}
-            className="ring-2 ring-white"
-            photoPath={photoPath}
-            role={role}
-          />
-        )}
-        {(name || photoAlt) && (
-          <div
-            className={`flex flex-col items-start ${!isSmall ? 'gap-1' : ''} ${hideDetailsOnSmallScreens ? "hidden sm:block" : ""
-              }`}
+        <UserPhoto
+          name={displayName}
+          size={isSmall ? 24 : 32}
+          className="ring-2 ring-white"
+          photoPath={displayPhotoPath}
+          role={role}
+        />
+        <div
+          className={`flex flex-col items-start ${!isSmall ? 'gap-1' : ''} ${hideDetailsOnSmallScreens ? "hidden sm:block" : ""
+            }`}
+        >
+          <span
+            className={`${isSmall ? "text-xs" : "text-[14px]"
+              } font-semibold text-gray-700 leading-none`}
           >
-            {name && (
-              <span
-                className={`${isSmall ? "text-xs" : "text-[14px]"
-                  } font-semibold text-gray-700 leading-none`}
-              >
-                {getDisplayName(name)}
-              </span>
-            )}
-            {date && <DateBadge label={date} size="xs" />}
-          </div>
-        )}
+            {displayName}
+          </span>
+          {date && <DateBadge label={date} size="xs" />}
+        </div>
       </div>
       {children && (
         <div className={hideDetailsOnSmallScreens ? "hidden sm:block" : ""}>
