@@ -25,6 +25,12 @@ export default function AccountStatusPage() {
     await logout();
   };
 
+  if (isLoggingOut) {
+    return (
+      <LoadingSpinner size="xl" color="primary" fullScreen={true} />
+    );
+  }
+
   const handleRefresh = () => {
     window.location.reload();
     router.refresh();
