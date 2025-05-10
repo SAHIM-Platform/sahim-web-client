@@ -7,6 +7,7 @@ import Divider from "@/components/Divider";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
 import { useCurrentUserInfo, useLogout } from "@/hooks";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 function UserDropdownMenu() {
   const { logout, error, isLoading } = useLogout();
@@ -28,6 +29,17 @@ function UserDropdownMenu() {
   const handleItemClick = () => {
     setIsOpen(false);
   };
+
+  const handleLogout = async () => {
+    handleItemClick();
+    await logout();
+  };
+
+  if (isLoading) {
+    return (
+      <LoadingSpinner size="xl" color="primary" fullScreen={true} />
+    );
+  }
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -78,15 +90,12 @@ function UserDropdownMenu() {
         </div>
         <Divider label="" />
         <button
-          onClick={() => {
-            handleItemClick();
-            logout();
-          }}
+          onClick={handleLogout}
           disabled={isLoading}
           className="flex items-center gap-2 w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <LogOut className="w-4 h-4" />
-          {isLoading ? "جاري تسجيل الخروج..." : "تسجيل الخروج"}
+          تسجيل الخروج
         </button>
         {error && (
           <p className="px-4 pb-2 text-xs text-red-600">{RESPONSE_MESSAGES.logout.DEFAULT}</p>

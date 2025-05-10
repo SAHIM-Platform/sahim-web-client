@@ -26,7 +26,7 @@ export default function AccountStatusNavbar({ onLogout, isLoggingOut }: AccountS
               icon={<LogOut className="w-4 h-4" />}
               iconPosition="end"
             >
-              {isLoggingOut ? "جاري تسجيل الخروج..." : "تسجيل الخروج"}
+              تسجيل الخروج
             </Button>
           </div>
         </div>
