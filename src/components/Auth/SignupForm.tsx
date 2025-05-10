@@ -127,6 +127,20 @@ const SignupForm = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const isTextarea = e.target instanceof HTMLTextAreaElement;
+    const shouldSubmit = isTextarea ? (e.key === 'Enter' && e.ctrlKey) : (e.key === 'Enter' && !e.shiftKey);
+    
+    if (shouldSubmit) {
+      e.preventDefault();
+      if (currentStep < steps.length - 1) {
+        handleNext();
+      } else {
+        handleSubmit(e);
+      }
+    }
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
@@ -139,6 +153,7 @@ const SignupForm = () => {
               required
               value={formData.name || ''}
               onChange={(e) => handleChange('name', e.target.value)}
+              onKeyDown={handleKeyDown}
               error={errors.name}
               startIcon={<User className="w-[18px] h-[18px]" />}
             />
@@ -149,6 +164,7 @@ const SignupForm = () => {
               required
               value={formData.username || ''}
               onChange={(e) => handleChange('username', e.target.value)}
+              onKeyDown={handleKeyDown}
               error={errors.username}
               startIcon={<User className="w-[18px] h-[18px]" />}
             />
@@ -164,6 +180,7 @@ const SignupForm = () => {
               required
               value={formData.password || ''}
               onChange={(e) => handleChange('password', e.target.value)}
+              onKeyDown={handleKeyDown}
               error={errors.password}
               startIcon={<Lock className="w-[18px] h-[18px]" />}
               endIcon={
@@ -193,6 +210,7 @@ const SignupForm = () => {
               required
               value={formData.confirmPassword || ''}
               onChange={(e) => handleChange('confirmPassword', e.target.value)}
+              onKeyDown={handleKeyDown}
               error={errors.confirmPassword}
               startIcon={<Lock className="w-[18px] h-[18px]" />}
               endIcon={
@@ -227,6 +245,7 @@ const SignupForm = () => {
               required
               value={formData.academicNumber || ''}
               onChange={(e) => handleChange('academicNumber', e.target.value)}
+              onKeyDown={handleKeyDown}
               error={errors.academicNumber}
               startIcon={<GraduationCap className="w-[18px] h-[18px]" />}
             />
@@ -240,6 +259,7 @@ const SignupForm = () => {
               required
               value={formData.department || ''}
               onChange={(e) => handleChange('department', e.target.value)}
+              onKeyDown={handleKeyDown}
               error={errors.department}
               startIcon={<Building2 className="w-[18px] h-[18px]" />}
             />
@@ -255,6 +275,7 @@ const SignupForm = () => {
               required
               value={formData.studyLevel?.toString() || ''}
               onChange={(e) => handleChange('studyLevel', e.target.value)}
+              onKeyDown={handleKeyDown}
               error={errors.studyLevel}
               startIcon={<GraduationCap2 className="w-[18px] h-[18px]" />}
             />
