@@ -135,7 +135,7 @@ const StudentsListing = () => {
   };
 
   const statusOptions = [
-    { value: "", label: "جميع الحالات" },
+    { value: "ALL", label: "جميع الحالات" },
     { value: ApprovalStatus.PENDING, label: "قيد الانتظار" },
     { value: ApprovalStatus.APPROVED, label: "تمت الموافقة" },
     { value: ApprovalStatus.REJECTED, label: "مرفوض" },
@@ -165,8 +165,8 @@ const StudentsListing = () => {
 
             <div className="w-48">
               <Select
-                value={selectedStatus || ""}
-                onChange={(e) => setSelectedStatus(e.target.value as ApprovalStatus || null)}
+                value={selectedStatus || "ALL"}
+                onChange={(e) => setSelectedStatus(e.target.value === "ALL" ? null : e.target.value as ApprovalStatus)}
                 placeholder="حالة الموافقة"
                 options={statusOptions}
               />
