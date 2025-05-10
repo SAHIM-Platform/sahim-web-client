@@ -10,6 +10,8 @@ import { updateCategory, deleteCategory } from "@/services/admin/categoryService
 import { toast } from "react-hot-toast";
 import ConfirmModal from "../Modal/ConfirmModal";
 import ErrorAlert from "../Form/ErrorAlert";
+import Link from 'next/link';
+
 interface CategoriesListingProps {
   allowManagement?: boolean;
   categories: { category_id: number; name: string; }[];
@@ -133,11 +135,14 @@ function CategoriesListing({
               </div>
             ) : (
               <>
-                <span className="flex-1 truncate">
+                <Link 
+                  href={`/categories/${category.category_id}?name=${encodeURIComponent(category.name)}`}
+                  className="flex-1 truncate hover:text-primary transition-colors"
+                >
                   {maxChars && category.name.length > maxChars 
                     ? `${category.name.substring(0, maxChars)}...` 
                     : category.name}
-                </span>
+                </Link>
 
                 {showManagementIcons && (
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

@@ -240,7 +240,10 @@ const ThreadItem = ({
               />
             </div>
             <div className="flex items-center gap-2">
-              <CategoryBadge name={category.name} />
+              <CategoryBadge 
+                name={category.name} 
+                categoryId={category.category_id}
+              />
               {isOwner && (
                 <div className="relative" ref={dropdownRef}>
                   <button
