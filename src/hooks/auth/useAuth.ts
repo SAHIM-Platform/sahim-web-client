@@ -24,9 +24,8 @@ export function useAuth() {
       const authData: AuthResult = await loginService(credentials);
       console.log('Login service response:', authData);
 
-      if (authData.success && authData.data?.accessToken) {
-        console.log('Login successful:', authData.data.message);
-        console.log('Setting auth state with access token');
+      if (authData.success && authData.data?.accessToken && authData.data?.user) {
+        console.log('Login successful:', authData.data?.message);
 
         setAuth({
           accessToken: authData.data.accessToken,
@@ -76,9 +75,8 @@ export function useAuth() {
       const authData: AuthResult = await signupService(userData);
       console.log('Signup service response:', authData);
 
-      if (authData.success && authData.data?.accessToken) {
-        console.log('Signup successful:', authData.data.message);
-        console.log('Setting auth state with access token');
+      if (authData.success && authData.data?.accessToken && authData.data?.user) {
+        console.log('Signup successful:', authData.data?.message);
 
         setAuth({
           accessToken: authData.data.accessToken,

@@ -10,9 +10,10 @@ import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import Modal from "@/components/Modal/Modal";
 import { X } from "lucide-react";
-import { fetchCategories, updateThread } from "@/services/threadService";
 import validateThreadForm from "@/utils/api/thread/validateThreadForm";
 import LoadingSpinner from "../LoadingSpinner";
+import { fetchCategories } from "@/services/thread/categoryService";
+import { updateThread } from "@/services/thread/threadService";
 
 interface EditThreadModalProps {
   isOpen: boolean;
@@ -54,10 +55,10 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
         try {
           setIsLoadingCategories(true);
           const response = await fetchCategories();
-          if (response.data && Array.isArray(response.data)) {
+          if (response.success) {
             setCategories(response.data);
           } else {
-            setError(RESPONSE_MESSAGES.thread.DEFAULT);
+            setError(response.error.message || RESPONSE_MESSAGES.thread.DEFAULT);
             setCategories([]);
           }
         } catch {
@@ -97,14 +98,13 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
     e.preventDefault();
     setError("");
 
-    // Validate all fields on submit
     const errors = validateThreadForm({
       title: formData.title,
       content: formData.content,
       category_id: formData.category,
-      thumbnail_url: formData.thumbnailUrl
+      thumbnail_url: formData.thumbnailUrl,
     });
-    
+
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
       return;
@@ -121,17 +121,16 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
 
     try {
       const result = await updateThread(thread.thread_id, threadData);
-      
-      if (result.success && result.data) {
+
+      if (result.success) {
         onSuccess?.(result.data);
         onClose();
       } else {
-        setError(result.error?.message || RESPONSE_MESSAGES.thread.DEFAULT);
+        setError(result.error.message || RESPONSE_MESSAGES.thread.DEFAULT);
       }
-    } catch (err: unknown) {
+    } catch (err) {
       console.error("Error updating thread:", err);
-      const errorMessage = err instanceof Error ? err.message : RESPONSE_MESSAGES.thread.DEFAULT;
-      setError(errorMessage);
+      setError(RESPONSE_MESSAGES.thread.DEFAULT);
     } finally {
       setIsSubmitting(false);
     }

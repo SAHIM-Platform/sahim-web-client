@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         console.log('Checking authentication state...');
         const response = await axios.post<AuthResponse>('/auth/refresh');
-        const { accessToken, user } = response.data;
+        const { accessToken, user } = response.data.data;
 
         console.log('Refresh token successful:', {
           isAuthenticated: true,

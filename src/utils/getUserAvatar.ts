@@ -11,12 +11,16 @@ import { UserRole } from "@/types";
  */
 import { getDefaultUserAvatar } from "./getDefaultUserAvatar";
 
-export function getUserAvatar(photoPath?: string, role?: UserRole) {
+export function getUserAvatar(photoPath?: string, role?: UserRole): string {
   if (!role && !photoPath) {
     return getDefaultUserAvatar(UserRole.STUDENT);
   }
 
   if (photoPath) {
+    // If photoPath is already a full URL, return it as is
+    if (photoPath.startsWith('http://') || photoPath.startsWith('https://')) {
+      return photoPath;
+    }
     return process.env.NEXT_PUBLIC_API_URL + photoPath;
   }
 

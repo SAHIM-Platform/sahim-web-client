@@ -11,11 +11,10 @@ import toast from "react-hot-toast";
 import { logger } from "@/utils/logger";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
-import { useAdminRoleGuard, useLoading } from "@/hooks";
+import { useAdminRoleGuard, useAdminGuardLoading } from "@/hooks";
 
 export default function NewCategoryPage() {
   const router = useRouter();
-  const { isAdminGuardLoading } = useLoading();
   
   useAdminRoleGuard();
   
@@ -25,7 +24,7 @@ export default function NewCategoryPage() {
     name: "",
   });
 
-  if (isAdminGuardLoading) {
+  if (useAdminGuardLoading()) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
@@ -33,10 +32,8 @@ export default function NewCategoryPage() {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
-    
     try {
-      const result = await createCategory(formData.name.trim());
-
+      const result = await createCategory(formData.name.trim());      
       if (result.success) {
         toast.success(RESPONSE_MESSAGES.category.CREATED_SUCCESSFULLY);
         router.push(FrontendRoutes.CATEGORIES);
@@ -70,16 +67,18 @@ export default function NewCategoryPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <Input
-          label="اسم التصنيف"
-          placeholder="اكتب اسم التصنيف"
-          value={formData.name}
-          onChange={(e) => handleChange("name", e.target.value)}
-          required
-          fullWidth
-        />
+        <div>
+          <Input
+            label="اسم التصنيف"
+            placeholder="اكتب اسم التصنيف"
+            value={formData.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+            required
+            fullWidth
+          />
 
-        {error && <ErrorAlert message={error} />}
+          {error && <ErrorAlert message={error} />}
+        </div>
 
         <div className="flex justify-end">
           <Button

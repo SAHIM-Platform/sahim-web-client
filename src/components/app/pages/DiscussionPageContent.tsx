@@ -8,7 +8,6 @@ import Button from "@/components/Button";
 import { useState, ChangeEvent, useEffect, useCallback } from "react";
 import { Thread } from "@/types";
 import { toast } from "react-hot-toast";
-import { createComment, fetchThreadById, fetchThreads, deleteThread } from "@/services/threadService";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CommentListing from "@/components/App/Comment/CommentListing";
@@ -16,6 +15,8 @@ import { RefreshCw } from "lucide-react";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ItemNotFound from "../NotFound/ItemNotFound";
 import { useAuth, useAuthRedirect, useInfiniteScroll } from "@/hooks";
+import { deleteThread, fetchThreadById, fetchThreads } from "@/services/thread/threadService";
+import { createComment } from "@/services/thread/commentService";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const router = useRouter();
@@ -43,24 +44,24 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
       const threadResult = await fetchThreadById(parseInt(discussionId));
       console.log('DiscussionPageContent - API Response:', threadResult);
 
-      if (threadResult.success && threadResult.data) {
-        console.log('DiscussionPageContent - Thread Data:', threadResult.data);
-        // Ensure author data is properly structured
+      if (threadResult.success) {
         const threadData = {
           ...threadResult.data,
           author: {
             ...threadResult.data.author,
-            photoPath: threadResult.data.author.photoPath || '/public/avatars/defaults/super-admin.webp'
-          }
+            name: threadResult.data.author.name,
+            photoPath: threadResult.data.author.photoPath || '/public/avatars/defaults/super-admin.webp',
+            username: threadResult.data.author.username,
+            id: threadResult.data.author.id,
+            role: threadResult.data.author.role,
+            isDeleted: threadResult.data.author.isDeleted,
+            student: threadResult.data.author.student
+          },
         };
         setThread(threadData);
-        // Reset similar threads when main thread changes
-        setSimilarThreads([]);
-        setPage(1);
-        setHasMore(true);
       } else {
-        setError(threadResult.error?.message || 'حدث خطأ أثناء تحميل المناقشة');
-        toast.error(threadResult.error?.message || 'حدث خطأ أثناء تحميل المناقشة');
+        setError(threadResult.error.message || 'حدث خطأ أثناء تحميل المناقشة');
+        toast.error(threadResult.error.message || 'حدث خطأ أثناء تحميل المناقشة');
       }
     } catch {
       const errorMessage = 'حدث خطأ أثناء تحميل المناقشة';
@@ -83,13 +84,11 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
         category_id: thread.category_id 
       });
 
-      if (threadsResult.success && threadsResult.data) {
-        const filtered = threadsResult.data.data.filter(
-          (t: Thread) => t.thread_id !== thread.thread_id
-        );
+      if (threadsResult.success) {
+        const filtered = threadsResult.data.filter(t => t.thread_id !== thread.thread_id);
         setSimilarThreads(filtered);
-        setHasMore(threadsResult.data.meta.page < threadsResult.data.meta.totalPages);
-        setPage(2); // Prepare for next page
+        setHasMore(threadsResult.meta ? threadsResult.meta.page < threadsResult.meta.totalPages : false);
+        setPage(2);
       }
     } catch {
       toast.error("حدث خطأ أثناء تحميل المناقشات المشابهة");
@@ -109,13 +108,10 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
         category_id: thread.category_id 
       });
 
-      if (threadsResult.success && threadsResult.data) {
-        const newThreads = threadsResult.data.data.filter(
-          (t: Thread) => t.thread_id !== thread.thread_id
-        );
-        
+      if (threadsResult.success) {
+        const newThreads = threadsResult.data.filter(t => t.thread_id !== thread.thread_id);
         setSimilarThreads(prev => [...prev, ...newThreads]);
-        setHasMore(threadsResult.data.meta.page < threadsResult.data.meta.totalPages);
+        setHasMore(threadsResult.meta ? threadsResult.meta.page < threadsResult.meta.totalPages : false);
         setPage(prev => prev + 1);
       }
     } catch (err) {
@@ -138,31 +134,35 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
       return;
     }
     if (!thread) return;
-
+  
     try {
       setIsSubmittingComment(true);
-      const newComment = await createComment(thread.thread_id, comment);
-      
-      // Instead of loadThread(), just refresh the comments
-      const result = await fetchThreadById(thread.thread_id);
-      if (result.success && result.data) {
-        setThread(prev => ({
-          ...prev!,
-          comments: result.data!.comments
-        }));
-        
-        // Add highlight class to the new comment
-        const newCommentElement = document.querySelector(`[data-comment-id="${newComment.id}"]`);
-        if (newCommentElement) {
-          newCommentElement.classList.add('border-primary', 'shadow-lg');
-          setTimeout(() => {
-            newCommentElement.classList.remove('border-primary', 'shadow-lg');
-          }, 2000);
+      const result = await createComment(thread.thread_id, { content: comment });
+  
+      if (result.success) {
+        const refreshResult = await fetchThreadById(thread.thread_id);
+        if (refreshResult.success) {
+          setThread(prev => ({
+            ...prev!,
+            comments: refreshResult.data.comments,
+          }));
+  
+          const newCommentElement = document.querySelector(`[data-comment-id="${result.data.comment_id}"]`);
+          if (newCommentElement) {
+            newCommentElement.classList.add('border-primary', 'shadow-lg');
+            setTimeout(() => {
+              newCommentElement.classList.remove('border-primary', 'shadow-lg');
+            }, 2000);
+          }
+  
+          toast.success("تم إضافة تعليقك بنجاح");
+          setComment("");
+        } else {
+          toast.error(refreshResult.error.message || RESPONSE_MESSAGES.comment.DEFAULT);
         }
+      } else {
+        toast.error(result.error.message || RESPONSE_MESSAGES.comment.DEFAULT);
       }
-      
-      toast.success("تم إضافة تعليقك بنجاح");
-      setComment("");
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'حدث خطأ أثناء إضافة التعليق';
       toast.error(errorMessage);
@@ -187,13 +187,12 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     
     try {
       const result = await deleteThread(thread.thread_id);
-
       if (result.success) {
         toast.success('تم حذف المناقشة بنجاح');
         router.push('/explore');
       } else {
-        toast.error(result.error?.message || 'حدث خطأ أثناء حذف المناقشة');
-      }
+        toast.error(result.error.message || 'حدث خطأ أثناء حذف المناقشة');
+      }      
     } catch {
       toast.error('حدث خطأ أثناء حذف المناقشة');
     }
@@ -202,9 +201,11 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const refreshThread = async () => {
     if (!thread) return;
     const result = await fetchThreadById(thread.thread_id);
-    if (result.success && result.data) {
+    if (result.success) {
       setThread(result.data);
-    }
+    } else {
+      toast.error(result.error.message || RESPONSE_MESSAGES.thread.DEFAULT);
+    }    
   };
 
   useEffect(() => {
@@ -255,6 +256,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
       <div className="flex flex-col gap-6">
         <ThreadItem
           {...thread}
+          thumbnail_url={thread.thumbnail_url || undefined}
           showFullContent={true}
           hideTitle
           onEdit={handleThreadUpdate}

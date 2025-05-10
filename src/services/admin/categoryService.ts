@@ -50,6 +50,17 @@ export const createCategory = async (name: string): Promise<CategoryResponse> =>
           }
         };
       }
+     if (axiosError.response?.status === 409) {
+      return {
+       success: false,
+       error: {
+         message: RESPONSE_MESSAGES.category.DUPLICATE_CATEGORY,
+         code: 'CATEGORY_ALREADY_EXISTS'
+    }
+  };
+}
+
+
     }
     
     return {

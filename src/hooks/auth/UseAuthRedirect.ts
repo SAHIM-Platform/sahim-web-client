@@ -29,18 +29,19 @@ export function useAuthRedirect(): boolean {
       const isStudent = auth.user?.role === UserRole.STUDENT;
       const isApproved = auth.user?.approvalStatus === 'APPROVED';
       const isAccountStatusPage = pathName === '/account-status';
-
-      if (pathName === "/login" || pathName === "/signup") {
+      const isAuthRoute = pathName === "/login" || pathName === "/signup";
+      const isStudentAndNotApproved = isStudent && !isApproved;
+      
+      if (isAuthRoute) {
         router.push("/explore");
         return;
-      } else if (isStudent && !isApproved && !isAccountStatusPage) {
+      } else if (isStudentAndNotApproved && !isAccountStatusPage) {
         router.push("/account-status");
         return;
       }
     } else {
-      if (pathName.startsWith("/explore") ||
-        pathName.startsWith("/discussion") ||
-        pathName === "/account-status") {
+      const isProtectedRoute = pathName.startsWith("/explore") || pathName.startsWith("/discussion") || pathName === "/account-status";
+      if (isProtectedRoute) {
         router.push("/login");
         return;
       }

@@ -8,15 +8,14 @@ import AccountStatusCard from "@/components/App/AccountStatus/AccountStatusCard"
 import AccountStatusActions from "@/components/App/AccountStatus/AccountStatusActions";
 import AccountStatusFooter from "@/components/App/AccountStatus/AccountStatusFooter";
 import { ApprovalStatus } from "@/types";
-import { useAuth, useLoading, useLogout } from "@/hooks";
+import { useAuth, useStudentGuardLoading, useLogout } from "@/hooks";
 
 export default function AccountStatusPage() {
   const { auth } = useAuth();
   const { logout, isLoading: isLoggingOut } = useLogout();
   const router = useRouter();
-  const { isStudentGuardLoading } = useLoading();
 
-  if (isStudentGuardLoading) {
+  if (useStudentGuardLoading()) {
     return (
       <LoadingSpinner size="xl" color="primary" fullScreen={true} />
     );

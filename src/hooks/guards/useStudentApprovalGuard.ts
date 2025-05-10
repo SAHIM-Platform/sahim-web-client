@@ -35,7 +35,8 @@ export function useStudentApprovalGuard(): boolean {
     const shouldRedirectToAccountStatus = isStudent && !isApproved && !isAccountStatusPage;
 
     if (shouldRedirectToAccountStatus) {
-      router.push("/account-status");
+      console.log("shouldRedirectToAccountStatus --")
+      setIsLoading(false);
       return;
     }
 
