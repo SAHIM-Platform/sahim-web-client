@@ -67,16 +67,18 @@ export default function NewCategoryPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <Input
-          label="اسم التصنيف"
-          placeholder="اكتب اسم التصنيف"
-          value={formData.name}
-          onChange={(e) => handleChange("name", e.target.value)}
-          required
-          fullWidth
-        />
+        <div>
+          <Input
+            label="اسم التصنيف"
+            placeholder="اكتب اسم التصنيف"
+            value={formData.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+            required
+            fullWidth
+          />
 
-        {error && <ErrorAlert message={error} />}
+          {error && <ErrorAlert message={error} />}
+        </div>
 
         <div className="flex justify-end">
           <Button
