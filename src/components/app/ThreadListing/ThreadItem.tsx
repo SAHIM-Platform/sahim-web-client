@@ -8,7 +8,6 @@ import Button from "@/components/Button";
 import { ArrowUp, ArrowDown, MessageSquare, Share2, Loader2, Ellipsis, Edit, Trash2 } from "lucide-react";
 import CategoryBadge from "../Badge/CategoryBadge";
 import BookmarkToggle from "@/components/BookmarkToggle";
-import { voteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
 import { Thread } from "@/types";
 import Divider from "@/components/Divider";
@@ -17,8 +16,9 @@ import { useAuth } from "@/hooks";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import ShareModal from "@/components/Modal/ShareModal";
 import MarkdownRenderer from '@/components/App/MarkdownRenderer';
+import { voteThread } from "@/services/thread/voteService";
 
-export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
+export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments' | 'thumbnail_url'> {
   title: string;
   onUpvote?: () => void;
   onDownvote?: () => void;
@@ -28,7 +28,7 @@ export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments'> {
   showFullContent?: boolean;
   comments?: Thread['comments'];
   hideTitle?: boolean;
-  thumbnail_url?: string;
+  thumbnail_url?: string | null;
 }
 
 const ThreadItem = ({
@@ -54,8 +54,8 @@ const ThreadItem = ({
   const isOwner = auth.user?.id?.toString() === author.id.toString();
 
   // Use refs to store the initial values
-  const initialVoteCount = useRef(votes.score ?? 0);
-  const initialUserVote = useRef(votes.user_vote);
+  const initialVoteCount = useRef(votes?.score ?? 0);
+  const initialUserVote = useRef(votes?.user_vote ?? null);
 
   // State for current values
   const [localVoteCount, setLocalVoteCount] = useState(initialVoteCount.current);
@@ -76,11 +76,11 @@ const ThreadItem = ({
 
   // Update initial values when props change
   useEffect(() => {
-    initialVoteCount.current = votes.score ?? 0;
-    initialUserVote.current = votes.user_vote;
-    setLocalVoteCount(votes.score ?? 0);
-    setLocalUserVote(votes.user_vote ?? null);
-  }, [votes.score, votes.user_vote]);
+    initialVoteCount.current = votes?.score ?? 0;
+    initialUserVote.current = votes?.user_vote ?? null;
+    setLocalVoteCount(votes?.score ?? 0);
+    setLocalUserVote(votes?.user_vote ?? null);
+  }, [votes?.score, votes?.user_vote]);
 
   // Update thread data when props change
   useEffect(() => {
@@ -137,12 +137,12 @@ const ThreadItem = ({
       }
 
       // Update with server response
-      setLocalVoteCount(response.votesCount);
-      setLocalUserVote(response.userVote);
+      setLocalVoteCount(response.data.counts.up - response.data.counts.down);
+      setLocalUserVote(response.data.user_vote);
 
       // Update initial values to match server state
-      initialVoteCount.current = response.votesCount;
-      initialUserVote.current = response.userVote;
+      initialVoteCount.current = response.data.counts.up - response.data.counts.down;
+      initialUserVote.current = response.data.user_vote;
 
       // Call parent handlers
       if (voteType === "UP" && onUpvote) onUpvote();
@@ -387,7 +387,7 @@ const ThreadItem = ({
           created_at,
           category,
           votes,
-          thumbnail_url,
+          thumbnail_url: thumbnail_url || null,
           _count,
         }}
         onSuccess={handleEditSuccess}

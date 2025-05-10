@@ -4,11 +4,11 @@ import { Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/utils/utils";
 import SearchModal from "../Modal/SearchModal";
-import { searchThreads } from "@/services/threadService";
 import { Thread } from "@/types";
 import toast from "react-hot-toast";
 import { THREADS_LIMIT } from "@/utils/constants/ITEMS_LIMITS";
 import { useInfiniteScroll } from "@/hooks";
+import { searchThreads } from "@/services/thread/threadService";
 
 interface SearchButtonProps {
   isSearchFocused: boolean;
@@ -52,14 +52,18 @@ function SearchButton({
           limit: 3, 
         });
 
-        if (result.success && result.data) {
-          const newThreads = result.data.data;
-          setSearchResults(newThreads);
-          setHasMore(result.data.meta.page < result.data.meta.totalPages);
-          setPage(2); 
+        if (result.success) {
+          setSearchResults(result.data);
+          setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
+          setPage(2);
+        } else {
+          console.error("Search error:", result.error.message);
+          setError("فشل تحميل نتائج البحث");
+          setSearchResults([]);
+          toast.error("فشل تحميل نتائج البحث");
         }
       } catch (err) {
-        console.error('Search error:', err);
+        console.error("Unexpected search error:", err);
         setError("فشل تحميل نتائج البحث");
         setSearchResults([]);
         toast.error("فشل تحميل نتائج البحث");
@@ -81,11 +85,13 @@ function SearchButton({
         limit: THREADS_LIMIT,
       });
 
-      if (result.success && result.data) {
-        const newThreads = result.data.data;
-        setSearchResults((prev) => [...prev, ...newThreads]);
-        setHasMore(result.data.meta.page < result.data.meta.totalPages);
+      if (result.success) {
+        setSearchResults((prev) => [...prev, ...result.data]);
+        setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
         setPage((prev) => prev + 1);
+      } else {
+        console.error("Load more search error:", result.error.message);
+        toast.error("حدث خطأ أثناء تحميل المزيد من النتائج");
       }
     } catch {
       toast.error("حدث خطأ أثناء تحميل المزيد من النتائج");

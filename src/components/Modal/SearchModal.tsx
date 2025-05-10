@@ -91,7 +91,7 @@ function SearchModal({
                     thread_id={result.thread_id}
                     title={result.title}
                     authorName={result.author.name}
-                    commentsCount={result._count.comments}
+                    commentsCount={result._count?.comments || 0}
                     created_at={result.created_at}
                     onNavigate={handleThreadClick}
                     authorPhotoPath={result.author.photoPath}
