@@ -11,7 +11,7 @@ import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import MarkdownRenderer from '@/components/OnlyApp/MarkdownRenderer';
 import { voteComment } from "@/services/thread/voteService";
-import { CreateCommentPayload, FormattedVote, UserRole, Department, ThreadAuthor } from "@/types";
+import { CreateCommentPayload, FormattedVote, ThreadAuthor } from "@/types";
 import AuthorRoleBadge from "../Badge/AuthorRoleBadge";
 
 export interface CommentItemProps {
