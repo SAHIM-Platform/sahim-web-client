@@ -40,7 +40,7 @@ export function useAuthRedirect(): boolean {
         return;
       }
     } else {
-      const isProtectedRoute = !pathName.startsWith("/login") && !pathName.startsWith("/signup")git ;
+      const isProtectedRoute = !pathName.startsWith("/login") && !pathName.startsWith("/signup");
       if (isProtectedRoute) {
         router.push("/login");
         return;
