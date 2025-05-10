@@ -2,7 +2,7 @@ import { ApprovalStatus, Department, Level } from ".";
 import { AuthMethod } from "..";
 
 export type Student = {
-  id: string;
+  id: number;
   name: string;
   email?: string;
   student?: {
@@ -17,7 +17,7 @@ export type Student = {
 };
 
 export interface Admin {
-  id: string;
+  id: number;
   email?: string;
   username: string;
   name: string;
@@ -31,7 +31,7 @@ export enum UserRole {
 }
 
 export interface Profile {
-  id: string;
+  id: number;
   name: string;
   username: string;
   email: string;

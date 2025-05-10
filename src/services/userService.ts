@@ -157,8 +157,8 @@ export const userService = {
       return {
         success: true,
         data: {
-          message: RESPONSE_MESSAGES.profile.FETCH_SUCCESS,
-          user: response.data
+          message: response.data.message,
+          user: response.data.data
         }
       };
     } catch (error) {
