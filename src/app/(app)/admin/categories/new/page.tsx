@@ -11,11 +11,10 @@ import toast from "react-hot-toast";
 import { logger } from "@/utils/logger";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
-import { useAdminRoleGuard, useLoading } from "@/hooks";
+import { useAdminRoleGuard, useAdminGuardLoading } from "@/hooks";
 
 export default function NewCategoryPage() {
   const router = useRouter();
-  const { isAdminGuardLoading } = useLoading();
   
   useAdminRoleGuard();
   
@@ -25,7 +24,7 @@ export default function NewCategoryPage() {
     name: "",
   });
 
-  if (isAdminGuardLoading) {
+  if (useAdminGuardLoading()) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 

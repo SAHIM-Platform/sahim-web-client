@@ -3,7 +3,6 @@
 import ThreadItem from "./ThreadItem";
 import ThreadListingHeader from "./ThreadListingHeader";
 import { useState, useEffect, useCallback } from "react";
-import { fetchThreads, deleteThread } from "@/services/threadService";
 import toast from "react-hot-toast";
 import { Thread } from "@/types";
 import ErrorAlert from "@/components/Form/ErrorAlert";
@@ -11,6 +10,7 @@ import { RefreshCw } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Button from "@/components/Button";
 import { useInfiniteScroll } from "@/hooks";
+import { deleteThread, fetchThreads } from "@/services/thread/threadService";
 
 interface ThreadListingProps {
   emptyMessage?: string;
@@ -44,12 +44,12 @@ const ThreadListing = ({
         category_id: selectedCategory ?? undefined,
       });
 
-      if (result.success && result.data) {
-        setThreads(result.data.data);
-        setHasMore(result.data.meta.page < result.data.meta.totalPages);
+      if (result.success) {
+        setThreads(result.data);
+        setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
         setPage(2);
       } else {
-        const errorMessage = result.error?.message || 'حدث خطأ أثناء تحميل المناقشات';
+        const errorMessage = result.error.message || 'حدث خطأ أثناء تحميل المناقشات';
         setError(errorMessage);
         toast.error(errorMessage);
       }
@@ -77,13 +77,12 @@ const ThreadListing = ({
         category_id: selectedCategory ?? undefined,
       });
 
-      if (result.success && result.data) {
-        const newThreads = result.data.data;
-        setThreads((prev) => [...prev, ...newThreads]);
-        setHasMore(result.data.meta.page < result.data.meta.totalPages);
+      if (result.success) {
+        setThreads((prev) => [...prev, ...result.data]);
+        setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
         setPage((prev) => prev + 1);
       } else {
-        toast.error(result.error?.message || 'حدث خطأ أثناء تحميل المزيد من المناقشات');
+        toast.error(result.error.message || 'حدث خطأ أثناء تحميل المزيد من المناقشات');
       }
     } catch {
       toast.error("حدث خطأ أثناء تحميل المزيد من المناقشات");

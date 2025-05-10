@@ -1,7 +1,7 @@
 import axiosInstance from '@/api/axios';
 import { AdminFormData } from '@/utils/api/admin/validateCreateAdminForm';
 import { AxiosError, isAxiosError } from "axios";
-import { APIError } from "@/types";
+import { ApiError } from "@/types";
 import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 
 interface AdminCreationResponse {
@@ -40,7 +40,7 @@ async function createAdminService(data: AdminFormData): Promise<AdminCreationRes
   } catch (error) {
     if (isAxiosError(error)) {
       const axiosError = error as AxiosError;
-      const errorData = axiosError.response?.data as APIError;
+      const errorData = axiosError.response?.data as ApiError;
       const statusCode = axiosError.response?.status;
 
       // Handle specific error cases
@@ -55,7 +55,7 @@ async function createAdminService(data: AdminFormData): Promise<AdminCreationRes
       }
 
       if (statusCode === 409) {
-        const isEmailConflict = errorData.message?.toLowerCase().includes('email');
+        const isEmailConflict = errorData.error?.message?.toLowerCase().includes('email');
         return {
           success: false,
           error: {
@@ -100,8 +100,8 @@ async function createAdminService(data: AdminFormData): Promise<AdminCreationRes
       return {
         success: false,
         error: {
-          message: errorData?.message || RESPONSE_MESSAGES.admin.DEFAULT,
-          code: errorData?.error || 'ADMIN_CREATION_ERROR'
+          message: errorData.error?.message || RESPONSE_MESSAGES.admin.DEFAULT,
+          code: errorData.error?.code || 'ADMIN_CREATION_ERROR'
         }
       };
     }

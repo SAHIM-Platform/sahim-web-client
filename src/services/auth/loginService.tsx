@@ -15,18 +15,22 @@ async function loginService(credentials: LoginCredentials): Promise<AuthResult> 
 		const response = await axiosInstance.post('/auth/signin', requestBody);
 		console.log('Login response:', response.data);
 
-		// there is accessToken? consider it success
-		if (response.data && response.data.accessToken) {
+		// Check status code from response
+		const statusCode = response.status;
+		const isSuccess = statusCode === 200 || statusCode === 201;
+		const data = response.data.data || response.data;
+
+		if (isSuccess && data && data.accessToken) {
 			return {
 				success: true,
 				data: {
 					message: response.data.message,
-					accessToken: response.data.accessToken,
-					user: response.data.user
+					accessToken: data.accessToken,
+					user: data.user
 				}
 			};
 		} else {
-			// no accessToken? consider it failure
+			// Not successful or missing accessToken
 			return {
 				success: false,
 				error: {

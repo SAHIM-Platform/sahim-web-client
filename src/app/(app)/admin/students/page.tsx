@@ -2,13 +2,12 @@
 
 import StudentsListing from "@/components/StudentsListing";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { useAdminRoleGuard, useLoading } from "@/hooks";
+import { useAdminRoleGuard, useAdminGuardLoading } from "@/hooks";
 
 export default function AdminStudentsPage() {
-	const { isAdminGuardLoading } = useLoading();
 	useAdminRoleGuard();
 
-	if (isAdminGuardLoading) {
+	if (useAdminGuardLoading()) {
 		return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
 	}
 
