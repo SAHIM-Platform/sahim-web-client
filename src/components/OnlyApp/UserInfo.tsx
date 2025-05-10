@@ -18,7 +18,6 @@ function UserInfo({
   name,
   role,
   photoPath,
-  photoAlt,
   date,
   children,
   hideDetailsOnSmallScreens = false,
@@ -26,7 +25,7 @@ function UserInfo({
   isDeleted = false,
 }: UserInfoProps) {
   const isSmall = size === "sm";
-  const displayName = isDeleted ? "مستخدم محذوف" : name || photoAlt || '';
+  const displayName = isDeleted || !name ? "مستخدم محذوف" : getDisplayName(name);
   const displayPhotoPath = isDeleted ? undefined : photoPath;
 
   return (

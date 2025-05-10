@@ -1,4 +1,4 @@
-import { MessageSquare, Trash2 } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { ThreadMinimal } from "@/types";
 import UserInfo from "../UserInfo";
