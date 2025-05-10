@@ -17,6 +17,7 @@ import ConfirmModal from "@/components/Modal/ConfirmModal";
 import ShareModal from "@/components/Modal/ShareModal";
 import MarkdownRenderer from '@/components/App/MarkdownRenderer';
 import { voteThread } from "@/services/thread/voteService";
+import AuthorRoleBadge from "../Badge/AuthorRoleBadge";
 
 export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments' | 'thumbnail_url'> {
   title: string;
@@ -225,12 +226,19 @@ const ThreadItem = ({
         )}
       >
         <div className="px-6 pt-6 pb-3 space-y-6">
-          <div className="flex items-center justify-between gap-4">
-            <UserInfo
-              name={author.name}
-              photoPath={author.photoPath}
-              date={created_at}
-            />
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <UserInfo
+                name={author.name}
+                photoPath={author.photoPath}
+                date={created_at}
+                role={author.role}
+              />
+              <AuthorRoleBadge 
+                role={author.role} 
+                department={author.student?.department}
+              />
+            </div>
             <div className="flex items-center gap-2">
               <CategoryBadge name={category.name} />
               {isOwner && (

@@ -49,13 +49,6 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
           ...threadResult.data,
           author: {
             ...threadResult.data.author,
-            name: threadResult.data.author.name,
-            photoPath: threadResult.data.author.photoPath || '/public/avatars/defaults/super-admin.webp',
-            username: threadResult.data.author.username,
-            id: threadResult.data.author.id,
-            role: threadResult.data.author.role,
-            isDeleted: threadResult.data.author.isDeleted,
-            student: threadResult.data.author.student
           },
         };
         setThread(threadData);

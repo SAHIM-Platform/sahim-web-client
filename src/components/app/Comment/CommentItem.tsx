@@ -11,7 +11,8 @@ import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import MarkdownRenderer from '@/components/App/MarkdownRenderer';
 import { voteComment } from "@/services/thread/voteService";
-import { CreateCommentPayload, FormattedVote } from "@/types";
+import { CreateCommentPayload, FormattedVote, UserRole, Department } from "@/types";
+import AuthorRoleBadge from "../Badge/AuthorRoleBadge";
 
 export interface CommentItemProps {
   id: string;
@@ -21,6 +22,15 @@ export interface CommentItemProps {
   onEdit?: (newContent: CreateCommentPayload) => Promise<void>;
   onDelete?: () => Promise<void>;
   threadId: number;
+  author: {
+    id: number;
+    name: string;
+    photoPath?: string;
+    role?: UserRole;
+    student?: null | {
+      department: Department;
+    };
+  };
 }
 
 function CommentItem({ 
@@ -30,10 +40,18 @@ function CommentItem({
   votes, 
   onEdit,
   onDelete,
-  threadId
+  threadId,
+  author
 }: CommentItemProps) {
   const { auth } = useAuth();
-  const isOwner = auth.user?.id?.toString() === auth.user?.id?.toString();
+  const isOwner = auth.user?.id?.toString() === author?.id?.toString();
+
+  console.log("Author data:", author);
+  // Early return if author data is missing
+  if (!author) {
+    console.log("Author data is missing for comment ID:", id);
+    return null;
+  }
 
   // Voting state
   const initialVoteCount = useRef(votes?.score ?? 0);
@@ -163,12 +181,18 @@ function CommentItem({
     <div className="flex gap-1 items-start" data-comment-id={id}>
       <div className="bg-white rounded-xl border border-gray-200 px-6 pt-6 pb-3 w-full relative transition-all duration-200">
         <div className="flex justify-between items-start">
-          <UserInfo 
-            name={auth.user?.name} 
-            date={timestamp} 
-            photoPath={auth.user?.photoPath} 
-            role={auth.user?.role}
-          />
+          <div className="flex items-start gap-3">
+            <UserInfo 
+              name={author.name} 
+              date={timestamp} 
+              photoPath={author.photoPath} 
+              role={author.role}
+            />
+            <AuthorRoleBadge 
+              role={author.role}
+              department={author.student?.department}
+            />
+          </div>
           
           {isOwner && (
             <div className="relative" ref={dropdownRef}>
