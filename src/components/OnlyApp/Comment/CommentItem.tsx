@@ -9,13 +9,13 @@ import { useAuth } from "@/hooks";
 import toast from "react-hot-toast";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
-import MarkdownRenderer from '@/components/App/MarkdownRenderer';
+import MarkdownRenderer from '@/components/OnlyApp/MarkdownRenderer';
 import { voteComment } from "@/services/thread/voteService";
 import { CreateCommentPayload, FormattedVote, UserRole, Department } from "@/types";
 import AuthorRoleBadge from "../Badge/AuthorRoleBadge";
 
 export interface CommentItemProps {
-  id: string;
+  id: number;
   content: string;
   timestamp: string;
   votes?: FormattedVote;
@@ -45,13 +45,6 @@ function CommentItem({
 }: CommentItemProps) {
   const { auth } = useAuth();
   const isOwner = auth.user?.id?.toString() === author?.id?.toString();
-
-  console.log("Author data:", author);
-  // Early return if author data is missing
-  if (!author) {
-    console.log("Author data is missing for comment ID:", id);
-    return null;
-  }
 
   // Voting state
   const initialVoteCount = useRef(votes?.score ?? 0);
@@ -90,6 +83,13 @@ function CommentItem({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  console.log("Author data:", author);
+  // Early return if author data is missing
+  if (!author) {
+    console.log("Author data is missing for comment ID:", id);
+    return null;
+  }
+
   const handleVote = async (voteType: "UP" | "DOWN", e: React.MouseEvent) => {
     e.preventDefault();
     const now = Date.now();
@@ -102,7 +102,7 @@ function CommentItem({
 
     try {
       setIsVoting(true);
-      const result = await voteComment(threadId, parseInt(id), voteType);
+      const result = await voteComment(threadId, id, voteType);
   
       if (result.success) {
         setLocalVoteCount(result.data.score);

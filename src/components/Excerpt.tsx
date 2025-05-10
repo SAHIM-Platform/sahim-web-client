@@ -1,5 +1,5 @@
 import { cn } from "@/utils/utils";
-import MarkdownRenderer from './App/MarkdownRenderer';
+import MarkdownRenderer from './OnlyApp/MarkdownRenderer';
 
 type ExcerptProps = {
   content: string;

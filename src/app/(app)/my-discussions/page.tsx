@@ -3,12 +3,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
+import ThreadItem from '@/components/OnlyApp/ThreadListing/ThreadItem';
 import { Thread } from "@/types";
 import Button from '@/components/Button';
-import MyDiscussionsHeader from '@/components/App/pages/MyDiscussionsHeader';
+import MyDiscussionsHeader from '@/components/OnlyApp/pages/MyDiscussionsHeader';
 import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
-import RetryAgain from '@/components/App/RetryAgain';
+import RetryAgain from '@/components/OnlyApp/RetryAgain';
 import { useInfiniteScroll, useAuthLoading } from '@/hooks';
 import { fetchUserThreads } from '@/services/thread/threadService';
 

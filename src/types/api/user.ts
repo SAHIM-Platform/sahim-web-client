@@ -6,7 +6,7 @@ export type Student = {
   name: string;
   email?: string;
   student?: {
-    id: string;
+    id: number;
     userId: string;
     academicNumber: string;
     department: Department;

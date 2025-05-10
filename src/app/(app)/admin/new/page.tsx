@@ -1,6 +1,6 @@
 "use client";
 
-import NewAdminForm from "@/components/App/Form/NewAdminForm";
+import NewAdminForm from "@/components/OnlyApp/Form/NewAdminForm";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useSuperAdminGuardLoading, useSuperAdminRoleGuard } from "@/hooks";
 

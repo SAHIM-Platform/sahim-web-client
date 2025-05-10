@@ -53,7 +53,7 @@ function CommentListing({ thread, refreshThread }: CommentListingProps) {
       {thread.comments.map((comment) => (
         <CommentItem
           key={comment.comment_id}
-          id={comment.comment_id.toString()}
+          id={comment.comment_id}
           content={comment.content}
           timestamp={comment.created_at}
           votes={comment.votes}

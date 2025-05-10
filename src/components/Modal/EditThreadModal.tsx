@@ -4,7 +4,7 @@ import Select from "@/components/Select";
 import Button from "@/components/Button";
 import Textarea from "@/components/Textarea";
 import { Thread } from "@/types";
-import ThumbnailPreview from "@/components/App/ThumbnailPreview";
+import ThumbnailPreview from "@/components/OnlyApp/ThumbnailPreview";
 import { useImageValidation } from "@/hooks";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ErrorAlert from "@/components/Form/ErrorAlert";

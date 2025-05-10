@@ -3,10 +3,10 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useRouter } from "next/navigation";
 import Container from "@/components/Container";
-import AccountStatusNavbar from "@/components/App/AccountStatus/AccountStatusNavbar";
-import AccountStatusCard from "@/components/App/AccountStatus/AccountStatusCard";
-import AccountStatusActions from "@/components/App/AccountStatus/AccountStatusActions";
-import AccountStatusFooter from "@/components/App/AccountStatus/AccountStatusFooter";
+import AccountStatusNavbar from "@/components/OnlyApp/AccountStatus/AccountStatusNavbar";
+import AccountStatusCard from "@/components/OnlyApp/AccountStatus/AccountStatusCard";
+import AccountStatusActions from "@/components/OnlyApp/AccountStatus/AccountStatusActions";
+import AccountStatusFooter from "@/components/OnlyApp/AccountStatus/AccountStatusFooter";
 import { ApprovalStatus } from "@/types";
 import { useAuth, useStudentGuardLoading, useLogout } from "@/hooks";
 

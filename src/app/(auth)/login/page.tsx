@@ -1,7 +1,7 @@
 'use client';
 
 import LoginForm from '@/components/Auth/LoginForm';
-import AuthCard from '@/components/App/AuthCard';
+import AuthCard from '@/components/OnlyApp/AuthCard';
 import { FormDataHeading } from '@/types';
 
 const formData: FormDataHeading = {

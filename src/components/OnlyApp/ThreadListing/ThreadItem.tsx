@@ -15,7 +15,7 @@ import EditThreadModal from "../../Modal/EditThreadModal";
 import { useAuth } from "@/hooks";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import ShareModal from "@/components/Modal/ShareModal";
-import MarkdownRenderer from '@/components/App/MarkdownRenderer';
+import MarkdownRenderer from '@/components/OnlyApp/MarkdownRenderer';
 import { voteThread } from "@/services/thread/voteService";
 import AuthorRoleBadge from "../Badge/AuthorRoleBadge";
 

@@ -34,7 +34,7 @@ export const adminService = {
       const response = await axiosInstance.get<AdminResponse[]>('/admins');
 
       const admins: Admin[] = response.data.map((admin: AdminResponse) => ({
-        id: admin.id.toString(),
+        id: admin.id,
         name: admin.name,
         email: admin.email,
         username: admin.username,
@@ -80,7 +80,7 @@ export const adminService = {
     }
   },
 
-  async deleteAdmin(id: string): Promise<DeleteResult> {
+  async deleteAdmin(id: number): Promise<DeleteResult> {
     try {
       await axiosInstance.delete(`/admins/${id}`);
       return { success: true };

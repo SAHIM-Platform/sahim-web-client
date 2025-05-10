@@ -3,8 +3,8 @@
 import { Search } from "lucide-react";
 import Modal from "./Modal";
 import { Fragment, RefObject } from "react";
-import SearchField from "../App/SearchField";
-import ThreadItemMinimal from "../App/ThreadListing/ThreadItemMinimal";
+import SearchField from "../OnlyApp/SearchField";
+import ThreadItemMinimal from "../OnlyApp/ThreadListing/ThreadItemMinimal";
 import Divider from "../Divider";
 import { Thread } from "@/types";
 import LoadingSpinner from "../LoadingSpinner";

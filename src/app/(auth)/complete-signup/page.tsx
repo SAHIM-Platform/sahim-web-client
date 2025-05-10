@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import AuthCard from '@/components/App/AuthCard';
+import AuthCard from '@/components/OnlyApp/AuthCard';
 import CompleteSignupForm from '@/components/Auth/CompleteSignupForm';
 
 interface UserParams {

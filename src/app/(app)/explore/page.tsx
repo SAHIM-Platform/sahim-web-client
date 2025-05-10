@@ -1,5 +1,5 @@
 "use client";
-import ThreadListing from "@/components/App/ThreadListing/ThreadListing";
+import ThreadListing from "@/components/OnlyApp/ThreadListing/ThreadListing";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useAuthLoading } from "@/hooks";
 

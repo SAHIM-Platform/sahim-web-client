@@ -1,7 +1,7 @@
 "use client";
 
-import ItemNotFound from "@/components/App/NotFound/ItemNotFound";
-import DiscussionPageContent from "@/components/App/pages/DiscussionPageContent";
+import ItemNotFound from "@/components/OnlyApp/NotFound/ItemNotFound";
+import DiscussionPageContent from "@/components/OnlyApp/pages/DiscussionPageContent";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { use } from "react";

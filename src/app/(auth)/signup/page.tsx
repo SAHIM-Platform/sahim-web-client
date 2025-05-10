@@ -1,7 +1,7 @@
 'use client';
 
 import SignupForm from "@/components/Auth/SignupForm";
-import AuthCard from '@/components/App/AuthCard';
+import AuthCard from '@/components/OnlyApp/AuthCard';
 
 export default function SignupPage() {
   return (

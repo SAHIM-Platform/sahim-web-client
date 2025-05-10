@@ -3,12 +3,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Thread } from "@/types";
 import LoadingSpinner from '@/components/LoadingSpinner';
-import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
+import ThreadItem from '@/components/OnlyApp/ThreadListing/ThreadItem';
 import { logger } from '@/utils/logger';
 import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import toast from 'react-hot-toast';
-import RetryAgain from '@/components/App/RetryAgain';
-import ItemNotFound from '@/components/App/NotFound/ItemNotFound';
+import RetryAgain from '@/components/OnlyApp/RetryAgain';
+import ItemNotFound from '@/components/OnlyApp/NotFound/ItemNotFound';
 import { useInfiniteScroll, useAuthLoading } from '@/hooks';
 import { fetchBookmarkedThreads } from '@/services/thread/bookmarkService';
 import { deleteThread } from '@/services/thread/threadService';

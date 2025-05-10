@@ -1,8 +1,8 @@
 'use client';
 
-import ThreadItem from "@/components/App/ThreadListing/ThreadItem";
+import ThreadItem from "@/components/OnlyApp/ThreadListing/ThreadItem";
 import { useRouter } from "next/navigation";
-import SimilarThreads from "@/components/App/SimilarThreads";
+import SimilarThreads from "@/components/OnlyApp/SimilarThreads";
 import Textarea from "@/components/Textarea";
 import Button from "@/components/Button";
 import { useState, ChangeEvent, useEffect, useCallback } from "react";
@@ -10,7 +10,7 @@ import { Thread } from "@/types";
 import { toast } from "react-hot-toast";
 import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import CommentListing from "@/components/App/Comment/CommentListing";
+import CommentListing from "@/components/OnlyApp/Comment/CommentListing";
 import { RefreshCw } from "lucide-react";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ItemNotFound from "../NotFound/ItemNotFound";

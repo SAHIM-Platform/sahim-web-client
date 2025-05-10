@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import CategoriesListing from "@/components/App/CategoriesListing";
+import CategoriesListing from "@/components/OnlyApp/CategoriesListing";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Button from "@/components/Button";
 import { PlusCircle } from "lucide-react";

@@ -10,14 +10,14 @@ const STORAGE_KEY = 'sahim_admin_alert_closed';
 
 export const GlobalAdminAlert = () => {
   const {auth} = useAuth();
-  if (!isAdminOrSuperAdminByRole(auth.user?.role)) return null;
-
   const [isVisible, setIsVisible] = useState(true);
   
   useEffect(() => {
     const isClosed = localStorage.getItem(STORAGE_KEY) === 'true';
     setIsVisible(!isClosed);
   }, []);
+
+  if (!isAdminOrSuperAdminByRole(auth.user?.role)) return null;
 
   const handleClose = () => {
     localStorage.setItem(STORAGE_KEY, 'true');

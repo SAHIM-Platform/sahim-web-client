@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import ThreadItem from '@/components/App/ThreadListing/ThreadItem';
+import ThreadItem from '@/components/OnlyApp/ThreadListing/ThreadItem';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorAlert from '@/components/Form/ErrorAlert';
 import { Thread } from '@/types';
