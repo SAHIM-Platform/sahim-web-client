@@ -136,6 +136,19 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const isTextarea = e.target instanceof HTMLTextAreaElement;
+    const isCtrlEnter = e.key === 'Enter' && e.ctrlKey;
+    const isRegularEnter = e.key === 'Enter' && !e.shiftKey && !isTextarea;
+    
+    if (isCtrlEnter || isRegularEnter) {
+      e.preventDefault();
+      if (areAllRequiredFieldsFilled && !isSubmitting) {
+        handleSubmit(e);
+      }
+    }
+  };
+
   const clearThumbnail = () => {
     handleChange("thumbnailUrl", "");
   };
@@ -160,6 +173,7 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
             placeholder="اكتب عنواناً يوضّح موضوع مناقشتك"
             value={formData.title}
             onChange={(e) => handleChange("title", e.target.value)}
+            onKeyDown={handleKeyDown}
             required
             fullWidth
             error={validationErrors.title}
@@ -170,6 +184,7 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
             placeholder="اختر تصنيف المناقشة"
             value={formData.category}
             onChange={(e) => handleChange("category", e.target.value)}
+            onKeyDown={handleKeyDown}
             required
             options={categories.map((category) => ({
               value: category.category_id.toString(),
@@ -183,6 +198,7 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
             placeholder="اكتب المحتوى هنا (يدعم تنسيق Markdown)"
             value={formData.content}
             onChange={(e) => handleChange("content", e.target.value)}
+            onKeyDown={handleKeyDown}
             required
             fullWidth
             textareaSize="lg"
@@ -196,6 +212,7 @@ export default function EditThreadModal({ isOpen, onClose, thread, onSuccess }: 
               placeholder="https://example.com/image.jpg"
               value={formData.thumbnailUrl}
               onChange={(e) => handleChange("thumbnailUrl", e.target.value)}
+              onKeyDown={handleKeyDown}
               optional
               helperText="يمكنك إضافة رابط صورة لتظهر كصورة مصغرة للمناقشة. النسبة الموصى بها: 6:4 (مثال: 1200x800 بكسل) للحصول على أفضل تناسق بصري"
               endIcon={formData.thumbnailUrl ? <X className="w-4 h-4 cursor-pointer" onClick={clearThumbnail} /> : undefined}
