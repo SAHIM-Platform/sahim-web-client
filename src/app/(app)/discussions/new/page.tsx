@@ -43,7 +43,7 @@ export default function NewDiscussionPage() {
     const loadCategories = async () => {
       try {
         const response = await fetchCategories();
-        if (response.data && Array.isArray(response.data)) {
+        if (response.success && Array.isArray(response.data)) {
           setCategories(response.data);
         } else {
           setError(RESPONSE_MESSAGES.thread.DEFAULT);

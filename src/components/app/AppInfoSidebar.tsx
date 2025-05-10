@@ -67,7 +67,7 @@ function SidebarContent() {
 
         // Load categories
         const categoriesResponse = await fetchCategories();
-        if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
+        if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
           setCategories(categoriesResponse.data);
         }
       } catch (error) {
@@ -85,7 +85,7 @@ function SidebarContent() {
     setIsLoadingCategories(true);
     try {
       const categoriesResponse = await fetchCategories();
-      if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
+      if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
         setCategories(categoriesResponse.data);
       }
     } catch (error) {

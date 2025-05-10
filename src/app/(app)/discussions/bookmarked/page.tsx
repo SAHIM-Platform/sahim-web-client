@@ -9,12 +9,12 @@ import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import toast from 'react-hot-toast';
 import RetryAgain from '@/components/App/RetryAgain';
 import ItemNotFound from '@/components/App/NotFound/ItemNotFound';
-import { useInfiniteScroll, useLoading } from '@/hooks';
+import { useInfiniteScroll, useAuthLoading } from '@/hooks';
 import { fetchBookmarkedThreads } from '@/services/thread/bookmarkService';
 import { deleteThread } from '@/services/thread/threadService';
 
 const BookmarksPageContent = () => {
-  const { isAuthLoadingOrRedirecting } = useLoading();
+  const { isAuthLoadingOrRedirecting } = useAuthLoading();
   const [bookmarkedThreads, setBookmarkedThreads] = useState<Thread[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(5);

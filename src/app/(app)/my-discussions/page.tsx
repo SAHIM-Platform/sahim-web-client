@@ -9,12 +9,12 @@ import Button from '@/components/Button';
 import MyDiscussionsHeader from '@/components/App/pages/MyDiscussionsHeader';
 import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 import RetryAgain from '@/components/App/RetryAgain';
-import { useInfiniteScroll, useLoading } from '@/hooks';
+import { useInfiniteScroll, useAuthLoading } from '@/hooks';
 import { fetchUserThreads } from '@/services/thread/threadService';
 
 export default function MyDiscussionsPage() {
   const router = useRouter();
-  const { isAuthLoadingOrRedirecting } = useLoading();
+  const { isAuthLoadingOrRedirecting } = useAuthLoading();
   const [threads, setThreads] = useState<Thread[]>([]);
   const [isLoadingThreads, setIsLoadingThreads] = useState(true);
   const [error, setError] = useState<string | null>(null);

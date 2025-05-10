@@ -40,8 +40,12 @@ export interface AuthResponse {
   };
 }
 
-export interface LogoutResponse {
-  message: string;
+export interface LogoutResponse { 
+  success: boolean;
+  data?: {
+    message: string;
+  };
+  error?: AuthError;
 }
 
 export interface AuthError {

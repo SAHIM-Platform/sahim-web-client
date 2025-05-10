@@ -53,6 +53,7 @@ const RESPONSE_MESSAGES = {
     },
     logout: {
         DEFAULT: 'حدث خطأ أثناء تسجيل الخروج',
+        SUCCESS: 'تم تسجيل الخروج بنجاح',
     },
     auth: {
         UNAUTHORIZED: "يرجى تسجيل الدخول للوصول إلى هذه الميزة",

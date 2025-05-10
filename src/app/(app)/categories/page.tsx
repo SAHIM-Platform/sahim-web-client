@@ -9,11 +9,11 @@ import { logger } from "@/utils/logger";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { isSuperAdminByRole } from "@/utils/role";
 import { UserRole } from "@/types";
-import { useLoading } from "@/hooks";
+import { useAuthLoading } from "@/hooks";
 import { fetchCategories } from "@/services/thread/categoryService";
 
 export default function CategoriesPage() {
-  const { isAuthLoadingOrRedirecting } = useLoading();
+  const { isAuthLoadingOrRedirecting } = useAuthLoading();
   const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>("");
@@ -22,7 +22,7 @@ export default function CategoriesPage() {
     setError("");
     try {
       const categoriesResponse = await fetchCategories();
-      if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
+      if (categoriesResponse.success && Array.isArray(categoriesResponse.data)) {
         setCategories(categoriesResponse.data);
       } else {
         setError(RESPONSE_MESSAGES.category.DEFAULT);

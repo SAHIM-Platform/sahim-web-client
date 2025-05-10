@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosError } from 'axios';
 import { SignupFormData } from './validateSignupForm';
-import { AuthResult, APIError } from "@/types";
+import { AuthResult, ApiError } from "@/types";
 import RESPONSE_MESSAGES from '../../constants/RESPONSE_MESSAGES';
 
 export const handleSignupSubmit = async (
@@ -49,13 +49,13 @@ export const handleSignupSubmit = async (
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
       console.error('Signup error details:', {
-        status: (error as AxiosError<APIError>)?.response?.status,
-        data: (error as AxiosError<APIError>)?.response?.data,
+        status: (error as AxiosError<ApiError>)?.response?.status,
+        data: (error as AxiosError<ApiError>)?.response?.data,
         error: (error as Error).message
       });
     }
 
-    const errorMessage = (error as AxiosError<APIError>)?.response?.data?.message || RESPONSE_MESSAGES.signup.SERVER_ERROR;
+    const errorMessage = (error as AxiosError<ApiError>)?.response?.data?.error?.message || RESPONSE_MESSAGES.signup.SERVER_ERROR;
     setFormError(errorMessage);
     return {
       success: false,

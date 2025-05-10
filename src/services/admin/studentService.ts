@@ -1,5 +1,5 @@
 import axiosInstance from '@/api/axios';
-import { Student, ApprovalStatus, APIError, ValidationErrorResponse } from '@/types';
+import { Student, ApprovalStatus, ApiError, ValidationErrorResponse } from '@/types';
 import { AxiosError, isAxiosError } from 'axios';
 import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 
@@ -176,12 +176,12 @@ export const approveStudent = async (studentId: number): Promise<StudentActionRe
       const axiosError = error as AxiosError;
       
       if (axiosError.response?.data) {
-        const errorData = axiosError.response.data as APIError;
+        const errorData = axiosError.response.data as ApiError;
         return {
           success: false,
           error: {
-            message: errorData.message || RESPONSE_MESSAGES.student.VALIDATION_ERROR,
-            code: errorData.error || 'VALIDATION_ERROR'
+            message: errorData.error?.message || RESPONSE_MESSAGES.student.VALIDATION_ERROR,
+            code: errorData.error?.code || 'VALIDATION_ERROR'
           }
         };
       }
@@ -222,12 +222,12 @@ export const rejectStudent = async (studentId: number): Promise<StudentActionRes
       const axiosError = error as AxiosError;
       
       if (axiosError.response?.data) {
-        const errorData = axiosError.response.data as APIError;
+        const errorData = axiosError.response.data as ApiError;
         return {
           success: false,
           error: {
-            message: errorData.message || RESPONSE_MESSAGES.student.VALIDATION_ERROR,
-            code: errorData.error || 'VALIDATION_ERROR'
+            message: errorData.error?.message || RESPONSE_MESSAGES.student.VALIDATION_ERROR,
+            code: errorData.error?.code || 'VALIDATION_ERROR'
           }
         };
       }

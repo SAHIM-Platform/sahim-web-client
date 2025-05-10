@@ -51,7 +51,7 @@ export interface VoteResponse {
 export interface ThreadComment {
   comment_id: number;
   content: string;
-  created_at: string; // or Date if parsed later
+  created_at: string;
   author: ThreadAuthor;
   votes?: FormattedVote;
 }
@@ -68,7 +68,7 @@ export interface Thread {
   title: string;
   content: string;
   thumbnail_url: string | null;
-  created_at: string; // or Date if parsed later
+  created_at: string;
   author: ThreadAuthor;
   category: ThreadCategory;
   votes?: FormattedVote;
@@ -88,7 +88,7 @@ export interface CreateThreadPayload {
   thumbnail_url?: string | null;
 }
 
-export interface UpdateThreadPayload extends Partial<CreateThreadPayload> {}
+export type UpdateThreadPayload = Partial<CreateThreadPayload>;
 
 export interface CreateThreadResponse {
   thread_id: number;

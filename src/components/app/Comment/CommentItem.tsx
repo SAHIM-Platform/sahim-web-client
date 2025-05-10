@@ -144,7 +144,7 @@ function CommentItem({
     try {
       setIsSubmitting(true);
       if (onEdit) {
-        await onEdit(editedContent);
+        await onEdit({ content: editedContent });
         setIsEditing(false);
       }
     } catch {
