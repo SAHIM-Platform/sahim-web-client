@@ -3,12 +3,17 @@
 import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { AlertCircle } from 'lucide-react';
+import { useAuth } from '@/hooks';
+import { isAdminOrSuperAdminByRole } from '@/utils/role';
 
 const STORAGE_KEY = 'sahim_admin_alert_closed';
 
 export const GlobalAdminAlert = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  const {auth} = useAuth();
+  if (!isAdminOrSuperAdminByRole(auth.user?.role)) return null;
 
+  const [isVisible, setIsVisible] = useState(true);
+  
   useEffect(() => {
     const isClosed = localStorage.getItem(STORAGE_KEY) === 'true';
     setIsVisible(!isClosed);
