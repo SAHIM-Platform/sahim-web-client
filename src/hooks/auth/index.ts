@@ -1,6 +1,5 @@
 export * from "./useAuth"
-export * from "./UseAuthRedirect"
-export * from "./useGoogleLogin"
 export * from "./useGoogleLogin"
 export * from "./useLogout"
 export * from "./useRefreshToken"
+export * from "./useAuthRedirect"
