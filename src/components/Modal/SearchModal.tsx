@@ -90,11 +90,10 @@ function SearchModal({
                   <ThreadItemMinimal
                     thread_id={result.thread_id}
                     title={result.title}
-                    authorName={result.author.name}
                     commentsCount={result._count?.comments || 0}
                     created_at={result.created_at}
                     onNavigate={handleThreadClick}
-                    authorPhotoPath={result.author.photoPath}
+                    author={result.author}
                   />
                   {index < searchResults.length - 1 && (
                     <Divider label="" className="my-1" borderColor="gray-100" />

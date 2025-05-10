@@ -1,7 +1,8 @@
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { ThreadMinimal } from "@/types";
 import UserInfo from "../UserInfo";
+import { isUserDeleted } from '@/utils/utils';
 
 interface ThreadItemMinimalProps extends ThreadMinimal {
   onNavigate?: () => void;
@@ -10,12 +11,12 @@ interface ThreadItemMinimalProps extends ThreadMinimal {
 function ThreadItemMinimal({
   thread_id,
   title,
-  authorName, 
   commentsCount,
   created_at,
   onNavigate,
-  authorPhotoPath
+  author
 }: ThreadItemMinimalProps) {
+  const isDeleted = isUserDeleted({ isDeleted: author.isDeleted, name: author.name, username: author.username });
   return (
     <Link
       href={`/discussions/${thread_id}`}
@@ -27,9 +28,9 @@ function ThreadItemMinimal({
       </h4>
       <div className="flex items-center gap-2 text-xs text-gray-500">
         <UserInfo
-          name={authorName}
-          photoPath={authorPhotoPath}
-          photoAlt={authorName}
+          name={isDeleted ? "مستخدم محذوف" : author.name}
+          photoPath={isDeleted ? undefined : author.photoPath}
+          photoAlt={author.name}
           hideDetailsOnSmallScreens={true}
           date={created_at}
           size="sm"

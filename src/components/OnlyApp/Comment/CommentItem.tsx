@@ -1,6 +1,6 @@
 import { Loader2, ArrowDown, ArrowUp, Ellipsis, Edit, Trash2 } from "lucide-react";
 import UserInfo from "../UserInfo";
-import { cn } from "@/utils/utils";
+import { cn, isUserDeleted } from "@/utils/utils";
 import Button from "@/components/Button";
 import { useRef, useState, useEffect } from "react";
 import Divider from "@/components/Divider";
@@ -11,7 +11,7 @@ import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import MarkdownRenderer from '@/components/OnlyApp/MarkdownRenderer';
 import { voteComment } from "@/services/thread/voteService";
-import { CreateCommentPayload, FormattedVote, UserRole, Department } from "@/types";
+import { CreateCommentPayload, FormattedVote, UserRole, Department, ThreadAuthor } from "@/types";
 import AuthorRoleBadge from "../Badge/AuthorRoleBadge";
 
 export interface CommentItemProps {
@@ -22,15 +22,7 @@ export interface CommentItemProps {
   onEdit?: (newContent: CreateCommentPayload) => Promise<void>;
   onDelete?: () => Promise<void>;
   threadId: number;
-  author: {
-    id: number;
-    name: string;
-    photoPath?: string;
-    role?: UserRole;
-    student?: null | {
-      department: Department;
-    };
-  };
+  author: ThreadAuthor;
 }
 
 function CommentItem({ 
@@ -89,6 +81,8 @@ function CommentItem({
     console.log("Author data is missing for comment ID:", id);
     return null;
   }
+
+  const isAuthorDeleted = isUserDeleted(author);
 
   const handleVote = async (voteType: "UP" | "DOWN", e: React.MouseEvent) => {
     e.preventDefault();
@@ -187,10 +181,12 @@ function CommentItem({
               date={timestamp} 
               photoPath={author.photoPath} 
               role={author.role}
+              isDeleted={isAuthorDeleted}
             />
-            <AuthorRoleBadge 
+            <AuthorRoleBadge
               role={author.role}
               department={author.student?.department}
+              isDeleted={isAuthorDeleted}
             />
           </div>
           
