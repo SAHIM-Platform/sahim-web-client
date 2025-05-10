@@ -12,6 +12,7 @@ import { logger } from "@/utils/logger";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
 import { useAdminRoleGuard, useAdminGuardLoading } from "@/hooks";
+import validateCategoryForm from "@/utils/api/categories/validateCategoryForm";
 
 export default function NewCategoryPage() {
   const router = useRouter();
@@ -19,23 +20,34 @@ export default function NewCategoryPage() {
   useAdminRoleGuard();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [error, setError] = useState<string>("");
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: "",
   });
 
-  if (useAdminGuardLoading()) {
+  if (useAdminGuardLoading() || isRedirecting) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // Validate form
+    const validationErrors = validateCategoryForm(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setFormErrors(validationErrors);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const result = await createCategory(formData.name.trim());      
       if (result.success) {
         toast.success(RESPONSE_MESSAGES.category.CREATED_SUCCESSFULLY);
+        setIsRedirecting(true);
         router.push(FrontendRoutes.CATEGORIES);
       } else {
         setError(result.error?.message || RESPONSE_MESSAGES.category.CREATE_FAILED);
@@ -53,9 +65,15 @@ export default function NewCategoryPage() {
       ...prev,
       [field]: value,
     }));
+    // Run validation on input change
+    const validationErrors = validateCategoryForm({ [field]: value });
+    setFormErrors(prev => ({
+      ...prev,
+      [field]: validationErrors[field] || ""
+    }));
   };
 
-  const isFormValid = formData.name.trim() !== "";
+  const isFormValid = !formErrors.name;
 
   return (
     <>
@@ -73,8 +91,10 @@ export default function NewCategoryPage() {
             placeholder="اكتب اسم التصنيف"
             value={formData.name}
             onChange={(e) => handleChange("name", e.target.value)}
+            onBlur={(e) => handleChange("name", e.target.value)}
             required
             fullWidth
+            error={formErrors.name}
           />
 
           {error && <ErrorAlert message={error} />}
