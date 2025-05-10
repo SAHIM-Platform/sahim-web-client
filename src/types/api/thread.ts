@@ -110,6 +110,5 @@ export type ThreadMinimal = {
   title: Thread['title'];
   created_at: Thread['created_at'];
   commentsCount: number;
-  authorName: Thread['author']['name']; 
-  authorPhotoPath: Thread['author']['photoPath']; 
+  author: ThreadAuthor;
 };

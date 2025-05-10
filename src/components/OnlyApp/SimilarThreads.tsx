@@ -40,8 +40,7 @@ function SimilarThreads({
                     title={thread.title}
                     commentsCount={thread._count?.comments || 0}
                     created_at={thread.created_at}
-                    authorName={thread.author?.name ?? "مستخدم"}
-                    authorPhotoPath={thread.author?.photoPath}
+                    author={thread.author}
                   />
                 </div>
 

@@ -15,3 +15,7 @@ import { twMerge } from 'tailwind-merge';
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
+
+export function isUserDeleted(user: { isDeleted?: boolean; name?: string | null; username?: string }): boolean {
+  return !!(user.isDeleted || (!user.name && user.username && user.username.startsWith('deleted_user')));
+}

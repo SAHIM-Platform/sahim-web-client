@@ -18,6 +18,7 @@ import ShareModal from "@/components/Modal/ShareModal";
 import MarkdownRenderer from '@/components/OnlyApp/MarkdownRenderer';
 import { voteThread } from "@/services/thread/voteService";
 import AuthorRoleBadge from "../Badge/AuthorRoleBadge";
+import { isUserDeleted } from '@/utils/utils';
 
 export interface ThreadItemProps extends Omit<Thread, 'title' | 'comments' | 'thumbnail_url'> {
   title: string;
@@ -216,6 +217,8 @@ const ThreadItem = ({
     }
   };
 
+  const isAuthorDeleted = isUserDeleted(author);
+
   return (
     <>
       <Link
@@ -233,10 +236,12 @@ const ThreadItem = ({
                 photoPath={author.photoPath}
                 date={created_at}
                 role={author.role}
+                isDeleted={isAuthorDeleted}
               />
               <AuthorRoleBadge 
                 role={author.role} 
                 department={author.student?.department}
+                isDeleted={isAuthorDeleted}
               />
             </div>
             <div className="flex items-center gap-2">
