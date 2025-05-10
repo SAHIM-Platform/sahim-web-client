@@ -6,6 +6,7 @@ import AppMenuSidebar from "./AppMenuSidebar";
 import AppInfoSidebar from "./AppInfoSidebar";
 import Container from "../Container";
 import { useSearchShortcuts } from "@/hooks";
+import { GlobalAdminAlert } from "./GlobalAlert";
 
 export default function AppLayoutContent({
   children,
@@ -41,6 +42,7 @@ export default function AppLayoutContent({
         <main className="pb-24 pt-36 min-h-screen h-full">
           <div className="px-4">
             <Container narrow className="min-h-full">
+              <GlobalAdminAlert />
               {children}
             </Container>
           </div>
