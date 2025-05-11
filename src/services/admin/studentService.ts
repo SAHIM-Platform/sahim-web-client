@@ -23,11 +23,25 @@ export interface StudentResult {
   error?: StudentError;
 }
 
-export const fetchStudents = async (status?: ApprovalStatus): Promise<StudentResult> => {
-  try {
-    console.log('Fetching students with status:', status);
+export interface StudentFilters {
+  status?: ApprovalStatus;
+  search?: string;
+}
 
-    const url = status ? `/admins/users/students?status=${status}` : '/admins/users/students';
+export const fetchStudents = async (filters?: StudentFilters): Promise<StudentResult> => {
+  try {
+    console.log('Fetching students with filters:', filters);
+
+    const params = new URLSearchParams();
+    if (filters?.status) {
+      params.append('status', filters.status);
+    }
+    if (filters?.search) {
+      params.append('search', filters.search);
+    }
+
+    const queryString = params.toString();
+    const url = `/admins/users/students${queryString ? `?${queryString}` : ''}`;
     console.log('Fetch URL:', url);
 
     const response = await axiosInstance.get<StudentsResponse>(url);
@@ -86,59 +100,6 @@ export const fetchStudents = async (status?: ApprovalStatus): Promise<StudentRes
         code: 'UNKNOWN_ERROR'
       }
     };
-  }
-};
-
-export interface SearchFilters {
-  status?: ApprovalStatus;
-  query?: string;
-}
-
-export const searchStudents = async (filters: SearchFilters): Promise<Student[]> => {
-  try {
-    console.log('Searching students with filters:', filters);
-
-    // If only status is provided, use fetchStudents instead
-    if (filters.status && !filters.query) {
-      const result = await fetchStudents(filters.status);
-      if (!result.success || !result.data) {
-        throw new Error(result.error?.message || RESPONSE_MESSAGES.search.DEFAULT);
-      }
-      return result.data.data;
-    }
-
-    // If search query is provided, use the search endpoint
-    const params = new URLSearchParams();
-    if (filters.status) {
-      params.append('status', filters.status);
-    }
-    if (filters.query) {
-      params.append('query', filters.query);
-    }
-
-    const url = `/admins/users/students/search?${params.toString()}`;
-    console.log('Search URL:', url);
-
-    const response = await axiosInstance.get<Student[]>(url);
-
-    console.log('Search response:', {
-      status: response.status,
-      data: response.data,
-      filtersApplied: filters
-    });
-
-    if (!response.data) {
-      throw new Error(RESPONSE_MESSAGES.search.DEFAULT);
-    }
-
-    return response.data;
-  } catch (error) {
-    console.error('Search failed:', {
-      error,
-      filters,
-      message: error instanceof Error ? error.message : 'Unknown error'
-    });
-    throw error;
   }
 };
 
