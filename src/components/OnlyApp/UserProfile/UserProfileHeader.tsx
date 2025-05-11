@@ -1,7 +1,6 @@
-import { UserRole, userRoleLabels } from '@/types';
+import { Department, departmentLabels, UserRole, userRoleLabels } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
-import DiscussionsBadge from '@/components/OnlyApp/Badge/DiscussionsBadge';
 import { Settings } from 'lucide-react';
 
 interface UserProfileHeaderProps {
@@ -11,6 +10,7 @@ interface UserProfileHeaderProps {
   photoPath?: string;
   threadsCount: number;
   showSettings?: boolean;
+  department?: Department;
 }
 
 export default function UserProfileHeader({
@@ -18,8 +18,8 @@ export default function UserProfileHeader({
   username,
   role,
   photoPath,
-  threadsCount,
   showSettings = false,
+  department,
 }: UserProfileHeaderProps) {
   return (
     <div className="relative flex items-start justify-between border-b border-gray-200 pb-6 mb-6">
@@ -59,6 +59,14 @@ export default function UserProfileHeader({
           <span className="px-2 py-1 bg-gray-100 rounded-full text-sm">
             {userRoleLabels[role]}
           </span>
+          {role === UserRole.STUDENT && department && (
+            <>
+              <div className="w-1 h-1 rounded-full bg-gray-400" />
+              <span className="px-2 py-1 bg-gray-100 rounded-full text-sm">
+                {departmentLabels[department]}
+              </span>
+            </>
+          )}
         </div>
       </div>
     </div>

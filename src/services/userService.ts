@@ -234,6 +234,7 @@ export const userService = {
             name: response.data.data.name,
             role: response.data.data.role,
             photoPath: response.data.data.photoPath,
+            department: response.data.data?.department,
           },
           threads: response.data.data.threads,
           threadsMeta: response.data.data.threadsMeta,
