@@ -6,13 +6,15 @@ interface ContainerProps {
   children: React.ReactNode;
   className?: string;
   narrow?: boolean;
+  medium?: boolean;
 }
 
-const Container = ({ children, className, narrow }: ContainerProps) => {
+const Container = ({ children, className, narrow, medium }: ContainerProps) => {
   return (
     <div className={cn(
       "w-full mx-auto",
       narrow ? "max-w-[700px]" : "max-w-screen-2xl",
+      medium ? "max-w-[1024px]" : "max-w-screen-2xl",
       className
     )}>
       {children}
