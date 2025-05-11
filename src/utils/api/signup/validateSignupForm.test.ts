@@ -1,3 +1,10 @@
+/**
+ * To run these tests:
+ * - Run this file test: pnpm test validateSignupForm
+ * - Run with coverage: pnpm test validateSignupForm -- --coverage
+ * - Run in watch mode: pnpm test validateSignupForm -- --watch
+ */
+
 import { Department, Level } from "@/types";
 import validateSignupForm, { SignupFormData } from "./validateSignupForm";
 import RESPONSE_MESSAGES from "../../constants/RESPONSE_MESSAGES";
@@ -52,24 +59,60 @@ describe("validateSignupForm", () => {
       expect(errors.academicNumber).toBe(RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_REQUIRED);
     });
 
-    it("should validate academic number length", () => {
+    it("should validate academic number type", () => {
       const data = createValidFormData();
-      data.academicNumber = "12345";
+      data.academicNumber = 12345 as unknown as string;
       const errors = validateSignupForm(data);
-      expect(errors.academicNumber).toBe(RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_LENGTH);
+      expect(errors.academicNumber).toBe(RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_NOT_STRING);
     });
 
-    it("should validate academic number format", () => {
+    it("should validate academic number format (only numbers)", () => {
       const data = createValidFormData();
-      data.academicNumber = "123abc4567890";
+      data.academicNumber = "123abc45";
       const errors = validateSignupForm(data);
       expect(errors.academicNumber).toBe(RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_ONLY_NUMBERS);
     });
 
-    it("should accept valid academic number", () => {
+    it("should validate academic number length (5 digits)", () => {
       const data = createValidFormData();
+      data.academicNumber = "12345";
       const errors = validateSignupForm(data);
       expect(errors.academicNumber).toBeUndefined();
+    });
+
+    it("should validate academic number length (6 digits)", () => {
+      const data = createValidFormData();
+      data.academicNumber = "123456";
+      const errors = validateSignupForm(data);
+      expect(errors.academicNumber).toBeUndefined();
+    });
+
+    it("should validate academic number length (13 digits)", () => {
+      const data = createValidFormData();
+      data.academicNumber = "1234567890123";
+      const errors = validateSignupForm(data);
+      expect(errors.academicNumber).toBeUndefined();
+    });
+
+    it("should reject academic number with invalid length (4 digits)", () => {
+      const data = createValidFormData();
+      data.academicNumber = "1234";
+      const errors = validateSignupForm(data);
+      expect(errors.academicNumber).toBe(RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_LENGTH);
+    });
+
+    it("should reject academic number with invalid length (7 digits)", () => {
+      const data = createValidFormData();
+      data.academicNumber = "1234567";
+      const errors = validateSignupForm(data);
+      expect(errors.academicNumber).toBe(RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_LENGTH);
+    });
+
+    it("should reject academic number with invalid length (14 digits)", () => {
+      const data = createValidFormData();
+      data.academicNumber = "12345678901234";
+      const errors = validateSignupForm(data);
+      expect(errors.academicNumber).toBe(RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_LENGTH);
     });
   });
 

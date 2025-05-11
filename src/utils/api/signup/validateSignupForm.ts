@@ -31,12 +31,16 @@ export const validateSignupForm = (values: Partial<SignupFormData>) => {
   }
 
   // Academic number validation
-  if (!values.academicNumber?.trim()) {
+  if (!values.academicNumber) {
     errors.academicNumber = RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_REQUIRED;
-  } else if (values.academicNumber.length !== 13) {
-    errors.academicNumber = RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_LENGTH;
+  } else if (typeof values.academicNumber !== 'string') {
+    errors.academicNumber = RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_NOT_STRING;
+  } else if (!values.academicNumber.trim()) {
+    errors.academicNumber = RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_REQUIRED;
   } else if (!/^\d+$/.test(values.academicNumber)) {
     errors.academicNumber = RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_ONLY_NUMBERS;
+  } else if (!/^\d{5}$|^\d{6}$|^\d{13}$/.test(values.academicNumber)) {
+    errors.academicNumber = RESPONSE_MESSAGES.signup.VALIDATIONS.ACADEMIC_LENGTH;
   }
 
   // Username validation
@@ -89,6 +93,15 @@ export const validateSignupForm = (values: Partial<SignupFormData>) => {
     if (isNaN(level) || level < 1 || level > 5) {
       errors.studyLevel = RESPONSE_MESSAGES.signup.VALIDATIONS.STUDY_LEVEL_INVALID;
     }
+  }
+
+  // Email validation
+  if (!values.email?.trim()) {
+    errors.email = RESPONSE_MESSAGES.signup.VALIDATIONS.EMAIL_REQUIRED;
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+    errors.email = RESPONSE_MESSAGES.signup.VALIDATIONS.EMAIL_INVALID;
+  } else if (values.email.length > 255) {
+    errors.email = RESPONSE_MESSAGES.signup.VALIDATIONS.EMAIL_TOO_LONG;
   }
 
   return errors;
