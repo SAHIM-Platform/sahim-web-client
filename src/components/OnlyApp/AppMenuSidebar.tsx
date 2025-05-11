@@ -15,6 +15,8 @@ import {
   Bookmark,
   PenSquare,
   User,
+  HelpCircle,
+  Info,
 } from "lucide-react";
 import Divider from "@/components/Divider";
 import { isAdminOrSuperAdminByRole, isSuperAdminByRole } from "@/utils/role";
@@ -91,6 +93,19 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
       : []),
   ];
 
+  const publicLinks = [
+    {
+      label: "عن المنصة",
+      href: "/about",
+      icon: <Info className="w-5 h-5" />,
+    },
+    {
+      label: "أسئلة شائعة",
+      href: "/faq",
+      icon: <HelpCircle className="w-5 h-5" />,
+    },
+  ];
+
   const renderLinks = (links: typeof generalLinks) => (
     links.map((item) => (
       <Link
@@ -120,6 +135,15 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
           <Divider label="" borderColor="gray-200" />
           <div className="space-y-2">
             {renderLinks(roleSpecificLinks)}
+          </div>
+        </>
+      )}
+
+      {publicLinks.length > 0 && (
+        <>
+          <Divider label="" borderColor="gray-200" />
+          <div className="space-y-2">
+            {renderLinks(publicLinks)}
           </div>
         </>
       )}
