@@ -110,7 +110,7 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
   );
 
   const sidebarContent = (
-    <div className="h-full overflow-y-auto pt-12 pb-8 md:pt-24 md:pb-12 px-4 flex flex-col gap-6">
+    <div className="pt-12 pb-8 md:pt-24 md:pb-12 px-4 flex flex-col gap-6">
       <div className="space-y-2">
         {renderLinks(generalLinks)}
       </div>
@@ -137,7 +137,7 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
 
       <div
         className={cn(
-          "fixed top-0 right-0 w-[280px] h-full bg-white border-l shadow-md z-50 transform transition-transform duration-300 lg:hidden",
+          "fixed top-0 right-0 w-[280px] h-screen bg-white border-l shadow-md z-50 transform transition-transform duration-300 lg:hidden flex flex-col",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -147,11 +147,15 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
           </button>
         </div>
 
-        {sidebarContent}
+        <div className="flex-1 overflow-y-auto">
+          {sidebarContent}
+        </div>
       </div>
 
-      <aside className="fixed top-14 right-0 w-[280px] h-[calc(100vh-3.5rem)] hidden lg:block border-l overflow-y-auto bg-[#fafafa]">
-        {sidebarContent}
+      <aside className="fixed top-14 right-0 w-[280px] h-[calc(100vh-3.5rem)] hidden lg:block border-l bg-[#fafafa]">
+        <div className="h-full overflow-y-auto">
+          {sidebarContent}
+        </div>
       </aside>
     </>
   );

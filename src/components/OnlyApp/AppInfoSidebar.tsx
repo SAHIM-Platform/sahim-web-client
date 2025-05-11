@@ -31,7 +31,7 @@ function AppInfoSidebar({ isOpen, onClose }: AppInfoSidebarProps) {
 
       <div
         className={cn(
-          "fixed top-0 left-0 w-[320px] h-full bg-white border-r shadow-md z-50 transform transition-transform duration-300 xl:hidden",
+          "fixed top-0 left-0 w-[320px] h-screen bg-white border-r shadow-md z-50 transform transition-transform duration-300 xl:hidden flex flex-col",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -41,11 +41,15 @@ function AppInfoSidebar({ isOpen, onClose }: AppInfoSidebarProps) {
           </button>
         </div>
 
-        <SidebarContent />
+        <div className="flex-1 overflow-y-auto">
+          <SidebarContent />
+        </div>
       </div>
 
-      <div className="hidden xl:block fixed top-14 left-0 w-[320px] h-[calc(100vh-3.5rem)] overflow-y-auto border-r bg-[#fafafa]">
-        <SidebarContent />
+      <div className="hidden xl:block fixed top-14 left-0 w-[320px] h-[calc(100vh-3.5rem)] border-r bg-[#fafafa]">
+        <div className="h-full overflow-y-auto">
+          <SidebarContent />
+        </div>
       </div>
     </>
   );
@@ -97,7 +101,7 @@ function SidebarContent() {
   };
 
   return (
-    <div className="pt-12 pb-8 md:pt-24 md:pb-12 px-4 flex flex-col gap-6">
+    <div className="pt-12 pb-8 md:pt-24 md:pb-12 px-4 flex flex-col gap-8">
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-2 block">التصنيفات</span>
         <CategoriesListing 
@@ -106,16 +110,18 @@ function SidebarContent() {
           onCategoriesChange={handleCategoriesChange}
           maxChars={15}
         />
-        <div className="mt-1 text-center">
-          <Link
-            href="/categories"
-            className="text-blue-500 text-sm font-semibold hover:underline">
-            عرض الكل
-          </Link>
-        </div>
+        {categories.length > 0 && (
+          <div className="mt-1 text-center">
+            <Link
+              href="/categories"
+              className="text-blue-500 text-sm font-semibold hover:underline">
+              عرض الكل
+            </Link>
+          </div>
+        )}
       </div>
 
-      <Divider label="" />
+      <Divider label="" borderColor="gray-200" />
 
       <div>
         <span className="pr-4 text-sm font-semibold text-gray-900 mb-2 block">آخر المناقشات</span>
