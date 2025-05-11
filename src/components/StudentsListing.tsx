@@ -121,7 +121,7 @@ const StudentsListing = () => {
   const handleRetry = () => {
     loadStudents({
       status: selectedStatus || undefined,
-      query: searchQuery || undefined
+      search: searchQuery || undefined
     });
   };
 
@@ -147,7 +147,7 @@ const StudentsListing = () => {
         </div>
 
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 justify-between">
             <SearchField
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
