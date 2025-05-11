@@ -6,7 +6,8 @@ import UserProfileHeader from '@/components/OnlyApp/UserProfile/UserProfileHeade
 import { userService } from '@/services/userService';
 import { use, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
-import { useAuth } from '@/hooks';
+import { useAuth, useAuthLoading } from '@/hooks';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface UserProfilePageProps {
   params: Promise<{ username: string }>;
@@ -19,6 +20,7 @@ export default function DiscussionPage({ params }: UserProfilePageProps) {
   const [profile, setProfile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { isAuthLoadingOrRedirecting } = useAuthLoading();
 
   const loadProfile = useCallback(async () => {
     try {
@@ -50,8 +52,8 @@ export default function DiscussionPage({ params }: UserProfilePageProps) {
     loadProfile();
   }, [username, searchParams, loadProfile]);
 
-  if (isLoading) {
-    return <div className="container mx-auto py-8">جاري التحميل...</div>;
+  if (isLoading || isAuthLoadingOrRedirecting) {
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
   }
 
   if (error || !profile) {
