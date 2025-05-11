@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import ThreadItem from '@/components/OnlyApp/ThreadListing/ThreadItem';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import ErrorAlert from '@/components/Form/ErrorAlert';
 import { Thread } from '@/types';
 import { fetchThreads } from '@/services/thread/threadService';
 import { Hash } from 'lucide-react';
@@ -68,7 +67,7 @@ export default function CategoryDiscussionsPage() {
   }
 
   if (error) {
-    return <RetryAgainerror={error} handleRetry={() => window.location.reload()} />;
+    return <RetryAgain error={error} handleRetry={() => window.location.reload()} />;
   }
 
   return (

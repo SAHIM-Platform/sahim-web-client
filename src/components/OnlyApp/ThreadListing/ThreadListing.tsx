@@ -11,6 +11,7 @@ import { deleteThread, fetchThreads } from "@/services/thread/threadService";
 import { userService } from "@/services/userService";
 import { ApiSuccess } from "@/types";
 import RetryAgain from "../RetryAgain";
+import { logger } from "@/utils/logger";
 
 interface ThreadListingProps {
   emptyMessage?: string;
@@ -132,6 +133,7 @@ const ThreadListing = ({
       setPage((prev) => prev + 1);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المزيد من المناقشات';
+      logger().error(errorMessage);
     } finally {
       setIsFetchingMore(false);
     }

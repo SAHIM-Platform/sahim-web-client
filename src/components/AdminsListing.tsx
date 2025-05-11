@@ -8,7 +8,7 @@ import SearchField from "./OnlyApp/SearchField";
 import Divider from "./Divider";
 import UsersBadge from "./OnlyApp/Badge/UsersBadge";
 import UserCardItem from "./OnlyApp/UserCardItem";
-import { ArrowUpDown, RefreshCw, UserPlus } from "lucide-react";
+import { ArrowUpDown, UserPlus } from "lucide-react";
 import { Admin } from "@/types";
 import { adminService } from "@/services/admin/adminService";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
