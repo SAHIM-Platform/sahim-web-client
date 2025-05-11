@@ -3,16 +3,16 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import ErrorAlert from "./Form/ErrorAlert";
 import Button from "./Button";
 import SearchField from "./OnlyApp/SearchField";
 import Select from "./Select";
 import Divider from "./Divider";
 import UsersBadge from "./OnlyApp/Badge/UsersBadge";
 import UserCardItem from "./OnlyApp/UserCardItem";
-import { ArrowUpDown, RefreshCw } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { Student, ApprovalStatus } from "@/types";
 import { fetchStudents, approveStudent, rejectStudent } from "@/services/admin/studentService";
+import RetryAgain from "./OnlyApp/RetryAgain";
 
 const StudentsListing = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -46,7 +46,6 @@ const StudentsListing = () => {
 
       const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل الطلاب';
       setError(`${errorMessage}. يرجى المحاولة مرة أخرى.`);
-      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
       setIsFiltering(false);
@@ -188,15 +187,10 @@ const StudentsListing = () => {
 
       {error ? (
         <div className="space-y-4">
-          <ErrorAlert message={error} />
-          <Button
-            onClick={handleRetry}
-            variant="outline"
-            icon={<RefreshCw className="w-4" />}
-            color="secondary"
-          >
-            إعادة المحاولة
-          </Button>
+          <RetryAgain
+            error={error} 
+            handleRetry={handleRetry}
+          />
         </div>
       ) : isLoading || isFiltering ? (
         <div className="min-h-[200px] flex items-center justify-center">

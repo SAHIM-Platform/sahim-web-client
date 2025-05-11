@@ -51,6 +51,7 @@ function UserDropdownMenu() {
           role={role}
           photoPath={photoPath}
           name={username}
+          isUsername={true}
           hideDetailsOnSmallScreens={true}
         >
           <ChevronDown className={cn(

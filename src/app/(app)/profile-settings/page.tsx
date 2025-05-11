@@ -19,6 +19,7 @@ import { AuthMethod } from '@/utils/api/signup/validateSignupForm';
 import Image from 'next/image';
 import { useAuth, useAuthRedirect } from '@/hooks';
 import { isSuperAdminByRole } from '@/utils/role';
+import RetryAgain from '@/components/OnlyApp/RetryAgain';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -54,11 +55,9 @@ export default function ProfilePage() {
           });
         } else {
           setError(result.error?.message || RESPONSE_MESSAGES.profile.DEFAULT);
-          toast.error(result.error?.message || RESPONSE_MESSAGES.profile.DEFAULT);
         }
       } catch {
         setError(RESPONSE_MESSAGES.profile.DEFAULT);
-        toast.error(RESPONSE_MESSAGES.profile.DEFAULT);
       } finally {
         setIsLoadingProfile(false);
       }
@@ -85,7 +84,6 @@ export default function ProfilePage() {
       const validationErrors = validateProfileForm(formData);
       if (Object.keys(validationErrors).length > 0) {
         setError(Object.values(validationErrors)[0]);
-        toast.error(Object.values(validationErrors)[0]);
         setIsSubmitting(false);
         return;
       }
@@ -200,19 +198,13 @@ export default function ProfilePage() {
 
   if (error && !isSubmitting) {
     return (
-      <div className="space-y-4">
-        <ErrorAlert message={error} />
-        <Button
-          onClick={() => {
-            window.location.reload();
-            router.refresh();
-          }}
-          variant="outline"
-          color="secondary"
-        >
-          تحديث حالة الحساب
-        </Button>
-      </div>
+      <RetryAgain
+        error={error} 
+        handleRetry={() => {
+          window.location.reload();
+          router.refresh();
+        }} 
+      />
     );
   }
 

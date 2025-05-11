@@ -3,17 +3,17 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import ErrorAlert from "./Form/ErrorAlert";
 import Button from "./Button";
 import SearchField from "./OnlyApp/SearchField";
 import Divider from "./Divider";
 import UsersBadge from "./OnlyApp/Badge/UsersBadge";
 import UserCardItem from "./OnlyApp/UserCardItem";
-import { ArrowUpDown, RefreshCw, UserPlus } from "lucide-react";
+import { ArrowUpDown, UserPlus } from "lucide-react";
 import { Admin } from "@/types";
 import { adminService } from "@/services/admin/adminService";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ItemNotFound from '@/components/OnlyApp/NotFound/ItemNotFound';
+import RetryAgain from "./OnlyApp/RetryAgain";
 
 export default function AdminsListing() {
   const [isLoading, setIsLoading] = useState(true);
@@ -92,17 +92,10 @@ export default function AdminsListing() {
 
   if (error) {
     return (
-      <div className="space-y-4">
-        <ErrorAlert message={error} />
-        <Button
-          onClick={handleRetry}
-          variant="outline"
-          icon={<RefreshCw className="w-4" />}
-          color="secondary"
-        >
-          إعادة المحاولة
-        </Button>
-      </div>
+      <RetryAgain
+        error={error} 
+        handleRetry={handleRetry}
+      />
     );
   }
 

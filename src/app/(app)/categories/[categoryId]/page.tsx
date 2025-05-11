@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import ThreadItem from '@/components/OnlyApp/ThreadListing/ThreadItem';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import ErrorAlert from '@/components/Form/ErrorAlert';
 import { Thread } from '@/types';
 import { fetchThreads } from '@/services/thread/threadService';
 import { Hash } from 'lucide-react';
 import { fetchCategories } from '@/services/thread/categoryService';
 import { useAuthLoading } from '@/hooks';
+import RetryAgain from '@/components/OnlyApp/RetryAgain';
 
 export default function CategoryDiscussionsPage() {
   const { isAuthLoadingOrRedirecting } = useAuthLoading();
@@ -67,7 +67,7 @@ export default function CategoryDiscussionsPage() {
   }
 
   if (error) {
-    return <ErrorAlert message={error} />;
+    return <RetryAgain error={error} handleRetry={() => window.location.reload()} />;
   }
 
   return (
