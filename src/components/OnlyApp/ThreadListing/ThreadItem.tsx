@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/utils/utils";
 import Link from "next/link";
 import Image from "next/image";
@@ -237,6 +239,8 @@ const ThreadItem = ({
                 date={created_at}
                 role={author.role}
                 isDeleted={isAuthorDeleted}
+                username={author.username}
+                linkToProfile={!isAuthorDeleted}
               />
               <AuthorRoleBadge 
                 role={author.role} 

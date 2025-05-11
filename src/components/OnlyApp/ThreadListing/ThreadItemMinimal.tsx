@@ -1,4 +1,4 @@
-import { MessageSquare, Trash2 } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { ThreadMinimal } from "@/types";
 import UserInfo from "../UserInfo";
@@ -34,6 +34,8 @@ function ThreadItemMinimal({
           hideDetailsOnSmallScreens={true}
           date={created_at}
           size="sm"
+          username={author.username}
+          linkToProfile={!isDeleted}
         >
           <div className="flex items-center gap-1">
             <MessageSquare className="w-3.5 h-3.5" />

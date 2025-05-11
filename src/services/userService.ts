@@ -1,7 +1,7 @@
 import axiosInstance from '@/api/axios';
 import { AxiosError, isAxiosError } from 'axios';
 import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
-import { ValidationErrorResponse } from '@/types';
+import { Thread, ValidationErrorResponse } from '@/types';
 import { Profile } from '@/types';
 
 export interface UpdateProfileData {
@@ -19,6 +19,13 @@ export interface UserServiceResult {
   data?: {
     message: string;
     user?: Profile;
+    threads?: Thread[];
+    threadsMeta?: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
   };
   error?: {
     message: string;
@@ -189,5 +196,68 @@ export const userService = {
         }
       };
     }
+  },
+
+  async getUserProfileByUsername(
+    username: string,
+    options?: {
+      sort?: 'latest' | 'oldest' | 'most_commented' | 'most_voted';
+      page?: number;
+      limit?: number;
+      category_id?: number;
+      includeThreads?: boolean;
+      search?: string;
+    }
+  ): Promise<UserServiceResult> {
+    try {
+      const queryParams = new URLSearchParams();
+      
+      if (options?.sort) queryParams.append('sort', options.sort);
+      if (options?.page) queryParams.append('page', options.page.toString());
+      if (options?.limit) queryParams.append('limit', options.limit.toString());
+      if (options?.category_id) queryParams.append('category_id', options.category_id.toString());
+      if (options?.includeThreads !== undefined) queryParams.append('includeThreads', options.includeThreads.toString());
+      if (options?.search) queryParams.append('search', options.search);
+
+      const queryString = queryParams.toString();
+      const url = `/users/${username}${queryString ? `?${queryString}` : ''}`;
+      
+      const response = await axiosInstance.get(url);
+      
+      return {
+        success: true,
+        data: {
+          message: response.data.message,
+          user: {
+            id: response.data.data.id,
+            username: response.data.data.username,
+            name: response.data.data.name,
+            role: response.data.data.role,
+            photoPath: response.data.data.photoPath,
+          },
+          threads: response.data.data.threads,
+          threadsMeta: response.data.data.threadsMeta,
+        }
+      };
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+
+        return {
+          success: false,
+          error: {
+            message: axiosError.response?.data?.message || RESPONSE_MESSAGES.profile.DEFAULT,
+            code: 'SERVER_ERROR'
+          }
+        };
+      }
+      return {
+        success: false,
+        error: {
+          message: RESPONSE_MESSAGES.profile.DEFAULT,
+          code: 'SERVER_ERROR'
+        }
+      };
+    }
   }
-}; 
+};

@@ -11,13 +11,19 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import Button from "@/components/Button";
 import { useInfiniteScroll } from "@/hooks";
 import { deleteThread, fetchThreads } from "@/services/thread/threadService";
+import { userService, UserServiceResult } from "@/services/userService";
+import { ApiResult, ApiSuccess } from "@/types";
 
 interface ThreadListingProps {
   emptyMessage?: string;
+  displayHeader?: boolean;
+  username?: string;
 }
 
 const ThreadListing = ({
-  emptyMessage = "لا توجد مناقشات حالياً"
+  emptyMessage = "لا توجد مناقشات حالياً",
+  displayHeader = true,
+  username
 }: ThreadListingProps) => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [sortOrder, setSortOrder] = useState<"latest" | "oldest">("latest");
@@ -38,24 +44,43 @@ const ThreadListing = ({
     setError(null);
 
     try {
-      const result = await fetchThreads({
-        sort: sortOrder,
-        page: 1,
-        category_id: selectedCategory ?? undefined,
-      });
+      if (username) {
+        // Fetch user-specific threads
+        const result = await userService.getUserProfileByUsername(username, {
+          sort: sortOrder,
+          page: 1,
+          limit: 10,
+          category_id: selectedCategory ?? undefined,
+          includeThreads: true
+        });
 
-      if (result.success) {
-        setThreads(result.data);
-        setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
-        setPage(2);
+        if (result.success && result.data?.threads) {
+          setThreads(result.data.threads);
+          setHasMore(result.data.threadsMeta ? result.data.threadsMeta.page < result.data.threadsMeta.totalPages : false);
+        } else {
+          throw new Error(result.error?.message || 'حدث خطأ أثناء تحميل المناقشات');
+        }
       } else {
-        const errorMessage = result.error.message || 'حدث خطأ أثناء تحميل المناقشات';
-        setError(errorMessage);
-        toast.error(errorMessage);
+        // Fetch all threads
+        const result = await fetchThreads({
+          sort: sortOrder,
+          page: 1,
+          category_id: selectedCategory ?? undefined,
+        });
+
+        if (result.success) {
+          const successResult = result as ApiSuccess<Thread[]>;
+          setThreads(successResult.data);
+          setHasMore(successResult.meta ? successResult.meta.page < successResult.meta.totalPages : false);
+        } else {
+          throw new Error(result.error?.message || 'حدث خطأ أثناء تحميل المناقشات');
+        }
       }
+      
+      setPage(2);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المناقشات';
-      setError(`${errorMessage}. حاول مرة أخرى.`);
+      setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       if (isInitialLoad) {
@@ -64,32 +89,57 @@ const ThreadListing = ({
         setIsUpdating(false);
       }
     }
-  }, [sortOrder, selectedCategory]);
+  }, [sortOrder, selectedCategory, username]);
 
   const fetchMoreThreads = useCallback(async () => {
     if (isFetchingMore || !hasMore) return;
 
     setIsFetchingMore(true);
     try {
-      const result = await fetchThreads({
-        sort: sortOrder,
-        page,
-        category_id: selectedCategory ?? undefined,
-      });
+      if (username) {
+        // Fetch more user-specific threads
+        const result = await userService.getUserProfileByUsername(username, {
+          sort: sortOrder,
+          page,
+          limit: 10,
+          category_id: selectedCategory ?? undefined,
+          includeThreads: true
+        });
 
-      if (result.success) {
-        setThreads((prev) => [...prev, ...result.data]);
-        setHasMore(result.meta ? result.meta.page < result.meta.totalPages : false);
-        setPage((prev) => prev + 1);
+        if (result.success && result.data?.threads) {
+          const newThreads = result.data.threads;
+          if (Array.isArray(newThreads)) {
+            setThreads((prev) => [...prev, ...newThreads]);
+            setHasMore(result.data.threadsMeta ? result.data.threadsMeta.page < result.data.threadsMeta.totalPages : false);
+          }
+        } else {
+          throw new Error(result.error?.message || 'حدث خطأ أثناء تحميل المزيد من المناقشات');
+        }
       } else {
-        toast.error(result.error.message || 'حدث خطأ أثناء تحميل المزيد من المناقشات');
+        // Fetch more general threads
+        const result = await fetchThreads({
+          sort: sortOrder,
+          page,
+          category_id: selectedCategory ?? undefined,
+        });
+
+        if (result.success) {
+          const successResult = result as ApiSuccess<Thread[]>;
+          setThreads((prev) => [...prev, ...successResult.data]);
+          setHasMore(successResult.meta ? successResult.meta.page < successResult.meta.totalPages : false);
+        } else {
+          throw new Error(result.error?.message || 'حدث خطأ أثناء تحميل المزيد من المناقشات');
+        }
       }
-    } catch {
-      toast.error("حدث خطأ أثناء تحميل المزيد من المناقشات");
+      
+      setPage((prev) => prev + 1);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المزيد من المناقشات';
+      toast.error(errorMessage);
     } finally {
       setIsFetchingMore(false);
     }
-  }, [isFetchingMore, hasMore, sortOrder, selectedCategory, page]);
+  }, [isFetchingMore, hasMore, sortOrder, selectedCategory, page, username]);
 
   // Initial load
   useEffect(() => {
@@ -150,14 +200,16 @@ const ThreadListing = ({
 
   return (
     <div className="space-y-5">
-      <ThreadListingHeader
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        processedThreads={threads}
-        sortOrder={sortOrder}
-        setSortOrder={setSortOrder}
-        isFiltering={isUpdating}
-      />
+      {displayHeader && (
+        <ThreadListingHeader
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          processedThreads={threads}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          isFiltering={isUpdating}
+        />
+      )}
 
       <div className="relative min-h-[200px]">
         {isUpdating && (
@@ -181,32 +233,20 @@ const ThreadListing = ({
                   const dateB = new Date(b.created_at).getTime();
                   return sortOrder === "latest" ? dateB - dateA : dateA - dateB;
                 })
-                .map((thread) => {
-                  console.log('ThreadListing - Thread Author:', {
-                    id: thread.author.id,
-                    name: thread.author.name,
-                    photoPath: thread.author.photoPath,
-                    username: thread.author.username
-                  });
-                  return (
-                    <ThreadItem
-                      key={thread.thread_id}
-                      {...thread}
-                      onDelete={() => handleDeleteThread(thread.thread_id)}
-                    />
-                  );
-                })}
+                .map((thread) => (
+                  <ThreadItem
+                    key={thread.thread_id}
+                    {...thread}
+                    onDelete={() => handleDeleteThread(thread.thread_id)}
+                  />
+                ))}
             </div>
 
-            {isFetchingMore && (
-              <div className="flex justify-center py-4">
-                <LoadingSpinner size="md" />
-              </div>
+            {hasMore && (
+              <div ref={loadMoreRef} className="h-10" />
             )}
           </>
         )}
-
-        <div ref={loadMoreRef} className="h-1" />
       </div>
     </div>
   );

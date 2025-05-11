@@ -33,10 +33,10 @@ export default function AppLayoutContent({
         onClose={() => setIsMenuSidebarOpen(false)}
       />
 
-      <AppInfoSidebar
+      {/* <AppInfoSidebar
         isOpen={isInfoSidebarOpen}
         onClose={() => setIsInfoSidebarOpen(false)}
-      />
+      /> */}
 
       <div className="lg:pr-[280px] xl:pl-[320px]">
         <main className="pb-24 pt-36 min-h-screen h-full">

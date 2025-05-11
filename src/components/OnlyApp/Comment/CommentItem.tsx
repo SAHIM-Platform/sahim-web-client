@@ -182,6 +182,8 @@ function CommentItem({
               photoPath={author.photoPath} 
               role={author.role}
               isDeleted={isAuthorDeleted}
+              username={author.username}
+              linkToProfile={!isAuthorDeleted}
             />
             <AuthorRoleBadge
               role={author.role}
