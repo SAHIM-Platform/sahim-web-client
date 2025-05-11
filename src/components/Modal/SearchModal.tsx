@@ -44,28 +44,37 @@ function SearchModal({
     onClose(); 
   };
 
-  const handleSearch = (value: string) => {
-    setSearchQuery(value);
-    onSearch({
-      query: value
-    });
+  const handleSearch = () => {
+    const trimmedQuery = searchQuery.trim();
+    if (trimmedQuery) {
+      onSearch({
+        query: trimmedQuery
+      });
+    }
+  };
+
+  const handleClose = () => {
+    setSearchQuery('');
+    onClose();
   };
 
   return (
     <Modal
-      onClose={onClose}
+      onClose={handleClose}
       isOpen={true}
       size="lg"
     >
       <div className="mb-4">
         <SearchField
           searchQuery={searchQuery}
-          setSearchQuery={handleSearch}
+          setSearchQuery={setSearchQuery}
+          onSearch={handleSearch}
           placeholder="ابحث في المناقشات..."
           shortcut="ESC"
           autoFocus
           variant="modal"
           onKeyDown={handleKeyDown}
+          isLoading={isLoading}
         />
       </div>
 

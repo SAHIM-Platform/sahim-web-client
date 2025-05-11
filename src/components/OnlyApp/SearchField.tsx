@@ -2,6 +2,7 @@ import { Search } from "lucide-react";
 import Input from "../Input";
 import { cn } from "@/utils/utils";
 import { useEffect, useRef } from "react";
+import Button from "../Button";
 
 interface SearchFieldProps {
   searchQuery: string;
@@ -14,6 +15,7 @@ interface SearchFieldProps {
   autoFocus?: boolean;
   className?: string;
   variant?: "default" | "modal";
+  isLoading?: boolean;
 }
 
 function SearchField({
@@ -26,9 +28,11 @@ function SearchField({
   onKeyDown,
   autoFocus,
   className,
-  variant = "default"
+  variant = "default",
+  isLoading = false
 }: SearchFieldProps) {
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  const currentQueryRef = useRef(searchQuery);
 
   useEffect(() => {
     return () => {
@@ -37,13 +41,23 @@ function SearchField({
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    if (onSearch) {
-      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
-      debounceTimeout.current = setTimeout(() => {
-        onSearch();
-      }, 500);
+    const value = e.target.value;
+    setSearchQuery(value);
+    currentQueryRef.current = value;
+  };
+
+  const handleSearch = () => {
+    if (onSearch && searchQuery.trim()) {
+      onSearch();
     }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch();
+    }
+    onKeyDown?.(e);
   };
 
   const shortcutElement = shortcut ? (
@@ -60,20 +74,30 @@ function SearchField({
   ) : undefined;
 
   return (
-    <Input
-      startIcon={<Search className="absolute top-1/2 right-3.5 -translate-y-1/2 w-4 h-4 text-gray-400" />}
-      endIcon={shortcutElement}
-      inputSize='default'
-      placeholder={placeholder}
-      value={searchQuery}
-      onChange={handleChange}
-      onKeyDown={onKeyDown}
-      autoFocus={autoFocus}
-      className={cn(
-        variant === "modal" && "bg-gray-50",
-        className
-      )}
-    />
+    <div className="flex gap-2">
+      <Input
+        startIcon={<Search className="absolute top-1/2 right-3.5 -translate-y-1/2 w-4 h-4 text-gray-400" />}
+        endIcon={shortcutElement}
+        inputSize='default'
+        placeholder={placeholder}
+        value={searchQuery}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        autoFocus={autoFocus}
+        className={cn(
+          variant === "modal" && "bg-gray-50",
+          className
+        )}
+      />
+      <Button
+        onClick={handleSearch}
+        isLoading={isLoading}
+        disabled={!searchQuery.trim()}
+        className="whitespace-nowrap"
+      >
+        بحث
+      </Button>
+    </div>
   );
 }
 
