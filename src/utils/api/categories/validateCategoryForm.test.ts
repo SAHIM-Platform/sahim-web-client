@@ -111,6 +111,34 @@ describe("validateCategoryForm", () => {
       const errors = validateCategoryForm(data);
       expect(errors.name).toBeUndefined();
     });
+
+    it("should accept valid name with Arabic characters", () => {
+      const data = createValidFormData();
+      data.name = "تصنيف جديد";
+      const errors = validateCategoryForm(data);
+      expect(errors.name).toBeUndefined();
+    });
+
+    it("should accept valid name with mixed Arabic and English", () => {
+      const data = createValidFormData();
+      data.name = "تصنيف Category";
+      const errors = validateCategoryForm(data);
+      expect(errors.name).toBeUndefined();
+    });
+
+    it("should accept valid name with Arabic and numbers", () => {
+      const data = createValidFormData();
+      data.name = "تصنيف 123";
+      const errors = validateCategoryForm(data);
+      expect(errors.name).toBeUndefined();
+    });
+
+    it("should accept valid name with Arabic and special characters", () => {
+      const data = createValidFormData();
+      data.name = "تصنيف-جديد.123";
+      const errors = validateCategoryForm(data);
+      expect(errors.name).toBeUndefined();
+    });
   });
 
   describe("Multiple Field Validation", () => {

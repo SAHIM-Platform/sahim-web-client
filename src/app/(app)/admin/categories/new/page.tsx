@@ -96,7 +96,6 @@ export default function NewCategoryPage() {
             fullWidth
             error={formErrors.name}
           />
-
           {error && <ErrorAlert message={error} />}
         </div>
 

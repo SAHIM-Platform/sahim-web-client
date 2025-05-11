@@ -12,6 +12,7 @@ import ConfirmModal from "../Modal/ConfirmModal";
 import Link from 'next/link';
 import RetryAgain from "./RetryAgain";
 import ItemNotFound from "./NotFound/ItemNotFound";
+import validateCategoryForm from "@/utils/api/categories/validateCategoryForm";
 
 interface CategoriesListingProps {
   allowManagement?: boolean;
@@ -44,8 +45,10 @@ function CategoriesListing({
     setEditValue(currentName);
   };
   const handleSaveEdit = async (categoryId: number) => {
-    if (!editValue.trim()) {
-      toast.error("لا يمكن أن يكون اسم التصنيف فارغاً");
+    const validationErrors = validateCategoryForm({ name: editValue.trim() });
+    
+    if (Object.keys(validationErrors).length > 0) {
+      toast.error(validationErrors.name);
       return;
     }
 
@@ -62,6 +65,13 @@ function CategoriesListing({
       toast.error("حدث خطأ أثناء تحديث التصنيف");
     } finally {
       setEditingCategory(null);
+    }
+  };
+  const handleEditChange = (value: string) => {
+    setEditValue(value);
+    const validationErrors = validateCategoryForm({ name: value });
+    if (validationErrors.name) {
+      toast.error(validationErrors.name, { duration: 2000 });
     }
   };
   const handleCancelEdit = () => {
@@ -116,7 +126,7 @@ function CategoriesListing({
               <div className="flex items-center gap-2 flex-1">
                 <Input
                   value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
+                  onChange={(e) => handleEditChange(e.target.value)}
                   className="flex-1"
                   placeholder="أدخل اسم التصنيف"
                   autoFocus

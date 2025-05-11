@@ -8,8 +8,7 @@ import { PlusCircle } from "lucide-react";
 import { logger } from "@/utils/logger";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { isSuperAdminByRole } from "@/utils/role";
-import { UserRole } from "@/types";
-import { useAuthLoading } from "@/hooks";
+import { useAuthLoading, useCurrentUserInfo } from "@/hooks";
 import { fetchCategories } from "@/services/thread/categoryService";
 
 export default function CategoriesPage() {
@@ -17,6 +16,7 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState<{ category_id: number; name: string; }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>("");
+  const { role } = useCurrentUserInfo();
   const loadCategories = async () => {
     setIsLoading(true);
     setError("");
@@ -47,12 +47,9 @@ export default function CategoriesPage() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold">جميع المناقشات</h1>
-          <p className="mt-2 text-xs sm:text-sm lg:text-base text-gray-500">
-            تصفح جميع المناقشات المطروحة
-          </p>
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold">جميع التصنيفات</h1>
         </div>
-        {isSuperAdminByRole(UserRole.SUPER_ADMIN) && (
+        {isSuperAdminByRole(role) && (
           <Button
             href="admin/categories/new"
             variant="primary"
