@@ -69,6 +69,7 @@ export default function DiscussionPage({ params }: UserProfilePageProps) {
         name={user.name}
         username={user.username}
         role={user.role}
+        department={user?.department}
         threadsCount={threadsMeta.total}
         showSettings={showSettings}
       />
