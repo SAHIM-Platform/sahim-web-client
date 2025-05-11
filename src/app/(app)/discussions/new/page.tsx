@@ -139,7 +139,7 @@ export default function NewDiscussionPage() {
 
   if (error && !isSubmitting) {
     return (
-      <RetryAgain 
+      <RetryAgain
       error={error}
         handleRetry={() => window.location.reload()}
       />

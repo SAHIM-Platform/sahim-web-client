@@ -10,6 +10,7 @@ import { fetchThreads } from '@/services/thread/threadService';
 import { Hash } from 'lucide-react';
 import { fetchCategories } from '@/services/thread/categoryService';
 import { useAuthLoading } from '@/hooks';
+import RetryAgain from '@/components/OnlyApp/RetryAgain';
 
 export default function CategoryDiscussionsPage() {
   const { isAuthLoadingOrRedirecting } = useAuthLoading();
@@ -67,7 +68,7 @@ export default function CategoryDiscussionsPage() {
   }
 
   if (error) {
-    return <ErrorAlert message={error} />;
+    return <RetryAgainerror={error} handleRetry={() => window.location.reload()} />;
   }
 
   return (

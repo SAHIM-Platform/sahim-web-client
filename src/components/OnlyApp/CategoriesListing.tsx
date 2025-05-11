@@ -9,8 +9,9 @@ import Input from "../Input";
 import { updateCategory, deleteCategory } from "@/services/admin/categoryService";
 import { toast } from "react-hot-toast";
 import ConfirmModal from "../Modal/ConfirmModal";
-import ErrorAlert from "../Form/ErrorAlert";
 import Link from 'next/link';
+import RetryAgain from "./RetryAgain";
+import ItemNotFound from "./NotFound/ItemNotFound";
 
 interface CategoriesListingProps {
   allowManagement?: boolean;
@@ -20,6 +21,7 @@ interface CategoriesListingProps {
   maxChars?: number;
   error?: string;
 }
+
 function CategoriesListing({ 
   allowManagement = false,
   categories,
@@ -99,9 +101,9 @@ function CategoriesListing({
           <LoadingSpinner size="sm" color="primary" />
         </div>
       ) : error ? (
-        error && <ErrorAlert message={error} />
+        <RetryAgain error={error} handleRetry={() => window.location.reload()} />
       ) : categories.length === 0 ? (
-        <p className="text-sm text-gray-500 px-3 py-2">لا توجد تصنيفات متاحة</p>
+        <ItemNotFound description="لا توجد تصنيفات متاحة" />
       ) : (
         categories.map((category) => (
           <div

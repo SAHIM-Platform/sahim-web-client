@@ -8,15 +8,15 @@ import Button from "@/components/Button";
 import { useState, ChangeEvent, useEffect, useCallback } from "react";
 import { Thread } from "@/types";
 import { toast } from "react-hot-toast";
-import ErrorAlert from "@/components/Form/ErrorAlert";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import CommentListing from "@/components/OnlyApp/Comment/CommentListing";
-import { RefreshCw } from "lucide-react";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import ItemNotFound from "../NotFound/ItemNotFound";
 import { useAuth, useInfiniteScroll } from "@/hooks";
 import { deleteThread, fetchThreadById, fetchThreads } from "@/services/thread/threadService";
 import { createComment } from "@/services/thread/commentService";
+import { logger } from "@/utils/logger";
+import RetryAgain from "../RetryAgain";
 
 function DiscussionPageContent({ discussionId }: { discussionId: string }) {
   const router = useRouter();
@@ -52,12 +52,10 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
         setThread(threadData);
       } else {
         setError(threadResult.error.message || 'حدث خطأ أثناء تحميل المناقشة');
-        toast.error(threadResult.error.message || 'حدث خطأ أثناء تحميل المناقشة');
       }
     } catch {
       const errorMessage = 'حدث خطأ أثناء تحميل المناقشة';
       setError(errorMessage);
-      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +80,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
         setPage(2);
       }
     } catch {
-      toast.error("حدث خطأ أثناء تحميل المناقشات المشابهة");
+      logger().error("حدث خطأ أثناء تحميل المناقشات المشابهة");
     } finally {
       setIsLoadingSimilar(false);
     }
@@ -107,7 +105,6 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
       }
     } catch (err) {
       console.error("Error loading more threads:", err);
-      toast.error("حدث خطأ أثناء تحميل المزيد من المناقشات");
     } finally {
       setIsLoadingSimilar(false);
     }
@@ -194,9 +191,7 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
     const result = await fetchThreadById(thread.thread_id);
     if (result.success) {
       setThread(result.data);
-    } else {
-      toast.error(result.error.message || RESPONSE_MESSAGES.thread.DEFAULT);
-    }    
+    }   
   };
 
   useEffect(() => {
@@ -215,17 +210,10 @@ function DiscussionPageContent({ discussionId }: { discussionId: string }) {
 
   if (error) {
     return (
-      <div className="space-y-4">
-        <ErrorAlert message={error} />
-        <Button
-          onClick={loadThread}
-          variant="outline"
-          icon={<RefreshCw className="w-4" />}
-          color="secondary"
-        >
-          إعادة المحاولة
-        </Button>
-      </div>
+      <RetryAgain
+        error={error} 
+        handleRetry={loadThread}
+      />
     );
   }
 

@@ -5,14 +5,12 @@ import ThreadListingHeader from "./ThreadListingHeader";
 import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { Thread } from "@/types";
-import ErrorAlert from "@/components/Form/ErrorAlert";
-import { RefreshCw } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import Button from "@/components/Button";
 import { useInfiniteScroll } from "@/hooks";
 import { deleteThread, fetchThreads } from "@/services/thread/threadService";
 import { userService } from "@/services/userService";
 import { ApiSuccess } from "@/types";
+import RetryAgain from "../RetryAgain";
 
 interface ThreadListingProps {
   emptyMessage?: string;
@@ -81,7 +79,6 @@ const ThreadListing = ({
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المناقشات';
       setError(errorMessage);
-      toast.error(errorMessage);
     } finally {
       if (isInitialLoad) {
         setIsLoading(false);
@@ -135,7 +132,6 @@ const ThreadListing = ({
       setPage((prev) => prev + 1);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل المزيد من المناقشات';
-      toast.error(errorMessage);
     } finally {
       setIsFetchingMore(false);
     }
@@ -184,17 +180,10 @@ const ThreadListing = ({
 
   if (error) {
     return (
-      <div className="space-y-4">
-        <ErrorAlert message={error} />
-        <Button
-          onClick={handleRetry}
-          variant="outline"
-          icon={<RefreshCw className="w-4" />}
-          color="secondary"
-        >
-          إعادة المحاولة
-        </Button>
-      </div>
+      <RetryAgain
+        error={error}
+        handleRetry={handleRetry}
+      />
     );
   }
 
