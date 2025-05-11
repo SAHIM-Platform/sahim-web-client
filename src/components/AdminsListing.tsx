@@ -13,6 +13,7 @@ import { ArrowUpDown, RefreshCw, UserPlus } from "lucide-react";
 import { Admin } from "@/types";
 import { adminService } from "@/services/admin/adminService";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
+import ItemNotFound from '@/components/OnlyApp/NotFound/ItemNotFound';
 
 export default function AdminsListing() {
   const [isLoading, setIsLoading] = useState(true);
@@ -31,14 +32,12 @@ export default function AdminsListing() {
       if (!result.success) {
         const errorMessage = RESPONSE_MESSAGES.adminListing.DEFAULT;
         setError(errorMessage);
-        toast.error(errorMessage);
         return;
       }
 
       setAdmins(result.data || []);
     } catch {
       setError(RESPONSE_MESSAGES.adminListing.LOAD_FAILED);
-      toast.error(RESPONSE_MESSAGES.adminListing.LOAD_FAILED);
     } finally {
       setIsLoading(false);
     }
@@ -53,7 +52,8 @@ export default function AdminsListing() {
 
       if (!result.success) {
         toast.error(RESPONSE_MESSAGES.adminListing.DELETE_FAILED);
-        return;
+      toast.error(RESPONE_MESSAGES.adminListing.LOAD_FAILED);
+      return;
       }
 
       toast.success("تم حذف المشرف بنجاح");
@@ -85,6 +85,10 @@ export default function AdminsListing() {
 
   if (isLoading) {
     return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
+  }
+
+  if (admins.length === 0) {
+    return <ItemNotFound description="لا يوجد حسابات لمشرفين حالياً." />;
   }
 
   if (error) {
