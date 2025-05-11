@@ -12,7 +12,7 @@ import UsersBadge from "./OnlyApp/Badge/UsersBadge";
 import UserCardItem from "./OnlyApp/UserCardItem";
 import { ArrowUpDown, RefreshCw } from "lucide-react";
 import { Student, ApprovalStatus } from "@/types";
-import { fetchStudents, searchStudents, approveStudent, rejectStudent } from "@/services/admin/studentService";
+import { fetchStudents, approveStudent, rejectStudent } from "@/services/admin/studentService";
 
 const StudentsListing = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,26 +24,17 @@ const StudentsListing = () => {
   const [isFiltering, setIsFiltering] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const loadStudents = async (filters?: { status?: ApprovalStatus; query?: string }) => {
+  const loadStudents = async (filters?: { status?: ApprovalStatus; search?: string }) => {
     try {
       setIsLoading(true);
       setIsFiltering(!!filters);
       setError(null);
 
-      let result;
-      if (filters?.status || filters?.query) {
-        result = await searchStudents({
-          status: filters.status,
-          query: filters.query
-        });
-        setStudents(result);
+      const result = await fetchStudents(filters);
+      if (result.success && result.data) {
+        setStudents(result.data.data);
       } else {
-        result = await fetchStudents();
-        if (result.success && result.data) {
-          setStudents(result.data.data);
-        } else {
-          throw new Error(result.error?.message || 'فشل في تحميل بيانات الطلاب');
-        }
+        throw new Error(result.error?.message || 'فشل في تحميل بيانات الطلاب');
       }
     } catch (err) {
       console.error('Student loading error:', {
@@ -71,7 +62,7 @@ const StudentsListing = () => {
         toast.success(result.message || 'تمت الموافقة على الطالب بنجاح');
         await loadStudents({
           status: selectedStatus || undefined,
-          query: searchQuery || undefined
+          search: searchQuery || undefined
         });
       } else if (result.error) {
         toast.error(result.error.message || 'فشل في الموافقة على الطالب');
@@ -94,7 +85,7 @@ const StudentsListing = () => {
         toast.success(result.message || 'تم رفض الطالب بنجاح');
         await loadStudents({
           status: selectedStatus || undefined,
-          query: searchQuery || undefined
+          search: searchQuery || undefined
         });
       } else if (result.error) {
         toast.error(result.error.message || 'فشل في رفض الطالب');
@@ -117,7 +108,7 @@ const StudentsListing = () => {
       if (searchQuery || selectedStatus) {
         loadStudents({
           status: selectedStatus || undefined,
-          query: searchQuery || undefined
+          search: searchQuery || undefined
         });
       } else {
         loadStudents();
