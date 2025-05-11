@@ -14,7 +14,7 @@ const Container = ({ children, className, narrow, medium }: ContainerProps) => {
     <div className={cn(
       "w-full mx-auto",
       narrow ? "max-w-[700px]" : "max-w-screen-2xl",
-      medium ? "max-w-[1024px]" : "max-w-screen-2xl",
+      medium ? "max-w-[1024px] px-4" : "max-w-screen-2xl",
       className
     )}>
       {children}

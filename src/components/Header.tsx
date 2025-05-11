@@ -19,20 +19,30 @@ function Header({
   className = ''
 }: HeaderProps) {
   return (
-    <Container>
-      <header className={`flex flex-col items-center justify-center text-center mt-32 min-h-[500px] ${className}`}>
-        <h1 className="text-3xl md:text-4xl font-bold mb-6">
+    <Container medium>
+      <header className={`flex flex-col items-center justify-center text-center mt-16 sm:mt-20 md:mt-24 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] ${className}`}>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
           {title}
         </h1>
         
-        <p className="max-w-lg mx-auto mb-8 leading-loose">
+        <p className="text-sm sm:text-base max-w-lg mx-auto mb-6 sm:mb-8 leading-relaxed sm:leading-loose text-gray-600">
           {description}
         </p>
 
         {button && <Button
           href={button.href}
           variant={button.variant || 'primary'}
+          size={'default'}
+          className="sm:hidden"
+        >
+          {button.text}
+        </Button>}
+
+        {button && <Button
+          href={button.href}
+          variant={button.variant || 'primary'}
           size={'lg'}
+          className="hidden sm:inline-flex"
         >
           {button.text}
         </Button>}
