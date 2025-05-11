@@ -1,12 +1,15 @@
+'use client';
+
 import { Button } from './Button';
 import Container from './Container';
+import { useAuth } from '@/hooks';
 
 interface HeaderProps {
   title: string;
   description: string;
   button?: {
-    text: string;
-    href: string;
+    text?: string;
+    href?: string;
     variant?: 'primary' | 'secondary';
   };
   className?: string;
@@ -15,9 +18,21 @@ interface HeaderProps {
 function Header({ 
   title, 
   description, 
-  button,
+  button = {
+    text: "أنشئ حساب الآن",
+    href: "/signup",
+    variant: "primary"
+  },
   className = ''
 }: HeaderProps) {
+  const { isAuthenticated } = useAuth();
+
+  const buttonProps = {
+    text: isAuthenticated ? "تصفح المناقشات" : button.text,
+    href: isAuthenticated ? "/explore" : button.href,
+    variant: button.variant || 'primary'
+  };
+
   return (
     <Container medium>
       <header className={`flex flex-col items-center justify-center text-center mt-16 sm:mt-20 md:mt-24 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] ${className}`}>
@@ -29,23 +44,23 @@ function Header({
           {description}
         </p>
 
-        {button && <Button
-          href={button.href}
-          variant={button.variant || 'primary'}
-          size={'default'}
+        <Button
+          href={buttonProps.href}
+          variant={buttonProps.variant}
+          size="default"
           className="sm:hidden"
         >
-          {button.text}
-        </Button>}
+          {buttonProps.text}
+        </Button>
 
-        {button && <Button
-          href={button.href}
-          variant={button.variant || 'primary'}
-          size={'lg'}
+        <Button
+          href={buttonProps.href}
+          variant={buttonProps.variant}
+          size="lg"
           className="hidden sm:inline-flex"
         >
-          {button.text}
-        </Button>}
+          {buttonProps.text}
+        </Button>
       </header>
     </Container>
   );
