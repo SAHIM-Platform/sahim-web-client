@@ -12,6 +12,7 @@ import Link from "next/link";
 import { LATEST_THREADS_LIMIT } from "@/utils/constants/ITEMS_LIMITS";
 import { fetchThreads } from "@/services/thread/threadService";
 import { fetchCategories } from "@/services/thread/categoryService";
+import ItemNotFound from "./NotFound/ItemNotFound";
 
 interface AppInfoSidebarProps {
   isOpen: boolean;
@@ -122,6 +123,8 @@ function SidebarContent() {
           <div className="flex justify-center py-2">
             <LoadingSpinner size="sm" color="primary" />
           </div>
+        ) : latestDiscussions.length === 0 ? (
+          <ItemNotFound description="لا توجد مناقشات حالياً" />
         ) : (
           <div className="flex flex-col gap-0.5">
             {latestDiscussions.map((thread, index) => (
