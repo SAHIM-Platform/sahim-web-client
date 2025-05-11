@@ -34,6 +34,8 @@ function ThreadItemMinimal({
           hideDetailsOnSmallScreens={true}
           date={created_at}
           size="sm"
+          username={author.username}
+          linkToProfile={!isDeleted}
         >
           <div className="flex items-center gap-1">
             <MessageSquare className="w-3.5 h-3.5" />
