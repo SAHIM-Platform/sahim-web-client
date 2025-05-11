@@ -16,6 +16,7 @@ interface UserInfoProps {
   isDeleted?: boolean;
   username?: string;
   linkToProfile?: boolean;
+  isUsername?: boolean;
 }
 
 function UserInfo({
@@ -29,9 +30,11 @@ function UserInfo({
   isDeleted = false,
   username,
   linkToProfile = false,
+  isUsername = false,
 }: UserInfoProps) {
   const isSmall = size === "sm";
-  const displayName = isDeleted || !name ? "مستخدم محذوف" : getDisplayName(name);
+  const displayName = isDeleted || !name ? "مستخدم محذوف" : getDisplayName(name, true);
+  const formattedUsername = `@${name}`;
   const displayPhotoPath = isDeleted ? undefined : photoPath;
   const profileLink = username ? `/${username}` : undefined;
 
@@ -49,8 +52,11 @@ function UserInfo({
       >
         <span
           className={`${isSmall ? "text-xs" : "text-[14px]"} font-semibold text-gray-700 leading-none flex items-center gap-1`}
+          style={{
+            direction: isUsername ? 'ltr' : 'rtl',
+          }}
         >
-          {displayName}
+          {isUsername ? formattedUsername : displayName}
         </span>
         {date && <DateBadge label={date} size="xs" />}
       </div>
