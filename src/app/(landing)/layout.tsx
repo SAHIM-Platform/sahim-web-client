@@ -11,10 +11,7 @@ export default function AppLayout({
   return (
     <div>
       <Navbar />
-      <Header />
-      <Container medium>
-        {children}
-      </Container>
+      {children}
       <Footer />
     </div>
   );

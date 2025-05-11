@@ -1,6 +1,5 @@
 import Container from '../Container';
 import Card from '../Card';
-import { cn } from '@/utils/utils';
 
 const features = [
   {
@@ -31,15 +30,17 @@ const features = [
 
 function Features() {
   return (
-    <section className="flex flex-col gap-16 py-16">
-      {features.map((feature, index) => (
-        <Card
-          key={index}
-          {...feature}
-          contentFirst={index % 2 !== 0}
-        />
-      ))}
-    </section>
+    <Container medium>
+      <section className="flex flex-col gap-16 py-16">
+        {features.map((feature, index) => (
+          <Card
+            key={index}
+            {...feature}
+            contentFirst={index % 2 !== 0}
+          />
+        ))}
+      </section>
+    </Container>
   );
 }
 
