@@ -1,4 +1,4 @@
-import { ChevronDown, User, LogOut, MessageSquare } from "lucide-react";
+import { ChevronDown, User, LogOut, MessageSquare, Settings } from "lucide-react";
 import UserInfo from "../UserInfo";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
@@ -70,22 +70,22 @@ function UserDropdownMenu() {
       >
         <div>
           <Link
-            href={FrontendRoutes.MY_DISCUSSIONS}
-            onClick={handleItemClick}
-            className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            <MessageSquare className="w-4 h-4" />
-            مناقشاتي
-          </Link>
-        </div>
-        <div>
-          <Link
-            href={FrontendRoutes.PROFILE}
+            href={`/${username}`}
             onClick={handleItemClick}
             className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
           >
             <User className="w-4 h-4" />
             الملف الشخصي
+          </Link>
+        </div>
+        <div>
+          <Link
+            href={FrontendRoutes.PROFILE_SETTINGS}
+            onClick={handleItemClick}
+            className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <Settings className="w-4 h-4" />
+            إعدادات الحساب
           </Link>
         </div>
         <Divider label="" />

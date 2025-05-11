@@ -3,7 +3,7 @@
 import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/hooks";
+import { useAuth, useCurrentUserInfo } from "@/hooks";
 import {
   Tags,
   UserCheck,
@@ -12,9 +12,9 @@ import {
   UserPlus,
   X,
   Home,
-  MessageSquare,
   Bookmark,
   PenSquare,
+  User,
 } from "lucide-react";
 import Divider from "@/components/Divider";
 import { isAdminOrSuperAdminByRole, isSuperAdminByRole } from "@/utils/role";
@@ -27,6 +27,7 @@ interface AppMenuSidebarProps {
 function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
   const pathname = usePathname();
   const { auth } = useAuth();
+  const { username } = useCurrentUserInfo()
 
   const generalLinks = [
     {
@@ -40,11 +41,6 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
       icon: <PenSquare className="w-5 h-5" />,
     },
     {
-      label: "مناقشاتي",
-      href: "/my-discussions",
-      icon: <MessageSquare className="w-5 h-5" />,
-    },
-    {
       label: "المحفوظات",
       href: "/discussions/bookmarked",
       icon: <Bookmark className="w-5 h-5" />,
@@ -53,6 +49,11 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
       label: "التصنيفات",
       href: "/categories",
       icon: <Tags className="w-5 h-5" />,
+    },
+    {
+      label: "الملف الشخصي",
+      href: `/${username}`,
+      icon: <User className="w-5 h-5" />,
     },
   ];
 
@@ -65,28 +66,28 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
           href: "/admin/categories/new",
           icon: <SquarePlus className="w-5 h-5" />,
         },
-          {
-            label: "الطلاب",
-            href: "/admin/students",
-            icon: <UserCheck className="w-5 h-5" />,
-          },
-        ]
+        {
+          label: "الطلاب",
+          href: "/admin/students",
+          icon: <UserCheck className="w-5 h-5" />,
+        },
+      ]
       : []),
 
     // Super Admin Only Links
     ...(isSuperAdminByRole(auth?.user?.role)
       ? [
-          {
-            label: "المشرفين",
-            href: "/admins",
-            icon: <UserCog className="w-5 h-5" />,
-          },
-          {
-            label: "إنشاء مُشرف",
-            href: "/admin/new",
-            icon: <UserPlus className="w-5 h-5" />,
-          },
-        ]
+        {
+          label: "المشرفين",
+          href: "/admins",
+          icon: <UserCog className="w-5 h-5" />,
+        },
+        {
+          label: "إنشاء مُشرف",
+          href: "/admin/new",
+          icon: <UserPlus className="w-5 h-5" />,
+        },
+      ]
       : []),
   ];
 
@@ -113,7 +114,7 @@ function AppMenuSidebar({ isOpen, onClose }: AppMenuSidebarProps) {
       <div className="space-y-2">
         {renderLinks(generalLinks)}
       </div>
-      
+
       {roleSpecificLinks.length > 0 && (
         <>
           <Divider label="" borderColor="gray-200" />

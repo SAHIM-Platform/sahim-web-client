@@ -36,5 +36,6 @@ export enum FrontendRoutes {
   CATEGORIES = "/categories",
   ADMINS = "/admins",
   MY_DISCUSSIONS = "/my-discussions",
-  PROFILE = "/profile-settings",
+  PROFILE = "/profile",
+  PROFILE_SETTINGS = "/profile-settings",
 }
