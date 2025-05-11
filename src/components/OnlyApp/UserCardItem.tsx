@@ -3,11 +3,12 @@
 import { useState } from "react";
 import Button from "../Button";
 import { Check, X, Trash2, Loader2 } from "lucide-react";
-import { Admin, Student, ApprovalStatus } from "@/types";
+import { Admin, Student, ApprovalStatus, UserRole } from "@/types";
 import DateBadge from "./Badge/DateBadge";
 import ConfirmModal from "@/components/Modal/ConfirmModal";
 import toast from "react-hot-toast";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
+import { useCurrentUserInfo } from "@/hooks/utils/useCurrentUserInfo";
 
 interface UserCardItemProps {
   student?: Student;
@@ -31,6 +32,7 @@ const UserCardItem = ({
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { role } = useCurrentUserInfo();
 
   const handleAction = async (type: "approve" | "reject") => {
     setActionType(type);
@@ -98,6 +100,19 @@ const UserCardItem = ({
     }
   };
 
+  const shouldShowApproveButton = (status?: ApprovalStatus) => {
+    if (!student) return false;
+    return status === ApprovalStatus.PENDING || status === ApprovalStatus.REJECTED;
+  };
+
+  const shouldShowRejectButton = (status?: ApprovalStatus) => {
+    if (!student) return false;
+    if (status === ApprovalStatus.APPROVED) {
+      return role === UserRole.SUPER_ADMIN;
+    }
+    return status === ApprovalStatus.PENDING;
+  };
+
   // Render student card
   if (student) {
     return (
@@ -111,8 +126,8 @@ const UserCardItem = ({
             <p className="font-light">حالة الموافقة: <span className={`font-normal ${getStatusColor(student.student?.approvalStatus)}`}>{getStatusText(student.student?.approvalStatus)}</span></p>
           </div>
 
-          {student.student?.approvalStatus === ApprovalStatus.PENDING && (
-            <div className="flex items-center gap-2 sm:mt-0 mt-3">
+          <div className="flex items-center gap-2 sm:mt-0 mt-3">
+            {shouldShowApproveButton(student.student?.approvalStatus) && (
               <Button
                 onClick={() => setIsApproveModalOpen(true)}
                 size="sm"
@@ -121,7 +136,9 @@ const UserCardItem = ({
               >
                 {isActionLoading("approve") ? "جاري الموافقة..." : "موافقة"}
               </Button>
+            )}
 
+            {shouldShowRejectButton(student.student?.approvalStatus) && (
               <Button
                 onClick={() => setIsRejectModalOpen(true)}
                 variant="outline"
@@ -133,8 +150,8 @@ const UserCardItem = ({
               >
                 {isActionLoading("reject") ? "جاري الرفض..." : "رفض"}
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <ConfirmModal
@@ -205,8 +222,8 @@ const UserCardItem = ({
     </>
     );
   }
-
   return null;
 };
 
 export default UserCardItem;
+
