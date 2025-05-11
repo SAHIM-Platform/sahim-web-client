@@ -52,7 +52,6 @@ export default function AdminsListing() {
 
       if (!result.success) {
         toast.error(RESPONSE_MESSAGES.adminListing.DELETE_FAILED);
-      toast.error(RESPONE_MESSAGES.adminListing.LOAD_FAILED);
       return;
       }
 

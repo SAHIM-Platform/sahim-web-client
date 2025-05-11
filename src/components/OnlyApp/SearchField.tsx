@@ -35,8 +35,9 @@ function SearchField({
   const currentQueryRef = useRef(searchQuery);
 
   useEffect(() => {
+    const timeout = debounceTimeout.current;
     return () => {
-      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+      if (timeout) clearTimeout(timeout);
     };
   }, []);
 

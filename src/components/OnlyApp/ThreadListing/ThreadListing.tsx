@@ -11,8 +11,8 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import Button from "@/components/Button";
 import { useInfiniteScroll } from "@/hooks";
 import { deleteThread, fetchThreads } from "@/services/thread/threadService";
-import { userService, UserServiceResult } from "@/services/userService";
-import { ApiResult, ApiSuccess } from "@/types";
+import { userService } from "@/services/userService";
+import { ApiSuccess } from "@/types";
 
 interface ThreadListingProps {
   emptyMessage?: string;

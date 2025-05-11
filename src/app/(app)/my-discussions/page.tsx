@@ -15,7 +15,7 @@ export default function DiscussionsPage() {
     } else {
       router.push('/login');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, username]);
 
   return null;
 }

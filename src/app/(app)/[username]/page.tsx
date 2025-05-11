@@ -8,6 +8,19 @@ import { use, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import { useAuth, useAuthLoading } from '@/hooks';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { Profile } from '@/types/api/user';
+import { Thread } from '@/types';
+
+interface UserProfileData {
+  user: Profile;
+  threads: Thread[];
+  threadsMeta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
 
 interface UserProfilePageProps {
   params: Promise<{ username: string }>;
@@ -17,7 +30,7 @@ export default function DiscussionPage({ params }: UserProfilePageProps) {
   const { username } = use(params);
   const searchParams = useSearchParams();
   const { auth } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isAuthLoadingOrRedirecting } = useAuthLoading();
@@ -28,7 +41,7 @@ export default function DiscussionPage({ params }: UserProfilePageProps) {
       setError(null);
 
       const result = await userService.getUserProfileByUsername(username, {
-        sort: searchParams.get('sort') as any || 'latest',
+        sort: searchParams.get('sort') as 'latest' | 'oldest' | 'most_commented' | 'most_voted' || 'latest',
         page: Number(searchParams.get('page')) || 1,
         limit: Number(searchParams.get('limit')) || 10,
         category_id: Number(searchParams.get('category_id')) || undefined,
@@ -37,11 +50,20 @@ export default function DiscussionPage({ params }: UserProfilePageProps) {
       });
       
       if (result.success && result.data?.user) {
-        setProfile(result.data);
+        setProfile({
+          user: result.data.user,
+          threads: result.data.threads || [],
+          threadsMeta: result.data.threadsMeta || {
+            total: 0,
+            page: 1,
+            limit: 10,
+            totalPages: 0
+          }
+        });
       } else {
         setError(result.error?.message || 'حدث خطأ أثناء تحميل الملف الشخصي');
       }
-    } catch (err) {
+    } catch {
       setError('حدث خطأ أثناء تحميل الملف الشخصي');
     } finally {
       setIsLoading(false);

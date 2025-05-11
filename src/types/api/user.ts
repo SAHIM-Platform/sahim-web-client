@@ -1,4 +1,3 @@
-import { UserServiceResult } from "@/services/userService";
 import { ApprovalStatus, Department, Level, Thread } from ".";
 import { AuthMethod } from "..";
 

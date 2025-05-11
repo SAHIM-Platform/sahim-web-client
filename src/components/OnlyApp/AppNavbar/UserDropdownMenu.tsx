@@ -1,4 +1,4 @@
-import { ChevronDown, User, LogOut, MessageSquare, Settings } from "lucide-react";
+import { ChevronDown, User, LogOut, Settings } from "lucide-react";
 import UserInfo from "../UserInfo";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
