@@ -310,12 +310,12 @@ const ThreadItem = ({
             </div>
 
             {thumbnail_url && (
-              <div className="relative w-full aspect-[6/4] rounded-lg overflow-hidden bg-gray-50">
+              <div className="relative w-full aspect-[6/4] rounded-lg overflow-hidden bg-gray-200">
                 <Image
                   src={thumbnail_url}
                   alt={title || 'صورة المناقشة'}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                   loading="lazy"
                 />
               </div>
