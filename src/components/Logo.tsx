@@ -5,11 +5,12 @@ import Link from 'next/link';
 interface LogoProps {
 	className?: string;
 	widthSize?: 'sm' | 'default';
+	link?: string;
 }
 
-const Logo = ({ className, widthSize = 'default' }: LogoProps) => (
+const Logo = ({ className, link = '/', widthSize = 'default' }: LogoProps) => (
 	<Link
-		href="/"
+		href={link}
 		className={cn(
 			'relative block',
 			widthSize == 'default' && `w-12 h-12`,

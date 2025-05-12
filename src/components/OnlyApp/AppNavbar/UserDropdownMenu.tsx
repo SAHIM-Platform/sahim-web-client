@@ -63,7 +63,7 @@ function UserDropdownMenu() {
 
       <div
         className={cn(
-          "absolute top-full right-0 mt-2 w-44 md:w-48 bg-white border border-gray-200 shadow-lg rounded-md transition-all duration-200 transform origin-top",
+          "absolute top-full left-0 sm:right-0 mt-2 w-44 md:w-48 bg-white border border-gray-200 shadow-lg rounded-md transition-all duration-200 transform origin-top",
           isOpen
             ? "opacity-100 scale-100"
             : "opacity-0 scale-95 pointer-events-none"
