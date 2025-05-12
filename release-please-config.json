@@ -1,6 +1,6 @@
 {
   "release-type": "node",
-  "prerelease": true,
+  "prerelease": false,
   "packages": {
     ".": {
       "package-name": "sahim-web-client"
