@@ -1,5 +1,45 @@
 # Changelog
 
+## [1.1.0](https://github.com/SAHIM-Platform/sahim-web-client/compare/sahim-web-client-v1.0.0...sahim-web-client-v1.1.0) (2025-05-12)
+
+
+### Features
+
+* add a global alert for admins reminds them of their role ([#245](https://github.com/SAHIM-Platform/sahim-web-client/issues/245)) ([b10f26e](https://github.com/SAHIM-Platform/sahim-web-client/commit/b10f26e96502b378651c8f023e6f4c3a16f1e7f2))
+* add a public profile page ([2b9b96d](https://github.com/SAHIM-Platform/sahim-web-client/commit/2b9b96d30539e47f5fb402fc2611cd2315cb195c))
+* add about and FAQ pages ([#257](https://github.com/SAHIM-Platform/sahim-web-client/issues/257)) ([9d4e892](https://github.com/SAHIM-Platform/sahim-web-client/commit/9d4e89249cd0bf94697b1e9a2a1e710f9eca60e3))
+* add full-page loader during logout process ([#241](https://github.com/SAHIM-Platform/sahim-web-client/issues/241)) ([16b6051](https://github.com/SAHIM-Platform/sahim-web-client/commit/16b60510dfa686f093cea80a21125eedc8ef87d4))
+* **auth:** update academic number validation to accept 5, 6, or 13 digits ([8cac7c8](https://github.com/SAHIM-Platform/sahim-web-client/commit/8cac7c85dc6c6c6a23841c1241443de7fe5613ba))
+* **categories:** implement category discussions page ([#243](https://github.com/SAHIM-Platform/sahim-web-client/issues/243)) ([8057816](https://github.com/SAHIM-Platform/sahim-web-client/commit/805781685a88bd88130e6d5878de783056324b8c))
+* **discussions, comments:** display author role and dept. using icons ([#240](https://github.com/SAHIM-Platform/sahim-web-client/issues/240)) ([28d120e](https://github.com/SAHIM-Platform/sahim-web-client/commit/28d120e1cf3db248589f1c797684fbc9d7da9a88))
+* **discussions:** improve discussion thumb appearance ([e06a149](https://github.com/SAHIM-Platform/sahim-web-client/commit/e06a149a1880c334d83f0694fbedae66991b5720))
+* display a message in sidebar when no discussion exists ([bb3c505](https://github.com/SAHIM-Platform/sahim-web-client/commit/bb3c5059f5574ac6d2f178dfb6a648ddacbb4cce))
+* enable students approval status change by admins ([#255](https://github.com/SAHIM-Platform/sahim-web-client/issues/255)) ([8d0c178](https://github.com/SAHIM-Platform/sahim-web-client/commit/8d0c178dbaaeb39bb4453c1071a54516b6d0e76d))
+* **metadata:** add basic metadata ([#212](https://github.com/SAHIM-Platform/sahim-web-client/issues/212)) ([f5e451a](https://github.com/SAHIM-Platform/sahim-web-client/commit/f5e451a709a3768e956e252653ea5f2892b3e399))
+* redirect my-discussions page to the profile page ([0fdce4a](https://github.com/SAHIM-Platform/sahim-web-client/commit/0fdce4a73f296d419e9d822f924e7414eac67588))
+* redirect profile route to profile-settings ([dc9168f](https://github.com/SAHIM-Platform/sahim-web-client/commit/dc9168f82313f78e5a944012164fbc9ad7190ae4))
+* restore info sidebar and add student department in profile page ([f2d1acd](https://github.com/SAHIM-Platform/sahim-web-client/commit/f2d1acd3996fc9058b18c7c8ccebfcd0bdb81287))
+* **ui:** clearly indicate deleted users in discussions and comments ([#250](https://github.com/SAHIM-Platform/sahim-web-client/issues/250)) ([0b43536](https://github.com/SAHIM-Platform/sahim-web-client/commit/0b4353616ce7eefabec4b88476c83cf26d9f038b))
+
+
+### Bug Fixes
+
+* add specific error handling for duplicated category creation ([#236](https://github.com/SAHIM-Platform/sahim-web-client/issues/236)) ([3b26ab5](https://github.com/SAHIM-Platform/sahim-web-client/commit/3b26ab51f22ec9d3385796fa41d12784a1c6df87))
+* **admin-students:** fix dropdown label issue in approval status filter ([#237](https://github.com/SAHIM-Platform/sahim-web-client/issues/237)) ([c3af9c7](https://github.com/SAHIM-Platform/sahim-web-client/commit/c3af9c7c46f6f3d7c7a72dcb3cddf327ddd98d6e))
+* **auth:** send email to backend for Google OAuth signups ([#249](https://github.com/SAHIM-Platform/sahim-web-client/issues/249)) ([bfcc1c0](https://github.com/SAHIM-Platform/sahim-web-client/commit/bfcc1c0e6c82cbb5e917d45c04a82e92da20e3df))
+* **categories:** ensure client-side validation match server-side validation rules ([#246](https://github.com/SAHIM-Platform/sahim-web-client/issues/246)) ([6928e31](https://github.com/SAHIM-Platform/sahim-web-client/commit/6928e313c30acd46fe0584b11de44d0bf714fb98))
+* create/update category validations to match BE new validations ([dd4140e](https://github.com/SAHIM-Platform/sahim-web-client/commit/dd4140ed41fbe1aff45945301cbcba201b68bc66))
+* display proper messages and remove uneeded toasts ([#256](https://github.com/SAHIM-Platform/sahim-web-client/issues/256)) ([5c6f2e0](https://github.com/SAHIM-Platform/sahim-web-client/commit/5c6f2e0972fa1c537a5efa945fbc28571eac0d6e))
+* ensure sidebars scrollbar is enabled when needed ([583686b](https://github.com/SAHIM-Platform/sahim-web-client/commit/583686bc3cdb2f7bf2303407840bcec6f8c92410))
+* **forms:** improve keyboard submission behavior in forms ([#242](https://github.com/SAHIM-Platform/sahim-web-client/issues/242)) ([a86063a](https://github.com/SAHIM-Platform/sahim-web-client/commit/a86063aeb13133dd3cf105d742f5a0c197c32ab5))
+* **integration:** update integration to match new API response format ([#239](https://github.com/SAHIM-Platform/sahim-web-client/issues/239)) ([f4e650c](https://github.com/SAHIM-Platform/sahim-web-client/commit/f4e650ca135fbc62f64433804a6658a3ebb2b3f3))
+* **modal:** make modal component responsive and improve loader width ([#248](https://github.com/SAHIM-Platform/sahim-web-client/issues/248)) ([b88544e](https://github.com/SAHIM-Platform/sahim-web-client/commit/b88544e0f712cd45f1dd978986735d661e4fab4c))
+* **profile:** hide edit button for super admin users ([#235](https://github.com/SAHIM-Platform/sahim-web-client/issues/235)) ([81b1c79](https://github.com/SAHIM-Platform/sahim-web-client/commit/81b1c79881e01414e4b93963d5c4bf57712f264f))
+* protect all not public routes ([#244](https://github.com/SAHIM-Platform/sahim-web-client/issues/244)) ([45f9557](https://github.com/SAHIM-Platform/sahim-web-client/commit/45f95572cde6199828631a64067e2c5edd31eac2))
+* protect users/[username] route ([995d340](https://github.com/SAHIM-Platform/sahim-web-client/commit/995d3404b341956ecfb003818e4fc161a43a8c1c))
+* **search:** ensure search return results for Arabic input ([#252](https://github.com/SAHIM-Platform/sahim-web-client/issues/252)) ([4ce788e](https://github.com/SAHIM-Platform/sahim-web-client/commit/4ce788e2346bc8d3ae70078412a269e54e83ae63))
+* **useAuthRedirect:** add complete-signup to the isProtectedRoute check ([212ddb1](https://github.com/SAHIM-Platform/sahim-web-client/commit/212ddb1fe857248cab5e018d644a0ee9ac4c4bb4))
+
 ## 1.0.0 (2025-04-20)
 
 
