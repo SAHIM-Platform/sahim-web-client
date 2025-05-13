@@ -33,6 +33,7 @@ export const fetchStudents = async (filters?: StudentFilters): Promise<StudentRe
     console.log('Fetching students with filters:', filters);
 
     const params = new URLSearchParams();
+    params.append('limit', '50');
     if (filters?.status) {
       params.append('status', filters.status);
     }

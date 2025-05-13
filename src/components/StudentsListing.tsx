@@ -3,13 +3,11 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import Button from "./Button";
 import SearchField from "./OnlyApp/SearchField";
 import Select from "./Select";
 import Divider from "./Divider";
 import UsersBadge from "./OnlyApp/Badge/UsersBadge";
 import UserCardItem from "./OnlyApp/UserCardItem";
-import { ArrowUpDown } from "lucide-react";
 import { Student, ApprovalStatus } from "@/types";
 import { fetchStudents, approveStudent, rejectStudent } from "@/services/admin/studentService";
 import RetryAgain from "./OnlyApp/RetryAgain";
@@ -20,7 +18,6 @@ const StudentsListing = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<ApprovalStatus | null>(null);
-  const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
   const [isFiltering, setIsFiltering] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -63,8 +60,8 @@ const StudentsListing = () => {
           status: selectedStatus || undefined,
           search: searchQuery || undefined
         });
-      } else if (result.error) {
-        toast.error(result.error.message || 'فشل في الموافقة على الطالب');
+      } else {
+        toast.error(result.error?.message || 'فشل في الموافقة على الطالب');
       }
     } catch (error) {
       console.error('Approve error:', error);
@@ -86,8 +83,8 @@ const StudentsListing = () => {
           status: selectedStatus || undefined,
           search: searchQuery || undefined
         });
-      } else if (result.error) {
-        toast.error(result.error.message || 'فشل في رفض الطالب');
+      } else {
+        toast.error(result.error?.message || 'فشل في رفض الطالب');
       }
     } catch (error) {
       console.error('Reject error:', error);
@@ -140,7 +137,7 @@ const StudentsListing = () => {
               جميع الطلاب
             </h1>
             <p className="mt-2 text-xs sm:text-sm lg:text-base text-gray-500">
-              تصفح جميع حسابات الطلاب المسجلين
+              تصفح جميع حسابات الطلاب المسجلين (الحد الأقصى 50 طالب)
             </p>
           </div>
         </div>
@@ -172,15 +169,6 @@ const StudentsListing = () => {
                 {students.length === 1 ? " طالب" : " طلاب"}
               </span>
             </UsersBadge>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSortOrder(sortOrder === "recent" ? "oldest" : "recent")}
-              className="text-[13px] text-gray-600"
-              icon={<ArrowUpDown className="w-4 h-4" />}
-            >
-              {sortOrder === "recent" ? "الأحدث أولاً" : "الأقدم أولاً"}
-            </Button>
           </div>
         </div>
       </div>
@@ -204,23 +192,15 @@ const StudentsListing = () => {
         </div>
       ) : (
         <div className="flex flex-col gap-5">
-          {students
-            .sort((a, b) => {
-              const aNumber = a.student?.academicNumber || '';
-              const bNumber = b.student?.academicNumber || '';
-              return sortOrder === "recent"
-                ? bNumber.localeCompare(aNumber)
-                : aNumber.localeCompare(bNumber);
-            })
-            .map((student) => (
-              <UserCardItem
-                key={student.id}
-                student={student}
-                onApprove={() => handleApprove(Number(student.id))}
-                onReject={() => handleReject(Number(student.id))}
-                isProcessing={isProcessing}
-              />
-            ))}
+          {students.map((student) => (
+            <UserCardItem
+              key={student.id}
+              student={student}
+              onApprove={() => handleApprove(Number(student.id))}
+              onReject={() => handleReject(Number(student.id))}
+              isProcessing={isProcessing}
+            />
+          ))}
         </div>
       )}
     </div>
