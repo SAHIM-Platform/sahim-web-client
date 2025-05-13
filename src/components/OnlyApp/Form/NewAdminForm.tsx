@@ -12,16 +12,17 @@ import { logger } from "@/utils/logger";
 import RESPONSE_MESSAGES from "@/utils/constants/RESPONSE_MESSAGES";
 import { FrontendRoutes } from "@/data/routes";
 import { clearFieldError } from "@/utils/formUtils";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 function NewAdminForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [error, setError] = useState<string>("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState<Partial<AdminFormData>>({
     name: "",
     username: "",
-    email: "",
     password: "",
     confirmPassword: "",
   });
@@ -50,6 +51,7 @@ function NewAdminForm() {
 
       if (result.success) {
         logger().info('Admin creation successful, redirecting...');
+        setIsRedirecting(true);
         router.push(FrontendRoutes.ADMINS);
       } else {
         logger().error('Admin creation failed:', result.error);
@@ -78,9 +80,12 @@ function NewAdminForm() {
   const areAllRequiredFieldsFilled = 
     formData.name && 
     formData.username && 
-    formData.email && 
     formData.password && 
     formData.confirmPassword;
+
+  if (isRedirecting) {
+    return <LoadingSpinner size="xl" color="primary" fullScreen={true} />;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
@@ -94,27 +99,15 @@ function NewAdminForm() {
         error={fieldErrors.name}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <Input
-          label="اسم المستخدم"
-          placeholder="اكتب اسم المستخدم"
-          value={formData.username || ''}
-          onChange={(e) => handleChange("username", e.target.value)}
-          required
-          fullWidth
-          error={fieldErrors.username}
-        />
-        <Input
-          label="البريد الإلكتروني"
-          placeholder="اكتب البريد الإلكتروني"
-          type="email"
-          value={formData.email || ''}
-          onChange={(e) => handleChange("email", e.target.value)}
-          required
-          fullWidth
-          error={fieldErrors.email}
-        />
-      </div>
+      <Input
+        label="اسم المستخدم"
+        placeholder="اكتب اسم المستخدم"
+        value={formData.username || ''}
+        onChange={(e) => handleChange("username", e.target.value)}
+        required
+        fullWidth
+        error={fieldErrors.username}
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <Input

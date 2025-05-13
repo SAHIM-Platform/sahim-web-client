@@ -20,7 +20,6 @@ interface AdminCreationResult {
 async function createAdminService(data: AdminFormData): Promise<AdminCreationResult> {
   try {
     const adminData = {
-      email: data.email,
       username: data.username,
       name: data.name,
       password: data.password

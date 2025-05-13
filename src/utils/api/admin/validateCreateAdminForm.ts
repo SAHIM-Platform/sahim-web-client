@@ -1,7 +1,6 @@
 import RESPONSE_MESSAGES from "../../constants/RESPONSE_MESSAGES";
 
 export interface AdminFormData {
-  email: string;
   username: string;
   password: string;
   confirmPassword: string;
@@ -18,15 +17,6 @@ export const validateCreateAdminForm = (values: Partial<AdminFormData>) => {
     errors.name = RESPONSE_MESSAGES.signup.VALIDATIONS.NAME_TOO_SHORT;
   } else if (values.name.length > 100) {
     errors.name = RESPONSE_MESSAGES.signup.VALIDATIONS.NAME_TOO_LONG;
-  }
-
-  // Email validation
-  if (!values.email?.trim()) {
-    errors.email = RESPONSE_MESSAGES.signup.VALIDATIONS.EMAIL_REQUIRED;
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-    errors.email = RESPONSE_MESSAGES.signup.VALIDATIONS.EMAIL_INVALID;
-  } else if (values.email.length > 255) {
-    errors.email = RESPONSE_MESSAGES.signup.VALIDATIONS.EMAIL_TOO_LONG;
   }
 
   // Username validation
