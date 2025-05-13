@@ -2,6 +2,7 @@ import { Department, departmentLabels, UserRole, userRoleLabels } from '@/types'
 import Image from 'next/image';
 import Link from 'next/link';
 import { Settings } from 'lucide-react';
+import UserPhoto from '@/components/UserPhoto';
 
 interface UserProfileHeaderProps {
   name: string;
@@ -22,20 +23,15 @@ export default function UserProfileHeader({
   department,
 }: UserProfileHeaderProps) {
   return (
-    <div className="relative flex items-start justify-between border-b border-gray-200 pb-6 mb-6">
+    <div className="relative flex flex-col gap-6 border-b border-gray-200 pb-6 mb-6">
       {/* Profile Picture and Settings */}
       {photoPath && (
-        <div className="relative flex items-center justify-between">
-          <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-gray-200">
-            <Image
-              src={photoPath}
-              alt={name}
-              width={128}
-              height={128}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </div>
+        <UserPhoto 
+          photoPath={photoPath}
+          name={name}
+          role={role}
+          size={110}
+        />
       )}
 
       {/* User Info */}

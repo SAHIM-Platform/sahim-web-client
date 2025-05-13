@@ -90,6 +90,7 @@ export default function DiscussionPage({ params }: UserProfilePageProps) {
       <UserProfileHeader
         name={user.name}
         username={user.username}
+        photoPath={user.photoPath}
         role={user.role}
         department={user?.department}
         threadsCount={threadsMeta.total}
