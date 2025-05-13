@@ -1,5 +1,4 @@
 import { Department, departmentLabels, UserRole, userRoleLabels } from '@/types';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Settings } from 'lucide-react';
 import UserPhoto from '@/components/UserPhoto';
