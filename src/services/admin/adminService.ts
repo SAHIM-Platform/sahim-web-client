@@ -6,9 +6,8 @@ import RESPONSE_MESSAGES from '@/utils/constants/RESPONSE_MESSAGES';
 interface AdminResponse {
   id: number;
   name: string;
-  email: string;
   username: string;
-  createdAt: string;
+  created_at: string;
 }
 
 interface AdminsResult {
@@ -31,14 +30,14 @@ interface DeleteResult {
 export const adminService = {
   async getAdmins(): Promise<AdminsResult> {
     try {
-      const response = await axiosInstance.get<AdminResponse[]>('/admins');
+      const response = await axiosInstance.get('/admins');
+      console.log('API Response:', response.data);
 
-      const admins: Admin[] = response.data.map((admin: AdminResponse) => ({
+      const admins: Admin[] = response.data.data.map((admin: AdminResponse) => ({
         id: admin.id,
         name: admin.name,
-        email: admin.email,
         username: admin.username,
-        created_at: admin.createdAt,
+        created_at: admin.created_at,
       }));
 
       return {
