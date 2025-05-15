@@ -6,8 +6,6 @@
 
 <p align="center"><strong>SAHIM (Student Academic Hub for Integrated Management) Web Client</strong> is a web application that serves as the frontend for the SAHIM platform. It is designed to offer a smooth, accessible, and performant user experience for students.</p>
 
-<p align="center">For the backend, see: <a href="https://github.com/SAHIM-Platform/sahim-api">SAHIM API Repository</a></p>
-
 <p align="center">
   <img src="https://img.shields.io/badge/App--Version-v1.1.0-blueviolet" alt="App Version" />
   <img src="https://img.shields.io/badge/Status-no--future--work--planned-lightgrey" alt="Project Status" />
