@@ -13,13 +13,13 @@ interface UserPhotoProps {
 
 function UserPhoto({ name, size = 40, className, photoPath, role }: UserPhotoProps) {
   return (
-    <div className={cn("relative rounded-full overflow-hidden", className)}>
+    <div className={cn("relative overflow-hidden", className)}>
       <Image
         src={getUserAvatar(photoPath, role)}
         alt={name}
         width={size}
         height={size}
-        className="object-cover"
+        className="rounded-full object-cover"
       />
     </div>
   );
